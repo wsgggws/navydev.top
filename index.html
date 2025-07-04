@@ -265,6 +265,62 @@
         line-height: 1.8;
       }
 
+      .about-text p {
+        margin-bottom: 1.5rem;
+      }
+
+      .about-text .highlight {
+        color: #00d4ff;
+        font-weight: 500;
+        padding: 2px 6px;
+        background: rgba(0, 212, 255, 0.1);
+        border-radius: 4px;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .about-text .signature {
+        margin-top: 2rem;
+        padding: 15px 20px;
+        background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+        border-left: 4px solid #00d4ff;
+        border-radius: 8px;
+        font-style: italic;
+        text-align: center;
+      }
+
+      .about-text .inline-list {
+        display: block;
+        margin: 10px 0;
+        padding-left: 20px;
+      }
+
+      .about-text .list-item {
+        display: block;
+        margin: 8px 0;
+        position: relative;
+        padding-left: 20px;
+      }
+
+      .about-text .list-item::before {
+        content: "•";
+        color: #00d4ff;
+        font-weight: bold;
+        font-size: 1.2em;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+      .about-text .list-item .highlight {
+        color: #00d4ff;
+        font-weight: 600;
+        padding: 2px 6px;
+        background: rgba(0, 212, 255, 0.1);
+        border-radius: 4px;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        margin-right: 8px;
+      }
+
       .about-image {
         position: relative;
         perspective: 1000px;
@@ -520,6 +576,32 @@
         opacity: 1;
         transform: translateY(0);
       }
+
+      .highlight {
+        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .inline-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+      }
+
+      .list-item::before {
+        content: "✔️";
+        margin-right: 8px;
+        color: #00d4ff;
+      }
     </style>
   </head>
   <body>
@@ -563,11 +645,23 @@
         <h2 class="section-title fade-in">关于我</h2>
         <div class="about-content">
           <div class="about-text fade-in">
+            <p>九年 Python，至今尚未秃头的攻城狮🦁。</p>
+            <p>专业创造 Bug，然后优雅修复，也创作有 goroutine 气质的 Bug。</p>
             <p>
-              写了<strong>8年 Python </strong>还没秃头的攻城狮🦁，专业制造 Bug 然后优雅修复。偶尔也用 Go 来制造; )。
-              日常工作有和<strong>后端服务、数据库、爬虫</strong>谈恋爱，它们闹脾气时我就哄哄。我擅长把复杂的问题简单化，再把简单的问题复杂化🤔...
-              业余时间还喜欢研究点历史，例如古人在没有 Stack
-              Overflow 的年代是如何解决问题的？这真是个值得解决的问题。顺便提醒大家：码码要洗手🧼
+              和后端服务、数据库、爬虫谈恋爱——它们闹脾气，我哄；它们崩溃，我陪；它们宕机，我背锅。
+            </p>
+            <p>
+              把复杂的问题简单化，把简单的问题复杂化。并努力提升系统的
+              <span class="inline-list">
+                <span class="list-item"><span>🌿 易维护性</span> — 后来人（包括我自己）别骂我</span>
+                <span class="list-item"><span>🔭 可观测性</span> — 看见你的开心，理解你的难过</span>
+              </span>
+            </p>
+            <p>
+              业余研究历史，古人在没有 Stack Overflow 的年代如何改 Bug 呢🤔。
+            </p>
+            <p class="signature">
+              🔔 最后提醒：码码要洗手 🧼，写代码前后都要保持干净～
             </p>
           </div>
           <div class="about-image fade-in">
