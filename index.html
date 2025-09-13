@@ -519,6 +519,147 @@
         opacity: 0.6;
       }
 
+      /* 操作窗口风格 */
+      .terminal-window {
+        background: #181818;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.15);
+        overflow: hidden;
+        margin-bottom: 40px;
+        font-family: "Fira Mono", "Consolas", "Menlo", monospace;
+        color: #e0e0e0;
+        border: 1px solid #222;
+      }
+
+      .terminal-header {
+        background: #222;
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid #333;
+      }
+
+      .terminal-title {
+        margin-left: auto;
+        font-size: 0.95rem;
+        color: #00d4ff;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 4px;
+      }
+
+      .dot.red {
+        background: #ff5f56;
+      }
+
+      .dot.yellow {
+        background: #ffbd2e;
+      }
+
+      .dot.green {
+        background: #27c93f;
+      }
+
+      .terminal-body {
+        padding: 24px 28px;
+        font-size: 1.08rem;
+        line-height: 1.8;
+        background: linear-gradient(90deg, #181818 80%, #00d4ff22 100%);
+      }
+
+      .terminal-body pre {
+        margin: 0;
+        font-family: inherit;
+        background: none;
+        color: inherit;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      /* MacOS 风格 */
+      .macos-window {
+        width: 600px;
+        margin: 80px auto;
+        background: #181818;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.15);
+        overflow: hidden;
+      }
+
+      .macos-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        background: #222;
+        border-bottom: 1px solid #333;
+      }
+
+      .macos-title {
+        margin-left: auto;
+        color: #00d4ff;
+        font-weight: bold;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+        display: inline-block;
+      }
+
+      .red {
+        background: #ff5f56;
+      }
+
+      .yellow {
+        background: #ffbd2e;
+      }
+
+      .green {
+        background: #27c93f;
+      }
+
+      .macos-apps {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        padding: 60px 0;
+      }
+
+      .app-icon {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(45deg, #00d4ff22, #00ff8822);
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .app-icon:hover {
+        box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+      }
+
+      .app-label {
+        margin-top: 8px;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
       /* 响应式设计 */
       @media (max-width: 768px) {
         nav {
@@ -606,6 +747,114 @@
         margin-right: 8px;
         color: #00d4ff;
       }
+
+      /* 终端窗口样式 */
+      .terminal-window {
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        color: #000;
+        font-weight: bold;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 10px;
+        display: inline-block;
+      }
+
+      .red {
+        background: #ff605c;
+      }
+
+      .yellow {
+        background: #ffbd44;
+      }
+
+      .green {
+        background: #00ca4e;
+      }
+
+      .terminal-title {
+        flex-grow: 1;
+        font-size: 1.1rem;
+      }
+
+      .terminal-body {
+        padding: 15px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+        color: #fff;
+        background: #111;
+        overflow-x: auto;
+        white-space: pre;
+      }
+
+      /* 动画效果 */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .slide-in {
+        animation: slideIn 0.6s ease-out forwards;
+      }
+
+      /* 模态框样式 */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: #222;
+        border-radius: 12px;
+        padding: 40px;
+        color: #fff;
+        max-width: 500px;
+        margin: 100px auto;
+        position: relative;
+      }
+
+      .close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 2rem;
+        color: #00d4ff;
+        cursor: pointer;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #00d4ff;
+        text-decoration: none;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -646,34 +895,41 @@
     <!-- 关于我 -->
     <section id="about" class="about">
       <div class="container">
-        <h2 class="section-title fade-in">关于我</h2>
-        <div class="about-content">
-          <div class="about-text fade-in">
-            <p>九年 Python，尚未秃头的攻城狮🦁。</p>
-            <p>专业创造有 GIL/goroutine 气质的 Bug，然后优雅修复。</p>
-            <p>和 WebAPI 谈恋爱，闹脾气，我哄；崩溃，我陪；宕机，我背锅。</p>
-            <p>
-              复杂的问题简单化，简单的问题复杂化。努力提升系统的
-              <span class="inline-list">
-                <span class="list-item"><span>🌿 易维护性：</span> 人类可读，顺便让机器执行</span>
-                <span class="list-item"><span>🔭 可观测性：</span> 看你开心，还为你排忧解难</span>
-              </span>
-            </p>
-            <p>
-              业余研究历史，古人在没有 Stack Overflow 的年代如何改 Bug 呢🤔。
-            </p>
-            <p class="signature">
-              🔔 最后提醒：码码要洗手 🧼，代码爱干净～
-            </p>
+        <div class="terminal-window fade-in">
+          <div class="terminal-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="terminal-title">Navy@navydev.top:~</span>
           </div>
-          <div class="about-image fade-in">
-            <div class="profile-card">
-              <div class="avatar">Navy</div>
-              <h3>wsgggws</h3>
-              <p>攻城狮 🦁</p>
-              <p>Python驯兽师 🐍</p>
-              <p>历史考古师 📚</p>
-            </div>
+          <div class="terminal-body">
+            <pre>
+$ whoami
+九年 Python，尚未秃头的攻城狮🦁
+
+$ echo "我的日常"
+专业创造有 GIL/goroutine 气质的 Bug，然后优雅修复。
+和 WebAPI 谈恋爱，闹脾气，我哄；崩溃，我陪；宕机，我背锅。
+
+$ skills
+- 🌿 易维护性：人类可读，顺便让机器执行
+- 🔭 可观测性：看你开心，还为你排忧解难
+
+$ history
+业余研究历史，古人在没有 Stack Overflow 的年代如何改 Bug 呢🤔
+
+$ motto
+码码要洗手 🧼，代码爱干净～
+            </pre>
+          </div>
+        </div>
+        <div class="about-image fade-in">
+          <div class="profile-card">
+            <div class="avatar">🦁</div>
+            <h3>wsgggws</h3>
+            <p>攻城狮 🦁</p>
+            <p>Python驯兽师 🐍</p>
+            <p>历史考古师 📚</p>
           </div>
         </div>
       </div>
@@ -755,8 +1011,7 @@
     <section class="motto">
       <div class="container">
         <div class="motto-content fade-in">
-          <h2 class="motto-text">"不好吃，不好玩，好看"</h2>
-          <p class="motto-author">— Navy</p>
+          <h2 class="motto-text">严于律已，宽于待人</h2>
         </div>
       </div>
     </section>
@@ -837,6 +1092,29 @@
         } else if (e.key === "ArrowUp") {
           window.scrollBy(0, -100);
         }
+      });
+
+      // 模态框功能
+      document.querySelectorAll(".app-icon").forEach((icon) => {
+        icon.onclick = function() {
+          const app = icon.getAttribute('data-app');
+          document.getElementById('modal-' + app).style.display = 'block';
+        };
+      });
+      document.querySelectorAll('.close').forEach(btn => {
+        btn.onclick = function() {
+          const app = btn.getAttribute('data-close');
+          document.getElementById('modal-' + app).style.display = 'none';
+        };
+      });
+
+      window.addEventListener("click", function (e) {
+        const modals = document.querySelectorAll(".modal");
+        modals.forEach((modal) => {
+          if (e.target === modal) {
+            modal.style.display = "none";
+          }
+        });
       });
     </script>
   </body>
