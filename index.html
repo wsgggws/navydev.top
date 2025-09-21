@@ -1008,13 +1008,13 @@ $ motto
     </section>
 
     <!-- 格言区域 -->
-    <section class="motto">
-      <div class="container">
-        <div class="motto-content fade-in">
-          <h2 class="motto-text">严于律已，宽于待人</h2>
-        </div>
-      </div>
-    </section>
+    <!-- <section class="motto"> -->
+    <!--   <div class="container"> -->
+    <!--     <div class="motto-content fade-in"> -->
+    <!--       <h2 class="motto-text">严于律已，宽于待人</h2> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!-- </section> -->
 
     <!-- 页脚 -->
     <footer>
@@ -1096,15 +1096,15 @@ $ motto
 
       // 模态框功能
       document.querySelectorAll(".app-icon").forEach((icon) => {
-        icon.onclick = function() {
-          const app = icon.getAttribute('data-app');
-          document.getElementById('modal-' + app).style.display = 'block';
+        icon.onclick = function () {
+          const app = icon.getAttribute("data-app");
+          document.getElementById("modal-" + app).style.display = "block";
         };
       });
-      document.querySelectorAll('.close').forEach(btn => {
-        btn.onclick = function() {
-          const app = btn.getAttribute('data-close');
-          document.getElementById('modal-' + app).style.display = 'none';
+      document.querySelectorAll(".close").forEach((btn) => {
+        btn.onclick = function () {
+          const app = btn.getAttribute("data-close");
+          document.getElementById("modal-" + app).style.display = "none";
         };
       });
 
