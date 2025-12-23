@@ -22,7 +22,19 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.REMOTE_IP }} >> ~/.ssh/known_hosts
 
-      - name: 📤 Copy static files to server
+      - name: � Deploy entire repo to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/root/deploy/navydev.top/"
+          strip_components: 0
+          overwrite: true
+          rm: true
+
+      - name: �📤 Copy static files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.REMOTE_IP }}
