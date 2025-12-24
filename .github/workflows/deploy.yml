@@ -40,7 +40,7 @@ jobs:
           host: ${{ secrets.REMOTE_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "index.html,README.md,manifest.json,assets"
+          source: "index.html,assets"
           target: "/var/www/navydev.top/"
           strip_components: 0
           overwrite: true
