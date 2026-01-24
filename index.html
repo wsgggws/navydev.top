@@ -879,11 +879,15 @@
     <!-- 导航栏 -->
     <nav id="navbar">
       <div class="nav-container">
-        <div class="logo">Navy</div>
+        <div class="logo">Navydev</div>
         <ul class="nav-links">
           <li><a href="#home">首页</a></li>
           <li><a href="#about">关于我</a></li>
           <li><a href="#portfolio">作品</a></li>
+          <li>
+            <a href="https://github.com/wsgggws" target="_blank">GitHub</a>
+          </li>
+          <li><a href="https://wsgggws.github.io" target="_blank">Blog</a></li>
         </ul>
       </div>
     </nav>
@@ -913,7 +917,7 @@
           <div class="terminal-body">
             <pre>
 $ whoami
-头发上撸，尚未秃头的攻城狮🦁
+尚未秃头，头发上撸的攻城狮🦁
 
 $ echo "我的日常"
 专业创造有 GIL/goroutine 气质的 Bug，然后优雅修复。
@@ -924,7 +928,7 @@ $ skills
 - 🔭 可观测性：看你开心，还为你排忧解难
 
 $ history
-业余研究历史，古人在没有 Stack Overflow 的年代如何改 Bug 呢🤔
+业余研究历史，古人在没有 Claude Code 的年代如何coding 呢🤔
 
 $ motto
 代码爱干净，码码要洗手
@@ -946,8 +950,23 @@ $ motto
     <!-- 作品展示 -->
     <section id="portfolio" class="portfolio">
       <div class="container">
-        <h2 class="section-title fade-in">我的作品与据点</h2>
+        <h2 class="section-title fade-in">我的作品</h2>
         <div class="portfolio-grid">
+          <div class="portfolio-item fade-in">
+            <h3>Sparks.nvim ⚡</h3>
+            <p>
+              敲代码没有打击手感？ Neovim 瞬间变成格斗游戏！粒子爆炸 + Combo
+              连击 +
+              沉浸音效，把"苦逼码农"变成"指尖键盘侠"——程序员的浪漫是每一行代码都是
+              Full Combo 💥
+            </p>
+            <a
+              href="https://github.com/wsgggws/sparks.nvim"
+              class="portfolio-link"
+              target="_blank"
+              >来一场节奏大师</a
+            >
+          </div>
           <div class="portfolio-item fade-in">
             <h3>RSS 订阅服务 📡</h3>
             <p>
@@ -973,35 +992,10 @@ $ motto
             >
           </div>
           <div class="portfolio-item fade-in">
-            <h3>
-              GitHub 代码仓库
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                style="vertical-align: middle; margin-left: 5px"
-              >
-                <path
-                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                />
-              </svg>
-            </h3>
-            <p>
-              我的代码坟场...咳咳，是代码仓库！里面有各种实验性项目、弃坑作品和偶尔能跑的代码。欢迎来踩坑，不过别指望找到惊世之作😅
-            </p>
-            <a
-              href="https://github.com/wsgggws"
-              class="portfolio-link"
-              target="_blank"
-              >去翻我的黑历史</a
-            >
-          </div>
-          <div class="portfolio-item fade-in">
             <h3>Bilibili 技术频道 📺</h3>
             <p>
               偶尔心血来潮会录个视频，主要内容有"Leetcode刷题技巧", "FastAPI
-              项目实战", "效率工具如
+              项目实战", "效率工具如 Tmux,
               Neovim"...。虽然更新频率感人，但质量还是有保证的（大概）。
             </p>
             <a
@@ -1018,7 +1012,7 @@ $ motto
     <!-- 页脚 -->
     <footer>
       <div class="container">
-        <p>&copy; 2025 Navy. 用 ❤️ 和 ☕ 制作</p>
+        <p id="copyright">&copy; 2025-present Navy. 用 ❤️ 和 ☕ 制作</p>
       </div>
     </footer>
 
@@ -1115,6 +1109,20 @@ $ motto
           }
         });
       });
+
+      // 动态更新版权年份
+      (function updateCopyright() {
+        const startYear = 2025;
+        const currentYear = new Date().getFullYear();
+        const copyrightEl = document.getElementById("copyright");
+        if (copyrightEl) {
+          const yearText =
+            currentYear === startYear
+              ? startYear
+              : `${startYear}-${currentYear}`;
+          copyrightEl.innerHTML = `&copy; ${yearText} Navy. 用 ❤️ 和 ☕ 制作`;
+        }
+      })();
     </script>
   </body>
 </html>
