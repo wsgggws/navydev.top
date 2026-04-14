@@ -56,6 +56,17 @@ jobs:
           strip_components: 3
           overwrite: true
 
+      - name: 📤 Copy random.html to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "random.html"
+          target: "/var/www/navydev.top/nghh/"
+          strip_components: 0
+          overwrite: true
+
       - name: 🔄 Reload nginx
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }} << 'EOF'

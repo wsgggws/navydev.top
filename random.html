@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #0f3460 100%
+        );
+        font-family:
+          "Inter",
+          "SF Pro Display",
+          -apple-system,
+          sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Physics background - flowing grid */
+      .bg-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(
+            90deg,
+            rgba(100, 200, 255, 0.08) 1px,
+            transparent 1px
+          ),
+          linear-gradient(rgba(100, 200, 255, 0.08) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: gridFlow 8s linear infinite;
+      }
+
+      /* Flow streamlines */
+      .streamline {
+        position: fixed;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(100, 200, 255, 0.4),
+          transparent
+        );
+        border-radius: 2px;
+        animation: streamPulse 3s ease-in-out infinite;
+      }
+
+      @keyframes streamPulse {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scaleX(0.8);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scaleX(1.2);
+        }
+      }
+
+      /* Particle flow */
+      .flow-particle {
+        position: fixed;
+        width: 4px;
+        height: 4px;
+        background: rgba(100, 200, 255, 0.6);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      @keyframes particleFlow {
+        0%,
+        100% {
+          opacity: 0.4;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.5);
+        }
+      }
+
+      /* Pressure visualization */
+      .pressure-zone {
+        position: fixed;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: pressurePulse 3s ease-in-out infinite;
+      }
+
+      .pressure-high {
+        background: radial-gradient(
+          circle,
+          rgba(255, 100, 100, 0.15) 0%,
+          transparent 70%
+        );
+      }
+
+      .pressure-low {
+        background: radial-gradient(
+          circle,
+          rgba(100, 180, 255, 0.15) 0%,
+          transparent 70%
+        );
+      }
+
+      @keyframes pressurePulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 0.8;
+        }
+      }
+
+      @keyframes gridMove {
+        0% {
+          transform: perspective(500px) rotateX(60deg) translateY(0);
+        }
+        100% {
+          transform: perspective(500px) rotateX(60deg) translateY(60px);
+        }
+      }
+
+      /* Floating physics formulas - fluid dynamics themed */
+      .physics-element {
+        position: fixed;
+        color: rgba(100, 200, 255, 0.25);
+        font-weight: 900;
+        font-size: 1.6rem;
+        pointer-events: none;
+        z-index: 1;
+        animation: floatPhysics 15s linear infinite;
+        text-shadow: 0 0 20px rgba(100, 200, 255, 0.5);
+      }
+
+      .physics-element.formula {
+        font-size: 2rem;
+        font-family: "Times New Roman", serif;
+        font-style: italic;
+        color: rgba(255, 200, 100, 0.3);
+        text-shadow: 0 0 30px rgba(255, 180, 100, 0.6);
+      }
+
+      .physics-element.name {
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(100, 255, 180, 0.25);
+      }
+
+      @keyframes floatPhysics {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0.7;
+        }
+        25% {
+          transform: translateY(-20px) rotate(90deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(180deg);
+          opacity: 1;
+        }
+        75% {
+          transform: translateY(-30px) rotate(270deg);
+        }
+      }
+
+      /* Molecule animation */
+      .molecule {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(100, 200, 255, 0.5);
+        pointer-events: none;
+        z-index: 2;
+        box-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
+      }
+
+      .molecule::before,
+      .molecule::after {
+        content: "";
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(100, 255, 200, 0.4);
+      }
+
+      .molecule::before {
+        top: -8px;
+        left: 2px;
+      }
+      .molecule::after {
+        top: -4px;
+        left: -6px;
+      }
+
+      @keyframes moleculeFloat {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(10px, -15px) scale(1.3);
+          opacity: 0.8;
+        }
+      }
+
+      .bg-glow {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        filter: blur(150px);
+        opacity: 0.5;
+        animation: glowPulse 4s ease-in-out infinite;
+      }
+
+      .bg-glow-1 {
+        top: -200px;
+        left: -200px;
+        background: #4fc3f7;
+      }
+
+      .bg-glow-2 {
+        bottom: -200px;
+        right: -200px;
+        background: #29b6f6;
+        animation-delay: 2s;
+      }
+
+      .bg-glow-3 {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #81d4fa;
+        animation-delay: 1s;
+      }
+
+      @keyframes glowPulse {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.1);
+        }
+      }
+
+      .container {
+        text-align: center;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* 3D Cylinder Container */
+      .cylinder-container {
+        width: 500px;
+        height: 500px;
+        perspective: 1500px;
+        margin: 0 auto 20px;
+        position: relative;
+      }
+
+      .cylinder {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: cylinderIdle 8s linear infinite;
+      }
+
+      .cylinder.spinning {
+        animation: cylinderSpin 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+      }
+
+      @keyframes cylinderIdle {
+        0% {
+          transform: rotateY(0deg);
+        }
+        100% {
+          transform: rotateY(360deg);
+        }
+      }
+
+      @keyframes cylinderSpin {
+        0% {
+          transform: rotateY(0deg) rotateX(10deg);
+        }
+        20% {
+          transform: rotateY(180deg) rotateX(-5deg);
+        }
+        40% {
+          transform: rotateY(360deg) rotateX(10deg);
+        }
+        60% {
+          transform: rotateY(540deg) rotateX(-5deg);
+        }
+        80% {
+          transform: rotateY(720deg) rotateX(10deg);
+        }
+        100% {
+          transform: rotateY(900deg) rotateX(0deg);
+        }
+      }
+
+      /* Name cards on cylinder */
+      .cylinder-card {
+        position: absolute;
+        width: 420px;
+        height: 180px;
+        left: 50%;
+        top: 50%;
+        margin-left: -210px;
+        margin-top: -90px;
+        background: linear-gradient(
+          145deg,
+          rgba(79, 195, 247, 0.9),
+          rgba(41, 182, 246, 0.9)
+        );
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        box-shadow:
+          0 0 40px rgba(79, 195, 247, 0.4),
+          inset 0 0 30px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backface-visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .cylinder-card.visible {
+        opacity: 1;
+      }
+
+      .cylinder-card.selected {
+        background: linear-gradient(145deg, #f59e0b, #ef4444);
+        box-shadow:
+          0 0 60px rgba(245, 158, 11, 0.6),
+          0 0 100px rgba(239, 68, 68, 0.4),
+          inset 0 0 30px rgba(255, 255, 255, 0.2);
+        animation: cardSelected 0.6s ease-out;
+      }
+
+      @keyframes cardSelected {
+        0% {
+          transform: scale(0.5) rotateY(0deg);
+        }
+        50% {
+          transform: scale(1.2) rotateY(180deg);
+        }
+        100% {
+          transform: scale(1) rotateY(360deg);
+        }
+      }
+
+      .cylinder-card:nth-child(1) {
+        transform: rotateY(0deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(2) {
+        transform: rotateY(36deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(3) {
+        transform: rotateY(72deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(4) {
+        transform: rotateY(108deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(5) {
+        transform: rotateY(144deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(6) {
+        transform: rotateY(180deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(7) {
+        transform: rotateY(216deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(8) {
+        transform: rotateY(252deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(9) {
+        transform: rotateY(288deg) translateZ(240px);
+      }
+      .cylinder-card:nth-child(10) {
+        transform: rotateY(324deg) translateZ(240px);
+      }
+
+      /* Central display card */
+      .display-card {
+        position: absolute;
+        width: 450px;
+        height: 200px;
+        left: 50%;
+        top: 50%;
+        margin-left: -225px;
+        margin-top: -100px;
+        background: rgba(15, 15, 25, 0.95);
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        font-weight: 800;
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        box-shadow:
+          0 25px 80px rgba(0, 0, 0, 0.5),
+          inset 0 0 60px rgba(99, 102, 241, 0.05);
+        backdrop-filter: blur(20px);
+        z-index: 100;
+        overflow: hidden;
+      }
+
+      .display-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.1) 50%,
+          transparent 60%
+        );
+        animation: shimmer 3s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      .display-card.reveal {
+        animation: cardReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes cardReveal {
+        0% {
+          transform: scale(0.3) rotateX(90deg);
+          opacity: 0;
+          filter: blur(20px);
+        }
+        50% {
+          filter: blur(0);
+        }
+        100% {
+          transform: scale(1) rotateX(0deg);
+          opacity: 1;
+        }
+      }
+
+      .btn {
+        padding: 18px 60px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 60px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 700;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4fc3f7, #29b6f6, #03a9f4);
+        background-size: 200% 200%;
+        color: #fff;
+        box-shadow:
+          0 10px 40px rgba(79, 195, 247, 0.4),
+          0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        animation: gradientShift 3s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow:
+          0 20px 60px rgba(79, 195, 247, 0.6),
+          0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+      }
+
+      .btn-primary:active {
+        transform: translateY(-2px) scale(1.02);
+      }
+
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Confetti particles */
+      .confetti {
+        position: fixed;
+        width: 12px;
+        height: 12px;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      /* Firework burst */
+      .firework {
+        position: fixed;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <div class="container">
+      <div class="cylinder-container">
+        <div class="cylinder" id="cylinder">
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+          <div class="cylinder-card"><span></span></div>
+        </div>
+        <div class="display-card" id="displayCard">等待点名...</div>
+      </div>
+
+      <button class="btn btn-primary" id="pickBtn">随机点名</button>
+    </div>
+
+    <script>
+      // Student names - embedded directly
+      const STUDENTS = [
+        "刘筱妍",
+        "庞博文",
+        "李宇涵",
+        "肖鑫浩",
+        "刘嫣祺",
+        "刘辉",
+        "程纪豪",
+        "张宸烨",
+        "杨淑媛",
+        "肖丹",
+        "黄帅",
+        "伍昱涛",
+        "李任军",
+        "廖泽宇",
+        "陈悠悠",
+        "李依灿",
+        "陈柏睿",
+        "钱卓远",
+        "罗子俊",
+        "谭伊淇",
+        "肖兆",
+        "肖湘尹",
+        "曾姝妍",
+        "周子茹",
+        "马瑾怡",
+        "彭碧涵",
+        "邹涛宇",
+        "刘权",
+        "邓婕敏",
+        "肖子豪",
+        "刘子睿",
+        "邹叶蓉",
+        "岳敏薇",
+        "刘釨锐",
+        "阮颂哲",
+        "邱辰晟",
+        "袁振焜",
+        "陈智明",
+        "范梓涵",
+        "刘艺馨",
+        "伍赞运",
+        "易思彤",
+        "罗予彤",
+        "刘辰恩",
+        "丁雨涵",
+        "王馨",
+        "黄紫婕",
+        "曾金玉",
+        "张良东",
+        "范毅",
+        "周利来",
+        "罗米辰",
+        "黄雪瑶",
+        "谭雅",
+      ];
+
+      let students = [];
+      let remainingStudents = [];
+      let isSpinning = false;
+
+      const cylinder = document.getElementById("cylinder");
+      const displayCard = document.getElementById("displayCard");
+      const pickBtn = document.getElementById("pickBtn");
+      const cylinderCards = cylinder.querySelectorAll(".cylinder-card");
+
+      function init() {
+        students = STUDENTS;
+        remainingStudents = [...students];
+        updateCylinderNames();
+        cylinderCards.forEach((card) => {
+          card.querySelector("span").textContent = "???";
+          card.classList.add("visible");
+        });
+      }
+
+      function updateCylinderNames() {
+        const displayNames =
+          remainingStudents.length >= 10
+            ? remainingStudents.slice(0, 10)
+            : [
+                ...remainingStudents,
+                ...Array(10 - remainingStudents.length).fill("???"),
+              ];
+        cylinderCards.forEach((card, i) => {
+          card.querySelector("span").textContent = displayNames[i] || "???";
+        });
+      }
+
+      function createConfetti(x, y) {
+        const colors = [
+          "#4fc3f7",
+          "#29b6f6",
+          "#03a9f4",
+          "#f59e0b",
+          "#10b981",
+          "#3b82f6",
+        ];
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.style.left = x + "px";
+          confetti.style.top = y + "px";
+          confetti.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+          const angle = Math.random() * Math.PI * 2;
+          const velocity = 10 + Math.random() * 20;
+          const vx = Math.cos(angle) * velocity;
+          const vy = Math.sin(angle) * velocity - 10;
+          document.body.appendChild(confetti);
+          let posX = x,
+            posY = y,
+            opacity = 1,
+            rotation = 0;
+          const gravity = 0.5;
+          let vyLocal = vy;
+          const animate = () => {
+            posX += vx;
+            vyLocal += gravity;
+            posY += vyLocal;
+            opacity -= 0.02;
+            rotation += 10;
+            confetti.style.left = posX + "px";
+            confetti.style.top = posY + "px";
+            confetti.style.opacity = opacity;
+            confetti.style.transform = `rotate(${rotation}deg)`;
+            if (opacity > 0) {
+              requestAnimationFrame(animate);
+            } else {
+              confetti.remove();
+            }
+          };
+          requestAnimationFrame(animate);
+        }
+      }
+
+      function createFirework(x, y) {
+        const colors = ["#fff", "#4fc3f7", "#a5b4fc", "#fcd34d", "#6ee7b7"];
+        for (let i = 0; i < 30; i++) {
+          const particle = document.createElement("div");
+          particle.className = "firework";
+          particle.style.left = x + "px";
+          particle.style.top = y + "px";
+          particle.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+          particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+          const angle = (i / 30) * Math.PI * 2;
+          const velocity = 5 + Math.random() * 10;
+          const vx = Math.cos(angle) * velocity;
+          const vy = Math.sin(angle) * velocity;
+          document.body.appendChild(particle);
+          let posX = x,
+            posY = y,
+            opacity = 1;
+          const animate = () => {
+            posX += vx;
+            posY += vy;
+            opacity -= 0.03;
+            particle.style.left = posX + "px";
+            particle.style.top = posY + "px";
+            particle.style.opacity = opacity;
+            if (opacity > 0) {
+              requestAnimationFrame(animate);
+            } else {
+              particle.remove();
+            }
+          };
+          requestAnimationFrame(animate);
+        }
+      }
+
+      pickBtn.addEventListener("click", () => {
+        if (remainingStudents.length === 0 || isSpinning) return;
+        isSpinning = true;
+        pickBtn.disabled = true;
+        pickBtn.textContent = "点名中...";
+        displayCard.textContent = "???";
+        displayCard.style.background = "rgba(15, 15, 25, 0.95)";
+        cylinder.classList.add("spinning");
+        const spinInterval = setInterval(() => {
+          const randomNames = [...students]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 10);
+          cylinderCards.forEach((card, i) => {
+            card.querySelector("span").textContent = randomNames[i] || "???";
+          });
+        }, 100);
+        setTimeout(() => {
+          clearInterval(spinInterval);
+          cylinder.classList.remove("spinning");
+          const selectedIndex = Math.floor(
+            Math.random() * remainingStudents.length,
+          );
+          const selected = remainingStudents.splice(selectedIndex, 1)[0];
+          displayCard.classList.remove("reveal");
+          void displayCard.offsetWidth;
+          displayCard.classList.add("reveal");
+          displayCard.textContent = selected;
+          displayCard.style.background =
+            "linear-gradient(135deg, rgba(79, 195, 247, 0.9), rgba(41, 182, 246, 0.9))";
+          const rect = displayCard.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          createConfetti(centerX, centerY);
+          setTimeout(() => createFirework(centerX, centerY), 200);
+          setTimeout(() => createFirework(centerX - 100, centerY - 50), 400);
+          setTimeout(() => createFirework(centerX + 100, centerY - 50), 600);
+          updateCylinderNames();
+          pickBtn.textContent = "随机点名";
+          pickBtn.disabled = remainingStudents.length === 0;
+          isSpinning = false;
+          if (remainingStudents.length === 0) {
+            displayCard.textContent = "点名完成！";
+          }
+        }, 1500);
+      });
+
+      // Place elements only in outer zones (avoid center 50%)
+      function getEdgePosition(index, total) {
+        const zone = index % 4;
+        const offset = Math.floor(index / 4) * 8;
+        const positions = {
+          0: { top: 5 + offset + "%", left: 1 + Math.random() * 10 + "%" },
+          1: { top: 5 + offset + "%", right: 1 + Math.random() * 10 + "%" },
+          2: { top: 5 + offset + "%", left: 1 + Math.random() * 10 + "%" },
+          3: { top: 5 + offset + "%", right: 1 + Math.random() * 10 + "%" },
+        };
+        return positions[zone];
+      }
+
+      function createStreamlines() {
+        for (let i = 0; i < 20; i++) {
+          const streamline = document.createElement("div");
+          streamline.className = "streamline";
+          const pos = getEdgePosition(i, 20);
+          streamline.style.top = pos.top;
+          if (pos.left) streamline.style.left = pos.left;
+          if (pos.right) streamline.style.right = pos.right;
+          streamline.style.width = 100 + Math.random() * 150 + "px";
+          streamline.style.animationDuration = 2 + Math.random() * 3 + "s";
+          streamline.style.animationDelay = Math.random() * 5 + "s";
+          document.body.appendChild(streamline);
+        }
+      }
+
+      function createFlowParticles() {
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement("div");
+          particle.className = "flow-particle";
+          const pos = getEdgePosition(i, 50);
+          particle.style.top = pos.top;
+          if (pos.left) particle.style.left = pos.left;
+          if (pos.right) particle.style.right = pos.right;
+          particle.style.animation = `particleFlow ${2 + Math.random() * 3}s ease-in-out infinite`;
+          particle.style.animationDelay = Math.random() * 5 + "s";
+          particle.style.width = 2 + Math.random() * 4 + "px";
+          particle.style.height = particle.style.width;
+          document.body.appendChild(particle);
+        }
+      }
+
+      function createPressureZones() {
+        const positions = [
+          { top: "3%", left: "2%", type: "high" },
+          { top: "20%", left: "5%", type: "low" },
+          { top: "40%", left: "3%", type: "high" },
+          { top: "60%", left: "8%", type: "low" },
+          { top: "80%", left: "2%", type: "high" },
+          { top: "10%", right: "3%", type: "high" },
+          { top: "30%", right: "5%", type: "low" },
+          { top: "50%", right: "2%", type: "high" },
+          { top: "70%", right: "8%", type: "low" },
+          { top: "90%", right: "3%", type: "high" },
+        ];
+        positions.forEach((pos, i) => {
+          const zone = document.createElement("div");
+          zone.className = `pressure-zone pressure-${pos.type}`;
+          zone.style.top = pos.top;
+          if (pos.left) zone.style.left = pos.left;
+          if (pos.right) zone.style.right = pos.right;
+          zone.style.animationDelay = i * 0.3 + "s";
+          document.body.appendChild(zone);
+        });
+      }
+
+      function createPhysicsElements() {
+        const physicsData = [
+          { text: "P + ½ρv² = C", type: "formula" },
+          { text: "v = d/t", type: "formula" },
+          { text: "Q = Av", type: "formula" },
+          { text: "F = ρAv²", type: "formula" },
+          { text: "ΔP = ½ρ(v₂²-v₁²)", type: "formula" },
+          { text: "A₁v₁ = A₂v₂", type: "formula" },
+          { text: "伯努利原理", type: "concept" },
+          { text: "流速大压强小", type: "concept" },
+          { text: "机翼升力", type: "concept" },
+          { text: "文丘里效应", type: "concept" },
+          { text: "流体压强", type: "concept" },
+          { text: "流线", type: "concept" },
+          { text: "Bernoulli", type: "name" },
+          { text: "Venturi", type: "name" },
+        ];
+        physicsData.forEach((item, i) => {
+          const el = document.createElement("div");
+          el.className = `physics-element ${item.type}`;
+          el.textContent = item.text;
+          const pos = getEdgePosition(i, physicsData.length);
+          el.style.top = pos.top;
+          if (pos.left) el.style.left = pos.left;
+          if (pos.right) el.style.right = pos.right;
+          el.style.animationDelay = Math.random() * 15 + "s";
+          el.style.animationDuration = 8 + Math.random() * 6 + "s";
+          document.body.appendChild(el);
+        });
+        const extraElements = [
+          { text: "P = F/S", type: "formula" },
+          { text: "ρ = m/V", type: "formula" },
+          { text: "F浮 = ρgV排", type: "formula" },
+          { text: "升力公式", type: "concept" },
+          { text: "流速", type: "concept" },
+          { text: "压强差", type: "concept" },
+          { text: "连续性方程", type: "concept" },
+          { text: "能量守恒", type: "concept" },
+          { text: "Coanda", type: "name" },
+          { text: "Pascal", type: "name" },
+          { text: "Newton", type: "name" },
+        ];
+        extraElements.forEach((item, i) => {
+          const el = document.createElement("div");
+          el.className = `physics-element ${item.type}`;
+          el.textContent = item.text;
+          const pos = getEdgePosition(i + 14, extraElements.length + 14);
+          el.style.top = pos.top;
+          if (pos.left) el.style.left = pos.left;
+          if (pos.right) el.style.right = pos.right;
+          el.style.animationDelay = Math.random() * 15 + "s";
+          el.style.animationDuration = 8 + Math.random() * 6 + "s";
+          document.body.appendChild(el);
+        });
+        for (let i = 0; i < 40; i++) {
+          const molecule = document.createElement("div");
+          molecule.className = "molecule";
+          const pos = getEdgePosition(i, 40);
+          molecule.style.top = pos.top;
+          if (pos.left) molecule.style.left = pos.left;
+          if (pos.right) molecule.style.right = pos.right;
+          molecule.style.animation = `moleculeFloat ${3 + Math.random() * 4}s ease-out infinite`;
+          molecule.style.animationDelay = Math.random() * 5 + "s";
+          document.body.appendChild(molecule);
+        }
+      }
+
+      createStreamlines();
+      createFlowParticles();
+      createPressureZones();
+      createPhysicsElements();
+      init();
+    </script>
+  </body>
+</html>
