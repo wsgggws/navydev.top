@@ -818,6 +818,7 @@
           setTimeout(() => createFirework(centerX - 100, centerY - 50), 400);
           setTimeout(() => createFirework(centerX + 100, centerY - 50), 600);
           updateCylinderNames();
+          randomizeBackground();
           pickBtn.textContent = "随机点名";
           pickBtn.disabled = remainingStudents.length === 0;
           isSpinning = false;
@@ -827,17 +828,44 @@
         }, 1500);
       });
 
-      // Place elements only in outer zones (avoid center 50%)
+      // Place elements only in outer zones (avoid center 32%)
       function getEdgePosition(index, total) {
         const zone = index % 4;
         const offset = Math.floor(index / 4) * 8;
         const positions = {
-          0: { top: 5 + offset + "%", left: 1 + Math.random() * 10 + "%" },
-          1: { top: 5 + offset + "%", right: 1 + Math.random() * 10 + "%" },
-          2: { top: 5 + offset + "%", left: 1 + Math.random() * 10 + "%" },
-          3: { top: 5 + offset + "%", right: 1 + Math.random() * 10 + "%" },
+          0: { top: 5 + offset + "%", left: 1 + Math.random() * 34 + "%" },
+          1: { top: 5 + offset + "%", right: 1 + Math.random() * 34 + "%" },
+          2: { top: 5 + offset + "%", left: 1 + Math.random() * 34 + "%" },
+          3: { top: 5 + offset + "%", right: 1 + Math.random() * 34 + "%" },
         };
         return positions[zone];
+      }
+
+      function randomizeBackground() {
+        document.querySelectorAll(".physics-element").forEach((el, i) => {
+          const pos = getEdgePosition(i, document.querySelectorAll(".physics-element").length);
+          el.style.top = pos.top;
+          if (pos.left) el.style.left = pos.left;
+          if (pos.right) el.style.right = pos.right;
+        });
+        document.querySelectorAll(".streamline").forEach((el, i) => {
+          const pos = getEdgePosition(i, document.querySelectorAll(".streamline").length);
+          el.style.top = pos.top;
+          if (pos.left) el.style.left = pos.left;
+          if (pos.right) el.style.right = pos.right;
+        });
+        document.querySelectorAll(".flow-particle").forEach((el, i) => {
+          const pos = getEdgePosition(i, document.querySelectorAll(".flow-particle").length);
+          el.style.top = pos.top;
+          if (pos.left) el.style.left = pos.left;
+          if (pos.right) el.style.right = pos.right;
+        });
+        document.querySelectorAll(".molecule").forEach((el, i) => {
+          const pos = getEdgePosition(i, document.querySelectorAll(".molecule").length);
+          el.style.top = pos.top;
+          if (pos.left) el.style.left = pos.left;
+          if (pos.right) el.style.right = pos.right;
+        });
       }
 
       function createStreamlines() {
@@ -966,6 +994,7 @@
       createFlowParticles();
       createPressureZones();
       createPhysicsElements();
+      randomizeBackground();
       init();
     </script>
   </body>
