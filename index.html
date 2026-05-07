@@ -32,7 +32,7 @@
         line-height: 1.6;
       }
 
-      /* 3D背景动画 */
+      /* 3D背景动画 - 宇宙星空 */
       .background-3d {
         position: fixed;
         top: 0;
@@ -40,21 +40,282 @@
         width: 100%;
         height: 100%;
         z-index: -1;
-        background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
         overflow: hidden;
+        background: #000;
+      }
+
+      .background-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(20, 10, 40, 0.4) 0%,
+          rgba(5, 5, 20, 0.8) 50%,
+          rgba(0, 0, 0, 0.95) 100%
+        );
+        z-index: 1;
+      }
+
+      /* 星空层 */
+      .starfield {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      .star-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 200%;
+        background-repeat: repeat;
+      }
+
+      .star-layer-1 {
+        background-image:
+          radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+          radial-gradient(
+            1px 1px at 40px 70px,
+            rgba(255, 255, 255, 0.8),
+            transparent
+          ),
+          radial-gradient(
+            1px 1px at 50px 160px,
+            rgba(255, 255, 255, 0.6),
+            transparent
+          ),
+          radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+          radial-gradient(
+            1px 1px at 130px 80px,
+            rgba(255, 255, 255, 0.7),
+            transparent
+          ),
+          radial-gradient(1.5px 1.5px at 160px 120px, #00d4ff, transparent),
+          radial-gradient(1px 1px at 200px 50px, #fff, transparent),
+          radial-gradient(
+            1px 1px at 220px 140px,
+            rgba(255, 255, 255, 0.5),
+            transparent
+          ),
+          radial-gradient(1px 1px at 260px 90px, #fff, transparent),
+          radial-gradient(1.5px 1.5px at 300px 170px, #00ff88, transparent);
+        background-size: 320px 200px;
+        animation: drift 80s linear infinite;
+      }
+
+      .star-layer-2 {
+        background-image:
+          radial-gradient(
+            1px 1px at 10px 10px,
+            rgba(255, 255, 255, 0.6),
+            transparent
+          ),
+          radial-gradient(
+            2px 2px at 60px 90px,
+            rgba(0, 212, 255, 0.5),
+            transparent
+          ),
+          radial-gradient(
+            1px 1px at 100px 150px,
+            rgba(255, 255, 255, 0.4),
+            transparent
+          ),
+          radial-gradient(
+            1.5px 1.5px at 140px 30px,
+            rgba(0, 255, 136, 0.4),
+            transparent
+          ),
+          radial-gradient(
+            1px 1px at 180px 110px,
+            rgba(255, 255, 255, 0.7),
+            transparent
+          ),
+          radial-gradient(
+            2px 2px at 230px 60px,
+            rgba(255, 200, 100, 0.3),
+            transparent
+          ),
+          radial-gradient(
+            1px 1px at 270px 140px,
+            rgba(255, 255, 255, 0.5),
+            transparent
+          ),
+          radial-gradient(
+            1.5px 1.5px at 310px 20px,
+            rgba(0, 212, 255, 0.6),
+            transparent
+          );
+        background-size: 350px 180px;
+        animation: drift 120s linear infinite reverse;
+        opacity: 0.8;
+      }
+
+      .star-layer-3 {
+        background-image:
+          radial-gradient(
+            2px 2px at 80px 50px,
+            rgba(0, 212, 255, 0.4),
+            transparent
+          ),
+          radial-gradient(
+            2.5px 2.5px at 150px 120px,
+            rgba(138, 43, 226, 0.3),
+            transparent
+          ),
+          radial-gradient(
+            1.5px 1.5px at 220px 80px,
+            rgba(0, 255, 136, 0.3),
+            transparent
+          ),
+          radial-gradient(
+            2px 2px at 290px 160px,
+            rgba(0, 212, 255, 0.35),
+            transparent
+          );
+        background-size: 400px 220px;
+        animation: drift 200s linear infinite;
+        opacity: 0.6;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0);
+        }
+        to {
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      /* 星云效果 */
+      .nebula {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.7;
+        background:
+          radial-gradient(
+            ellipse 40% 50% at 20% 30%,
+            rgba(120, 60, 180, 0.5) 0%,
+            rgba(80, 40, 140, 0.3) 30%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 50% 40% at 75% 60%,
+            rgba(40, 100, 180, 0.5) 0%,
+            rgba(20, 60, 140, 0.3) 40%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 35% 55% at 55% 75%,
+            rgba(180, 80, 120, 0.4) 0%,
+            rgba(140, 60, 100, 0.25) 35%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 25% 30% at 85% 25%,
+            rgba(60, 160, 180, 0.45) 0%,
+            rgba(40, 120, 150, 0.3) 40%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 45% 35% at 10% 70%,
+            rgba(100, 50, 150, 0.45) 0%,
+            rgba(70, 30, 110, 0.3) 40%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 30% 45% at 60% 15%,
+            rgba(180, 120, 60, 0.35) 0%,
+            rgba(140, 90, 40, 0.2) 40%,
+            transparent 70%
+          );
+        animation: nebulaFloat 30s ease-in-out infinite;
+      }
+
+      @keyframes nebulaFloat {
+        0%,
+        100% {
+          opacity: 0.7;
+          transform: scale(1) translate(0, 0);
+        }
+        33% {
+          opacity: 0.85;
+          transform: scale(1.03) translate(-2%, 1%);
+        }
+        66% {
+          opacity: 0.75;
+          transform: scale(0.98) translate(2%, -1%);
+        }
+      }
+
+      /* 流星 */
+      .shooting-star {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        opacity: 0;
+        z-index: 2;
+        background: #fff;
+        box-shadow:
+          0 0 4px 2px #fff,
+          0 0 10px 4px rgba(100, 200, 255, 0.8),
+          0 0 20px 6px rgba(100, 200, 255, 0.4);
+      }
+
+      .shooting-star::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120px;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.9),
+          rgba(100, 200, 255, 0.6) 60%,
+          transparent
+        );
+        transform: translateY(-50%);
+        border-radius: 2px;
+        filter: blur(0.5px);
+      }
+
+      @keyframes shoot {
+        0% {
+          opacity: 0;
+          transform: translate(0, 0) rotate(45deg);
+        }
+        5% {
+          opacity: 1;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(500px, 500px) rotate(45deg);
+        }
       }
 
       .floating-shapes {
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: 2;
       }
 
       .shape {
         position: absolute;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #a78bfa, #60a5fa);
         border-radius: 50%;
-        opacity: 0.1;
+        opacity: 0.2;
         animation: float 6s ease-in-out infinite;
       }
 
@@ -64,6 +325,7 @@
         top: 20%;
         left: 10%;
         animation-delay: 0s;
+        animation-duration: 8s;
       }
 
       .shape:nth-child(2) {
@@ -72,6 +334,7 @@
         top: 50%;
         right: 10%;
         animation-delay: 2s;
+        animation-duration: 10s;
       }
 
       .shape:nth-child(3) {
@@ -80,6 +343,7 @@
         bottom: 20%;
         left: 20%;
         animation-delay: 4s;
+        animation-duration: 7s;
       }
 
       .shape:nth-child(4) {
@@ -88,6 +352,7 @@
         top: 10%;
         right: 30%;
         animation-delay: 1s;
+        animation-duration: 9s;
       }
 
       .shape:nth-child(5) {
@@ -96,6 +361,92 @@
         bottom: 10%;
         right: 20%;
         animation-delay: 3s;
+        animation-duration: 11s;
+      }
+
+      .shape:nth-child(6) {
+        width: 50px;
+        height: 50px;
+        top: 60%;
+        left: 5%;
+        animation-delay: 2.5s;
+        animation-duration: 6s;
+      }
+
+      .shape:nth-child(7) {
+        width: 70px;
+        height: 70px;
+        bottom: 40%;
+        right: 40%;
+        animation-delay: 1.5s;
+        animation-duration: 8.5s;
+      }
+
+      .shape:nth-child(8) {
+        width: 40px;
+        height: 40px;
+        top: 30%;
+        right: 5%;
+        animation-delay: 3.5s;
+        animation-duration: 7.5s;
+      }
+
+      /* 粒子效果 */
+      .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #00d4ff;
+        border-radius: 50%;
+        opacity: 0;
+        animation: particle-float 12s ease-in-out infinite;
+      }
+
+      @keyframes particle-float {
+        0% {
+          opacity: 0;
+          transform: translateY(100vh) scale(0);
+        }
+        10% {
+          opacity: 0.8;
+        }
+        90% {
+          opacity: 0.8;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-100vh) scale(1);
+        }
+      }
+
+      /* 星轨效果 */
+      .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: #fff;
+        border-radius: 50%;
+        animation: twinkle 3s ease-in-out infinite;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.5);
+        }
       }
 
       @keyframes float {
@@ -106,6 +457,256 @@
         50% {
           transform: translateY(-30px) rotate(180deg);
         }
+      }
+
+      /* 文字闪烁动画 */
+      @keyframes textGlow {
+        0%,
+        100% {
+          text-shadow:
+            0 0 20px rgba(167, 139, 250, 0.5),
+            0 0 40px rgba(96, 165, 250, 0.3);
+        }
+        50% {
+          text-shadow:
+            0 0 30px rgba(196, 181, 253, 0.8),
+            0 0 60px rgba(167, 139, 250, 0.5);
+        }
+      }
+
+      .hero h1 {
+        animation: textGlow 3s ease-in-out infinite;
+      }
+
+      /* 按钮呼吸动画 */
+      @keyframes breathe {
+        0%,
+        100% {
+          box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 15px 50px rgba(167, 139, 250, 0.6);
+          transform: scale(1.02);
+        }
+      }
+
+      .cta-button {
+        animation: breathe 3s ease-in-out infinite;
+      }
+
+      /* 卡片悬浮动画 */
+      @keyframes cardFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotateX(0deg);
+        }
+        25% {
+          transform: translateY(-5px) rotateX(2deg);
+        }
+        75% {
+          transform: translateY(5px) rotateX(-2deg);
+        }
+      }
+
+      .profile-card {
+        animation: cardFloat 4s ease-in-out infinite;
+      }
+
+      /* 打字机效果 */
+      .typewriter {
+        overflow: hidden;
+        border-right: 3px solid #00d4ff;
+        white-space: nowrap;
+        animation:
+          typing 3.5s steps(40, end),
+          blink-caret 0.75s step-end infinite;
+      }
+
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: #00d4ff;
+        }
+      }
+
+      /* 渐入动画 */
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .fade-in-scale {
+        animation: fadeInScale 0.8s ease-out forwards;
+      }
+
+      /* 滑动动画 */
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(100px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .slide-in-left {
+        animation: slideInLeft 0.8s ease-out forwards;
+      }
+
+      .slide-in-right {
+        animation: slideInRight 0.8s ease-out forwards;
+      }
+
+      /* 旋转动画 */
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* 弹跳动画 */
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+          animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+        }
+        50% {
+          transform: translateY(-20px);
+          animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+      }
+
+      /* 波浪动画 */
+      @keyframes wave {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* 脉冲动画 */
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.8;
+        }
+      }
+
+      /* 悬浮层叠动画 */
+      @keyframes floatStack {
+        0%,
+        100% {
+          transform: translateY(0) translateZ(0);
+        }
+        50% {
+          transform: translateY(-15px) translateZ(20px);
+        }
+      }
+
+      .float-stack {
+        animation: floatStack 5s ease-in-out infinite;
+      }
+
+      /* 星星容器 */
+      .stars {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      /* 粒子容器 */
+      .particles {
+        pointer-events: none;
+      }
+
+      /* 作品卡片悬停增强 */
+      .portfolio-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 212, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .portfolio-item:hover::before {
+        left: 100%;
+      }
+
+      /* 社交链接悬浮动效 */
+      .social-link {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .social-link::after {
+        content: "";
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        transition: bottom 0.3s ease;
+        z-index: -1;
+      }
+
+      .social-link:hover::after {
+        bottom: 0;
       }
 
       /* 导航栏 */
@@ -136,7 +737,7 @@
       .logo {
         font-size: 24px;
         font-weight: bold;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #a78bfa, #60a5fa, #c4b5fd);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -156,7 +757,7 @@
       }
 
       .nav-links a:hover {
-        color: #00d4ff;
+        color: #a78bfa;
         transform: translateY(-2px);
       }
 
@@ -167,7 +768,7 @@
         left: 0;
         width: 0;
         height: 2px;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #a78bfa, #818cf8);
         transition: width 0.3s ease;
       }
 
@@ -200,7 +801,7 @@
       .hero h1 {
         font-size: 4rem;
         margin-bottom: 20px;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #e0e7ff, #a78bfa, #818cf8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -238,13 +839,13 @@
       .cta-button {
         display: inline-block;
         padding: 15px 30px;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
-        color: #000;
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        color: #fff;
         text-decoration: none;
         border-radius: 50px;
         font-weight: bold;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
         margin-top: 20px;
       }
 
@@ -274,7 +875,7 @@
         text-align: center;
         font-size: 3rem;
         margin-bottom: 50px;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #e0e7ff, #a78bfa, #818cf8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -297,23 +898,23 @@
       }
 
       .about-text .highlight {
-        color: #00d4ff;
+        color: #a78bfa;
         font-weight: 500;
         padding: 2px 6px;
-        background: rgba(0, 212, 255, 0.1);
+        background: rgba(167, 139, 250, 0.1);
         border-radius: 4px;
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        border: 1px solid rgba(167, 139, 250, 0.2);
       }
 
       .about-text .signature {
         margin-top: 2rem;
         padding: 15px 20px;
         background: linear-gradient(
-          45deg,
-          rgba(0, 212, 255, 0.1),
-          rgba(0, 255, 136, 0.1)
+          135deg,
+          rgba(167, 139, 250, 0.1),
+          rgba(129, 140, 248, 0.1)
         );
-        border-left: 4px solid #00d4ff;
+        border-left: 4px solid #a78bfa;
         border-radius: 8px;
         font-style: italic;
         text-align: center;
@@ -334,7 +935,7 @@
 
       .about-text .list-item::before {
         content: "•";
-        color: #00d4ff;
+        color: #a78bfa;
         font-weight: bold;
         font-size: 1.2em;
         position: absolute;
@@ -343,12 +944,12 @@
       }
 
       .about-text .list-item .highlight {
-        color: #00d4ff;
+        color: #a78bfa;
         font-weight: 600;
         padding: 2px 6px;
-        background: rgba(0, 212, 255, 0.1);
+        background: rgba(167, 139, 250, 0.1);
         border-radius: 4px;
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        border: 1px solid rgba(167, 139, 250, 0.2);
         margin-right: 8px;
       }
 
@@ -359,9 +960,9 @@
 
       .profile-card {
         background: linear-gradient(
-          45deg,
-          rgba(0, 212, 255, 0.1),
-          rgba(0, 255, 136, 0.1)
+          135deg,
+          rgba(124, 58, 237, 0.15),
+          rgba(79, 70, 229, 0.1)
         );
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -380,14 +981,14 @@
         width: 150px;
         height: 150px;
         border-radius: 50%;
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
         margin: 0 auto 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 4rem;
         font-weight: bold;
-        color: #000;
+        color: #fff;
       }
 
       /* 作品展示区域 */
@@ -406,9 +1007,9 @@
 
       .portfolio-item {
         background: linear-gradient(
-          45deg,
-          rgba(0, 212, 255, 0.1),
-          rgba(0, 255, 136, 0.1)
+          135deg,
+          rgba(124, 58, 237, 0.15),
+          rgba(79, 70, 229, 0.1)
         );
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -419,15 +1020,17 @@
         perspective: 1000px;
         max-width: 500px;
         margin: 0 auto;
+        position: relative;
+        overflow: hidden;
       }
 
       .portfolio-item:hover {
         transform: translateY(-10px) rotateX(5deg);
-        box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
       }
 
       .portfolio-item h3 {
-        color: #00d4ff;
+        color: #a78bfa;
         margin-bottom: 15px;
         font-size: 1.3rem;
       }
@@ -439,14 +1042,14 @@
 
       .portfolio-link {
         display: inline-block;
-        color: #00ff88;
+        color: #c4b5fd;
         text-decoration: none;
         font-weight: bold;
         transition: all 0.3s ease;
       }
 
       .portfolio-link:hover {
-        color: #00d4ff;
+        color: #c4b5fd;
         transform: translateX(5px);
       }
 
@@ -480,9 +1083,9 @@
         width: 80px;
         height: 80px;
         background: linear-gradient(
-          45deg,
-          rgba(0, 212, 255, 0.2),
-          rgba(0, 255, 136, 0.2)
+          135deg,
+          rgba(124, 58, 237, 0.2),
+          rgba(79, 70, 229, 0.2)
         );
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 50%;
@@ -501,9 +1104,9 @@
 
       .social-link:hover {
         transform: translateY(-10px) scale(1.1);
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
-        color: #000;
-        box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        color: #fff;
+        box-shadow: 0 20px 40px rgba(124, 58, 237, 0.4);
       }
 
       .motto-author {
@@ -730,7 +1333,7 @@
       }
 
       .highlight {
-        background: linear-gradient(45deg, #00d4ff, #00ff88);
+        background: linear-gradient(135deg, #a78bfa, #818cf8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -752,7 +1355,7 @@
       .list-item::before {
         content: "✔️";
         margin-right: 8px;
-        color: #00d4ff;
+        color: #a78bfa;
       }
 
       /* 终端窗口样式 */
@@ -852,7 +1455,7 @@
         right: 20px;
         top: 20px;
         font-size: 2rem;
-        color: #00d4ff;
+        color: #a78bfa;
         cursor: pointer;
       }
 
@@ -866,20 +1469,21 @@
   </head>
   <body>
     <!-- 3D背景 -->
-    <div class="background-3d">
-      <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
+    <div class="background-3d" id="bg3d">
+      <div class="starfield">
+        <div class="star-layer star-layer-1"></div>
+        <div class="star-layer star-layer-2"></div>
+        <div class="star-layer star-layer-3"></div>
       </div>
+      <div class="nebula"></div>
+      <div class="background-overlay"></div>
+      <div class="shooting-stars" id="shootingStars"></div>
     </div>
 
     <!-- 导航栏 -->
     <nav id="navbar">
       <div class="nav-container">
-        <div class="logo">Navydev</div>
+        <div class="logo">NavyDev</div>
         <ul class="nav-links">
           <li><a href="#home">首页</a></li>
           <li><a href="#about">关于我</a></li>
@@ -894,8 +1498,7 @@
       <div class="container">
         <div class="hero-content">
           <h1>码码要洗手</h1>
-          <p>Python | Go | Nvim</p>
-          <p class="hero-motto">行者常至，为者常成</p>
+          <p>Python | Go | Neovim</p>
           <a href="#portfolio" class="cta-button">查看我的作品</a>
         </div>
       </div>
@@ -1059,20 +1662,6 @@ https://github.com/wsgggws
         observer.observe(el);
       });
 
-      // 3D鼠标跟随效果
-      document.addEventListener("mousemove", (e) => {
-        const shapes = document.querySelectorAll(".shape");
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-
-        shapes.forEach((shape, index) => {
-          const speed = (index + 1) * 0.5;
-          const xPos = (x - 0.5) * speed * 50;
-          const yPos = (y - 0.5) * speed * 50;
-          shape.style.transform = `translate(${xPos}px, ${yPos}px)`;
-        });
-      });
-
       // 添加页面加载动画
       window.addEventListener("load", () => {
         document.body.style.opacity = "1";
@@ -1122,6 +1711,63 @@ https://github.com/wsgggws
               : `${startYear}-${currentYear}`;
           copyrightEl.innerHTML = `&copy; ${yearText} Navy. 用 ❤️ 和 ☕ 制作`;
         }
+      })();
+
+      // 鼠标跟随增强效果 - 星系中心效果
+      (function enhancedMouseEffect() {
+        const bg3d = document.getElementById("bg3d");
+        let mouseX = 0,
+          mouseY = 0;
+        let currentX = 0,
+          currentY = 0;
+
+        document.addEventListener("mousemove", (e) => {
+          mouseX = (e.clientX / window.innerWidth - 0.5) * 50;
+          mouseY = (e.clientY / window.innerHeight - 0.5) * 50;
+        });
+
+        function animate() {
+          currentX += (mouseX - currentX) * 0.03;
+          currentY += (mouseY - currentY) * 0.03;
+
+          const layers = bg3d.querySelectorAll(".star-layer");
+          layers.forEach((layer, index) => {
+            const speed = (index + 1) * 0.3;
+            layer.style.transform = `translate(${currentX * speed}px, ${currentY * speed}px)`;
+          });
+
+          requestAnimationFrame(animate);
+        }
+        animate();
+      })();
+
+      // 生成流星
+      (function createShootingStars() {
+        const container = document.getElementById("shootingStars");
+        if (!container) return;
+
+        function createStar() {
+          const star = document.createElement("div");
+          star.className = "shooting-star";
+          star.style.left = Math.random() * 60 + "%";
+          star.style.top = Math.random() * 30 + "%";
+          star.style.transform = `rotate(${35 + Math.random() * 20}deg)`;
+          star.style.animation = `shoot ${1.5 + Math.random() * 1}s ease-out forwards`;
+
+          container.appendChild(star);
+
+          setTimeout(() => {
+            star.remove();
+          }, 3000);
+        }
+
+        setTimeout(createStar, 1000);
+        setTimeout(createStar, 3000);
+        setTimeout(createStar, 5500);
+
+        setInterval(() => {
+          if (Math.random() > 0.4) createStar();
+        }, 3000);
       })();
     </script>
   </body>
