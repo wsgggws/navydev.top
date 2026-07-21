@@ -1,0 +1,125 @@
+/* Scene 05 — Crabtris. Now rendered in 3D via Three.js; styles only
+   scope the scene-root and remove the 2D grid scaffolding. */
+
+.scene-root[data-scene-id="scene-05"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #140416;
+}
+
+/* Faint scanline above the WebGL canvas for arcade feel. */
+.scene-root[data-scene-id="scene-05"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,0.18) 3px,
+    rgba(0,0,0,0.18) 3px
+  );
+  pointer-events: none;
+  z-index: 4;
+  mix-blend-mode: multiply;
+}
+
+.crabtris-hud {
+  position: absolute;
+  top: 9%;
+  left: 7%;
+  z-index: 6;
+  display: grid;
+  gap: 7px;
+  opacity: 0;
+  color: #ffe8f4;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
+  pointer-events: none;
+  text-shadow: 0 0 18px rgba(255, 143, 182, 0.5);
+  max-width: min(48vw, 430px);
+  overflow-wrap: anywhere;
+}
+
+.crabtris-mode,
+.crabtris-objective {
+  font-size: clamp(10px, 1.2vmin, 14px);
+  letter-spacing: 0;
+  color: rgba(255, 232, 244, 0.72);
+  line-height: 1.35;
+}
+
+.crabtris-hud strong {
+  font-family: "Arial Black", "Inter", sans-serif;
+  font-size: clamp(28px, 5.6vmin, 74px);
+  line-height: 0.95;
+  color: #ffd56b;
+}
+
+.crabtris-line-clear {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  font-family: "Arial Black", "Inter", sans-serif;
+  font-size: clamp(44px, 10vmin, 142px);
+  letter-spacing: 0;
+  color: #6bff95;
+  text-shadow:
+    0 0 18px rgba(107, 255, 149, 0.75),
+    0 0 42px rgba(255, 143, 182, 0.55);
+}
+
+.crabtris-lane-label {
+  position: absolute;
+  left: 7%;
+  bottom: 12%;
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
+  font-size: clamp(12px, 1.5vmin, 18px);
+  letter-spacing: 0;
+  color: #6bff95;
+  text-shadow: 0 0 18px rgba(107, 255, 149, 0.65);
+}
+
+@media (orientation: portrait) {
+  .crabtris-hud {
+    top: 6%;
+    left: 7%;
+    right: 7%;
+    gap: 5px;
+    max-width: none;
+  }
+
+  .crabtris-mode,
+  .crabtris-objective {
+    font-size: clamp(9px, 2.7vmin, 12px);
+    letter-spacing: 0;
+  }
+
+  .crabtris-hud strong {
+    font-size: clamp(38px, 13vmin, 70px);
+  }
+
+  .crabtris-lane-label {
+    left: 7%;
+    right: 7%;
+    bottom: 7%;
+    font-size: clamp(11px, 3.2vmin, 16px);
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  .crabtris-line-clear {
+    padding: 0 18px;
+    text-align: center;
+    font-size: clamp(40px, 14vmin, 92px);
+    line-height: 1;
+  }
+}

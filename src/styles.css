@@ -1,0 +1,649 @@
+/* Reset & global */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #000;
+  color: #e6f1ff;
+  overflow: hidden;
+  overscroll-behavior: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Cinematic letterbox.
+   The stage container is 2.35:1 (cinematic) inside a black field.
+   The two black bars top/bottom are pseudo-elements on .stage-host.
+   ──────────────────────────────────────────────────────────────── */
+.stage-host {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage-frame {
+  /* 2.35 : 1 cinema. Letterboxed inside the viewport. */
+  aspect-ratio: 2.35 / 1;
+  height: min(100dvh, calc(100dvw / 2.35));
+  width: min(100dvw, calc(100dvh * 2.35));
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  contain: layout paint size;
+}
+
+.stage-frame::before,
+.stage-frame::after {
+  /* Optional matte overlay for anamorphic feel */
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 5%;
+  z-index: 60;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+}
+.stage-frame::before { top: 0; }
+.stage-frame::after  { bottom: 0; transform: scaleY(-1); }
+
+.stage-frame {
+  /* Vignette overlay for anamorphic film feel */
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.6);
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.stage-scenes,
+.stage-overlays {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.stage-scenes {
+  z-index: 1;
+}
+
+.stage-overlays {
+  z-index: 70;
+  pointer-events: none;
+}
+
+/* Each scene subtree mounted by the Director. */
+.scene-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Shared transitions.
+   ──────────────────────────────────────────────────────────────── */
+.scene-transition {
+  position: absolute;
+  inset: 0;
+  --transition-duration: 760ms;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--transition-duration) cubic-bezier(0.65, 0, 0.35, 1),
+    clip-path var(--transition-duration) cubic-bezier(0.65, 0, 0.35, 1),
+    transform var(--transition-duration) cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: opacity, transform, clip-path;
+}
+.scene-transition--fade.scene-transition--active  { opacity: 1; }
+.scene-transition--wipe.scene-transition--active  {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+}
+.scene-transition--wipe {
+  clip-path: inset(0 50% 0 50%);
+}
+.scene-transition--zoom.scene-transition--active {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.scene-transition--glitch {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      rgba(0, 0, 0, 0.92) 1px,
+      rgba(0, 0, 0, 0.92) 5px
+    ),
+    #000;
+  transform: translateX(-2%);
+}
+.scene-transition--glitch::before,
+.scene-transition--glitch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.scene-transition--glitch::before {
+  background: rgba(69, 255, 169, 0.2);
+  transform: translateX(-12px);
+}
+.scene-transition--glitch::after {
+  background: rgba(255, 42, 109, 0.16);
+  transform: translateX(14px);
+}
+.scene-transition--glitch.scene-transition--active {
+  opacity: 1;
+  transform: translateX(0);
+}
+.scene-transition--glitch.scene-transition--active::before,
+.scene-transition--glitch.scene-transition--active::after {
+  opacity: 1;
+}
+.scene-transition--iris {
+  opacity: 0;
+  clip-path: circle(0% at 50% 50%);
+}
+.scene-transition--iris.scene-transition--active {
+  opacity: 1;
+  clip-path: circle(150% at 50% 50%);
+}
+.scene-transition--match-cut {
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.92) 0 1px, transparent 2px 7px, #000 8px),
+    #000;
+  transform: scale(0.06);
+}
+.scene-transition--match-cut.scene-transition--active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Title card overlay. Shown briefly when a new scene enters.
+   ──────────────────────────────────────────────────────────────── */
+.title-card {
+  position: absolute;
+  inset: 0;
+  --title-accent: rgba(255, 255, 255, 0.5);
+  --title-glow: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: none;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.48);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.title-card__chapter {
+  font-family: "Courier New", monospace;
+  letter-spacing: 0;
+  font-size: clamp(11px, 1.4vmin, 16px);
+  color: rgba(255, 255, 255, 0.58);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.title-card__title {
+  font-family: "Arial Black", "Inter", sans-serif;
+  font-weight: 900;
+  font-size: clamp(32px, 5.4vmin, 64px);
+  letter-spacing: 0;
+  color: #f6f6f6;
+  text-shadow:
+    0 2px 24px rgba(0, 0, 0, 0.8),
+    0 0 28px var(--title-glow);
+}
+
+.title-card__caption {
+  margin-top: 12px;
+  font-family: "Courier New", monospace;
+  font-size: clamp(11px, 1.45vmin, 16px);
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+
+.title-card__rule {
+  margin-top: 18px;
+  width: 64px;
+  height: 2px;
+  background: var(--title-accent);
+}
+
+.title-card--grade-monitor-blue {
+  --title-accent: rgba(112, 170, 255, 0.78);
+  --title-glow: rgba(70, 120, 255, 0.34);
+}
+.title-card--grade-noir-green {
+  --title-accent: rgba(114, 255, 145, 0.78);
+  --title-glow: rgba(64, 255, 126, 0.34);
+}
+.title-card--grade-neon-pink {
+  --title-accent: rgba(255, 92, 180, 0.82);
+  --title-glow: rgba(255, 42, 145, 0.34);
+}
+.title-card--grade-toxic-red {
+  --title-accent: rgba(255, 75, 75, 0.82);
+  --title-glow: rgba(255, 32, 32, 0.34);
+}
+.title-card--grade-warm-garden {
+  --title-accent: rgba(255, 217, 129, 0.82);
+  --title-glow: rgba(128, 225, 155, 0.26);
+}
+.title-card--grade-launch-amber {
+  --title-accent: rgba(255, 187, 79, 0.86);
+  --title-glow: rgba(255, 164, 54, 0.32);
+}
+
+.title-card--terminal-caption {
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 0 7% 8%;
+  background: rgba(0, 0, 0, 0.3);
+}
+.title-card--terminal-caption .title-card__title,
+.title-card--terminal-caption .title-card__caption {
+  font-family: "Courier New", monospace;
+  text-shadow: 0 0 18px var(--title-glow);
+}
+.title-card--burn-in .title-card__title {
+  color: #fff4f8;
+  text-shadow:
+    0 0 4px rgba(255, 255, 255, 0.6),
+    0 0 28px var(--title-glow);
+}
+.title-card--silent-card {
+  background: rgba(0, 0, 0, 0.72);
+}
+.title-card--silent-card .title-card__title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+}
+.title-card--pace-staccato .title-card__rule {
+  width: 38px;
+}
+.title-card--pace-hold .title-card__rule {
+  width: 92px;
+}
+
+/* Optional — vignette around the cinematic frame for extra film feel. */
+.stage-frame::after {
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.6);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Start overlay — automatic countdown before the reel starts.
+   ──────────────────────────────────────────────────────────────── */
+.start-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #f6f6f6;
+  font-family: "Courier New", monospace;
+  z-index: 100;
+  animation: start-fade 1s ease forwards;
+}
+@keyframes start-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.start-title {
+  font-family: "Arial Black", sans-serif;
+  font-size: clamp(48px, 9vmin, 110px);
+  letter-spacing: 0;
+  background: linear-gradient(135deg, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 24px rgba(0,0,0,0.6));
+}
+.start-count {
+  margin-top: 18px;
+  font-family: "Arial Black", sans-serif;
+  font-size: clamp(64px, 14vmin, 180px);
+  line-height: 0.9;
+  color: #f6f6f6;
+  text-shadow: 0 0 28px rgba(255,255,255,0.35);
+  animation: count-pop 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.start-roll-scene {
+  position: relative;
+  margin-top: 28px;
+}
+.start-roll {
+  min-width: 128px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f6f6f6;
+  font-family: "Courier New", monospace;
+  font-size: clamp(13px, 1.8vmin, 18px);
+  letter-spacing: 0;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 28px rgba(255, 255, 255, 0.08);
+}
+.start-roll:hover,
+.start-roll:focus-visible {
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.16);
+  outline: none;
+}
+.start-hand {
+  position: absolute;
+  right: -30px;
+  bottom: -22px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.28),
+    inset 0 0 12px rgba(255, 255, 255, 0.16);
+  animation: hand-click-roll 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  pointer-events: none;
+}
+.start-hand::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 25px;
+  width: 2px;
+  height: 22px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.76);
+  transform: rotate(-32deg);
+  transform-origin: top center;
+}
+.start-hand::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 50%;
+  opacity: 0;
+  animation: hand-click-ring 1.15s ease forwards;
+}
+.start-sub {
+  margin-top: 22px;
+  font-size: clamp(12px, 1.6vmin, 18px);
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.6);
+  animation: start-blink 1.8s steps(2) infinite;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Chapter progress rail.
+   ──────────────────────────────────────────────────────────────── */
+.chapter-rail {
+  position: absolute;
+  left: max(14px, 2.2vw);
+  bottom: max(14px, 2.2vw);
+  z-index: 110;
+  width: min(420px, 42vw);
+  color: rgba(255, 255, 255, 0.82);
+  opacity: 0.34;
+  transition: opacity 180ms ease;
+  pointer-events: auto;
+}
+.chapter-rail:hover,
+.chapter-rail:focus-within {
+  opacity: 1;
+}
+.chapter-rail__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.chapter-rail__meta span {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 11px;
+}
+.chapter-rail__meta strong {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+.chapter-rail__track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+  gap: 6px;
+}
+.chapter-rail__chapter {
+  --chapter-progress: 0;
+  position: relative;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.62) 0 calc(var(--chapter-progress) * 100%),
+      rgba(255, 255, 255, 0.08) calc(var(--chapter-progress) * 100%) 100%
+    );
+  color: rgba(255, 255, 255, 0.74);
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+.chapter-rail__chapter[aria-current="step"] {
+  border-color: rgba(255, 255, 255, 0.52);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
+}
+.chapter-rail__chapter:hover,
+.chapter-rail__chapter:focus-visible {
+  border-color: rgba(255, 255, 255, 0.72);
+  outline: none;
+}
+.chapter-rail__chapter span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Minimal reel controls.
+   ──────────────────────────────────────────────────────────────── */
+.reel-controls {
+  position: absolute;
+  right: max(14px, 2.2vw);
+  bottom: max(14px, 2.2vw);
+  z-index: 110;
+  display: flex;
+  gap: 8px;
+  opacity: 0.28;
+  transition: opacity 180ms ease;
+}
+.reel-controls:hover,
+.reel-controls:focus-within {
+  opacity: 1;
+}
+.reel-controls[data-reduced-motion="true"] {
+  opacity: 0.42;
+}
+.reel-control {
+  min-width: 54px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.46);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+.reel-control:hover,
+.reel-control:focus-visible {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(14, 16, 20, 0.72);
+  outline: none;
+}
+@keyframes start-blink {
+  50% { opacity: 0.4; }
+}
+@keyframes count-pop {
+  0% { opacity: 0; transform: scale(0.72); }
+  18% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.22; transform: scale(1.16); }
+}
+@keyframes hand-click-roll {
+  0% { opacity: 0; transform: translate(26px, 18px) scale(0.82); }
+  38% { opacity: 1; transform: translate(0, 0) scale(1); }
+  70% { opacity: 1; transform: translate(-34px, -18px) scale(0.92); }
+  84% { opacity: 1; transform: translate(-34px, -18px) scale(0.72); }
+  100% { opacity: 0; transform: translate(-34px, -18px) scale(1.08); }
+}
+@keyframes hand-click-ring {
+  0%, 66% { opacity: 0; transform: scale(0.45); }
+  82% { opacity: 0.8; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+@media (orientation: portrait) {
+  .stage-frame {
+    aspect-ratio: 9 / 16;
+    width: min(100dvw, calc(100dvh * 9 / 16));
+    height: min(100dvh, calc(100dvw * 16 / 9));
+  }
+
+  .stage-frame::before,
+  .stage-frame::after {
+    height: 3%;
+  }
+
+  .title-card {
+    padding: 0 20px;
+  }
+
+  .title-card__chapter {
+    letter-spacing: 0;
+    font-size: clamp(10px, 2.5vmin, 14px);
+  }
+
+  .title-card__title {
+    max-width: 92%;
+    text-align: center;
+    font-size: clamp(28px, 8.5vmin, 48px);
+    letter-spacing: 0;
+    line-height: 1.08;
+  }
+
+  .start-title {
+    max-width: 92%;
+    text-align: center;
+    font-size: clamp(36px, 11vmin, 68px);
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .start-count {
+    font-size: clamp(76px, 28vmin, 150px);
+  }
+
+  .start-roll {
+    min-width: 116px;
+    height: 40px;
+  }
+
+  .start-hand {
+    right: -22px;
+    bottom: -20px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .start-sub {
+    max-width: 84%;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .reel-controls {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .chapter-rail {
+    left: 12px;
+    right: 12px;
+    bottom: 60px;
+    width: auto;
+  }
+
+  .chapter-rail__meta {
+    justify-content: center;
+  }
+
+  .reel-control {
+    min-width: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-transition,
+  .title-card,
+  .title-card__title,
+  .title-card__caption,
+  .start-overlay,
+  .start-count,
+  .start-sub,
+  .start-hand,
+  .reel-controls,
+  .chapter-rail,
+  .chapter-rail__chapter,
+  .reel-control {
+    animation: none;
+    transition-duration: 1ms;
+  }
+
+  .start-count {
+    opacity: 1;
+    transform: none;
+  }
+
+  .start-sub {
+    opacity: 0.7;
+  }
+
+  .start-hand {
+    display: none;
+  }
+}

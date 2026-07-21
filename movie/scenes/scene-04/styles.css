@@ -1,0 +1,138 @@
+/* Scene 04 — The Garden. The scene-root holds two halves, each with
+   its own Three.js canvas laid down by CinematicStage. */
+
+.scene-root[data-scene-id="scene-04"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  color: #f8f8f8;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.scene-root[data-scene-id="scene-04"] .garden-left,
+.scene-root[data-scene-id="scene-04"] .garden-right {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Left split gets a subtle red vignette to bias the mood. */
+.scene-root[data-scene-id="scene-04"] .garden-left::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(80, 0, 0, 0.4) 100%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.scene-root[data-scene-id="scene-04"] .garden-right::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 50%, rgba(80, 180, 255, 0.18) 100%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Sharp split line down the middle for the cinematic feel. */
+.scene-root[data-scene-id="scene-04"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 50%;
+  z-index: 5;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.4), transparent);
+  pointer-events: none;
+  width: 2px;
+  left: calc(50% - 1px);
+}
+
+.garden-caption {
+  position: absolute;
+  z-index: 6;
+  bottom: 9%;
+  width: min(36%, 460px);
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  overflow-wrap: anywhere;
+}
+
+.garden-caption--left {
+  left: 5%;
+  text-shadow: 0 0 20px rgba(255, 40, 48, 0.42);
+}
+
+.garden-caption--right {
+  right: 5%;
+  text-align: right;
+  text-shadow: 0 0 20px rgba(120, 200, 255, 0.42);
+}
+
+.garden-caption .kicker,
+.garden-meter {
+  display: block;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
+  font-size: clamp(10px, 1.15vmin, 13px);
+  letter-spacing: 0;
+  opacity: 0.72;
+}
+
+.garden-caption strong {
+  display: block;
+  margin: 8px 0 10px;
+  font-size: clamp(16px, 2.2vmin, 28px);
+  line-height: 1.22;
+}
+
+.garden-caption--left .garden-meter {
+  color: #ffb0b0;
+}
+
+.garden-caption--right .garden-meter {
+  color: #def6ff;
+}
+
+@media (orientation: portrait) {
+  .scene-root[data-scene-id="scene-04"] {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .scene-root[data-scene-id="scene-04"]::before {
+    inset: 50% 0 auto;
+    left: 0;
+    width: auto;
+    height: 2px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.5), transparent);
+  }
+
+  .garden-caption {
+    width: auto;
+  }
+
+  .garden-caption--left {
+    left: 6%;
+    right: 6%;
+    top: 6%;
+    bottom: auto;
+  }
+
+  .garden-caption--right {
+    left: 6%;
+    right: 6%;
+    top: 56%;
+    bottom: auto;
+    text-align: left;
+  }
+
+  .garden-caption strong {
+    font-size: clamp(14px, 3.8vmin, 22px);
+  }
+
+  .garden-caption .kicker,
+  .garden-meter {
+    font-size: clamp(9px, 2.2vmin, 12px);
+  }
+}

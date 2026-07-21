@@ -1,0 +1,134 @@
+.scene-root[data-scene-id="scene-10"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #102b2a, #06100f 62%, #020504),
+    #06100f;
+  color: #effff2;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.runner-sun {
+  position: absolute;
+  right: 9%;
+  top: 8%;
+  width: clamp(72px, 12vmin, 140px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd56b, rgba(255, 213, 107, 0.08) 68%, transparent 70%);
+  filter: blur(0.3px);
+}
+
+.runner-route {
+  position: absolute;
+  inset: 12% 8% 12% 32%;
+}
+
+.runner-route svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.runner-route__shadow,
+.runner-route__line {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.runner-route__shadow {
+  stroke: rgba(0, 0, 0, 0.35);
+  transform: translate(5px, 8px);
+}
+
+.runner-route__line {
+  stroke: #8bffb9;
+  stroke-dasharray: 860;
+  stroke-dashoffset: 860;
+  filter: drop-shadow(0 0 16px rgba(139, 255, 185, 0.58));
+}
+
+.runner-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffd56b;
+  offset-path: path("M60 260 C130 80 210 300 292 164 S460 32 572 138");
+  offset-distance: 0%;
+  box-shadow: 0 0 22px rgba(255, 213, 107, 0.82);
+  opacity: 0;
+}
+
+.runner-hud {
+  position: absolute;
+  left: 8%;
+  bottom: 15%;
+  width: min(27vw, 360px);
+  opacity: 0;
+}
+
+.runner-hud span,
+.runner-splits {
+  font-family: "Courier New", monospace;
+}
+
+.runner-hud span {
+  color: rgba(139, 255, 185, 0.72);
+  font-size: clamp(10px, 1.25vmin, 14px);
+}
+
+.runner-hud h2 {
+  margin: 12px 0;
+  font-size: clamp(42px, 7vmin, 86px);
+  line-height: 0.95;
+}
+
+.runner-hud p {
+  margin: 0;
+  color: rgba(239, 255, 242, 0.74);
+  font-size: clamp(13px, 1.6vmin, 18px);
+  line-height: 1.5;
+}
+
+.runner-splits {
+  position: absolute;
+  left: 8%;
+  top: 14%;
+  display: grid;
+  gap: 9px;
+  width: min(26vw, 320px);
+  color: rgba(239, 255, 242, 0.78);
+}
+
+.runner-splits div {
+  padding: 8px 10px;
+  border-left: 2px solid rgba(139, 255, 185, 0.52);
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0;
+}
+
+@media (orientation: portrait) {
+  .runner-route {
+    inset: 25% 6% 26% 6%;
+  }
+
+  .runner-hud {
+    left: 8%;
+    right: 8%;
+    bottom: 9%;
+    width: auto;
+  }
+
+  .runner-splits {
+    left: 8%;
+    top: 10%;
+    width: 84%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

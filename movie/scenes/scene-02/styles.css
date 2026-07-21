@@ -1,0 +1,145 @@
+/* Scene 02 — The Terminal. Now rendered in 3D via Three.js. CSS only
+   resets the scene-root and adds a vignette overlay above the canvas. */
+
+.scene-root[data-scene-id="scene-02"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.scene-root[data-scene-id="scene-02"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.terminal-story {
+  position: absolute;
+  left: 7%;
+  bottom: 10%;
+  z-index: 6;
+  width: min(34vw, 420px);
+  pointer-events: none;
+  opacity: 0;
+  color: #dfffe0;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
+  text-shadow: 0 0 14px rgba(108, 255, 138, 0.45);
+  overflow-wrap: anywhere;
+}
+
+.terminal-story__label {
+  font-size: clamp(10px, 1.2vmin, 14px);
+  letter-spacing: 0;
+  color: rgba(136, 255, 136, 0.72);
+}
+
+.terminal-story__headline {
+  margin-top: 8px;
+  font-size: clamp(16px, 2.5vmin, 30px);
+  line-height: 1.18;
+  font-weight: 800;
+}
+
+.terminal-story__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+  font-size: clamp(10px, 1.15vmin, 13px);
+  color: rgba(223, 255, 224, 0.76);
+}
+
+.terminal-story__grid span {
+  border-top: 1px solid rgba(136, 255, 136, 0.28);
+  padding-top: 6px;
+}
+
+.terminal-ledger {
+  position: absolute;
+  top: 10%;
+  right: 7%;
+  z-index: 6;
+  display: grid;
+  gap: 10px;
+  width: min(22vw, 280px);
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
+  font-size: clamp(10px, 1.15vmin, 14px);
+  color: rgba(136, 255, 136, 0.82);
+  pointer-events: none;
+  min-width: 0;
+}
+
+.terminal-ledger span {
+  display: block;
+  border: 1px solid rgba(136, 255, 136, 0.18);
+  background: rgba(0, 20, 6, 0.42);
+  padding: 10px 12px;
+  opacity: 0;
+  box-shadow: inset 0 0 20px rgba(108, 255, 138, 0.06);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.terminal-ledger span.is-active {
+  border-color: rgba(136, 255, 136, 0.42);
+  background: rgba(0, 28, 10, 0.68);
+  box-shadow:
+    inset 0 0 24px rgba(108, 255, 138, 0.08),
+    0 0 18px rgba(108, 255, 138, 0.12);
+}
+
+.terminal-ledger b,
+.terminal-ledger em {
+  display: block;
+}
+
+.terminal-ledger b {
+  font-weight: 800;
+  letter-spacing: 0;
+  color: #dfffe0;
+}
+
+.terminal-ledger em {
+  margin-top: 4px;
+  font-style: normal;
+  letter-spacing: 0;
+  color: rgba(223, 255, 224, 0.64);
+}
+
+@media (orientation: portrait) {
+  .terminal-story {
+    left: 7%;
+    right: 7%;
+    bottom: 7%;
+    width: auto;
+  }
+
+  .terminal-story__headline {
+    font-size: clamp(18px, 5.4vmin, 30px);
+  }
+
+  .terminal-story__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    font-size: clamp(9px, 2.2vmin, 11px);
+  }
+
+  .terminal-ledger {
+    top: 7%;
+    left: 7%;
+    right: 7%;
+    width: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    font-size: clamp(8px, 2.15vmin, 11px);
+  }
+
+  .terminal-ledger span {
+    padding: 6px 7px;
+  }
+}

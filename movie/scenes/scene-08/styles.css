@@ -1,0 +1,123 @@
+.scene-root[data-scene-id="scene-08"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(107, 255, 138, 0.04) 0 1px, transparent 1px 6px),
+    radial-gradient(circle at 72% 28%, rgba(107, 255, 138, 0.16), transparent 26%),
+    #010705;
+  color: #eaffef;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.api-wire {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 52%;
+  height: 2px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, transparent, #6bff8a, transparent);
+  box-shadow: 0 0 22px rgba(107, 255, 138, 0.52);
+}
+
+.api-console {
+  position: absolute;
+  left: 8%;
+  top: 13%;
+  width: min(58vw, 760px);
+  opacity: 0;
+}
+
+.api-kicker,
+.api-msg span,
+.api-status span {
+  font-family: "Courier New", monospace;
+  color: rgba(107, 255, 138, 0.72);
+  font-size: clamp(10px, 1.25vmin, 14px);
+  text-transform: uppercase;
+}
+
+.api-console h2 {
+  margin: 12px 0 20px;
+  width: min(54vw, 720px);
+  font-size: clamp(24px, 4.3vmin, 54px);
+  line-height: 1.06;
+}
+
+.api-chat {
+  display: grid;
+  gap: 8px;
+  width: min(54vw, 700px);
+}
+
+.api-msg {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 9px 12px;
+  border: 1px solid rgba(107, 255, 138, 0.16);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.36);
+  opacity: 0;
+}
+
+.api-msg p {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  font-size: clamp(11px, 1.55vmin, 18px);
+}
+
+.api-msg--api {
+  border-color: rgba(255, 214, 107, 0.24);
+}
+
+.api-msg--api span {
+  color: rgba(255, 214, 107, 0.76);
+}
+
+.api-status {
+  position: absolute;
+  right: 8%;
+  bottom: 14%;
+  width: min(26vw, 300px);
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid rgba(107, 255, 138, 0.18);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.api-status strong {
+  margin-bottom: 10px;
+  font-family: "Courier New", monospace;
+  font-size: clamp(17px, 2.7vmin, 34px);
+  color: #fff;
+}
+
+@media (orientation: portrait) {
+  .api-console {
+    left: 7%;
+    right: 7%;
+    width: auto;
+  }
+
+  .api-console h2,
+  .api-chat {
+    width: auto;
+  }
+
+  .api-msg {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .api-status {
+    left: 7%;
+    right: 7%;
+    bottom: 8%;
+    width: auto;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

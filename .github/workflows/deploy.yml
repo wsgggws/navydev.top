@@ -1,4 +1,4 @@
-name: Deploy Static Site
+name: Deploy
 
 on:
   push:
@@ -10,67 +10,84 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-navydev-top
+      cancel-in-progress: true
+    permissions:
+      contents: read
+
+    env:
+      DEPLOY_PATH: /var/www/navydev.top
+      STAGING_PATH: /tmp/navydev.top-${{ github.sha }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Package release
+        run: |
+          mkdir -p release
+          tar -C dist -czf release/site.tgz .
+          cp config/nginx/conf.d/navydev.top.conf release/navydev.top.conf
+          cp random.html release/random.html
+
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add server to known hosts
         run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.REMOTE_IP }} >> ~/.ssh/known_hosts
 
-      - name: � Deploy entire repo to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.REMOTE_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
-          target: "/root/deploy/navydev.top/"
-          strip_components: 0
-          overwrite: true
-          rm: true
-
-      - name: �📤 Copy static files to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.REMOTE_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "index.html,assets"
-          target: "/var/www/navydev.top/"
-          strip_components: 0
-          overwrite: true
-
-      - name: 📝 Copy nginx config to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.REMOTE_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "config/nginx/conf.d/*"
-          target: "/etc/nginx/conf.d/"
-          strip_components: 3
-          overwrite: true
-
-      - name: 📤 Copy random.html to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.REMOTE_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "random.html"
-          target: "/var/www/navydev.top/nghh/"
-          strip_components: 0
-          overwrite: true
-
-      - name: 🔄 Reload nginx
+      - name: Create remote staging directory
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }} << 'EOF'
-            nginx -t && systemctl reload nginx
+          ssh "${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }}" \
+            "rm -rf '${STAGING_PATH}' && mkdir -p '${STAGING_PATH}'"
+
+      - name: Upload release
+        run: |
+          scp release/site.tgz release/navydev.top.conf release/random.html \
+            "${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }}:${STAGING_PATH}/"
+
+      - name: Activate release
+        run: |
+          ssh "${{ secrets.SSH_USER }}@${{ secrets.REMOTE_IP }}" \
+            "DEPLOY_PATH='${DEPLOY_PATH}' STAGING_PATH='${STAGING_PATH}' bash -s" <<'EOF'
+            set -euo pipefail
+
+            SUDO=""
+            if [ "$(id -u)" -ne 0 ]; then
+              SUDO="sudo"
+            fi
+
+            release_dir="$(mktemp -d)"
+            tar -xzf "${STAGING_PATH}/site.tgz" -C "${release_dir}"
+
+            ${SUDO} mkdir -p "${DEPLOY_PATH}" "${DEPLOY_PATH}/nghh" /etc/nginx/conf.d
+            ${SUDO} find "${DEPLOY_PATH}" -mindepth 1 -maxdepth 1 ! -name nghh ! -name .well-known -exec rm -rf {} +
+            ${SUDO} cp -a "${release_dir}/." "${DEPLOY_PATH}/"
+            ${SUDO} cp "${STAGING_PATH}/random.html" "${DEPLOY_PATH}/nghh/random.html"
+            ${SUDO} cp "${STAGING_PATH}/navydev.top.conf" /etc/nginx/conf.d/navydev.top.conf
+
+            ${SUDO} nginx -t
+            ${SUDO} systemctl reload nginx
+
+            rm -rf "${release_dir}" "${STAGING_PATH}"
           EOF

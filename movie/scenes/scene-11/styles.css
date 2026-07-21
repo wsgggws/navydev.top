@@ -1,0 +1,138 @@
+.scene-root[data-scene-id="scene-11"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(104, 168, 255, 0.18), transparent 34%),
+    radial-gradient(circle at 15% 20%, rgba(107, 255, 149, 0.1), transparent 20%),
+    #020714;
+  color: #eaf2ff;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.tool-orbit {
+  position: absolute;
+  left: 50%;
+  top: 49%;
+  width: min(68vw, 820px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(104, 168, 255, 0.18);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 80px rgba(104, 168, 255, 0.08),
+    0 0 56px rgba(104, 168, 255, 0.08);
+}
+
+.tool-orbit::before,
+.tool-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 16%;
+  border: 1px solid rgba(104, 168, 255, 0.13);
+  border-radius: 50%;
+}
+
+.tool-orbit::after {
+  inset: 32%;
+  border-color: rgba(107, 255, 149, 0.13);
+}
+
+.tool-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(28vw, 320px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  text-align: center;
+  background: rgba(4, 14, 32, 0.82);
+  border: 1px solid rgba(104, 168, 255, 0.28);
+  opacity: 0;
+}
+
+.tool-core span,
+.tool-readout,
+.tool-node {
+  font-family: "Courier New", monospace;
+}
+
+.tool-core span {
+  font-size: clamp(10px, 1.25vmin, 14px);
+  color: rgba(104, 168, 255, 0.76);
+}
+
+.tool-core strong {
+  font-size: clamp(22px, 3.8vmin, 48px);
+  line-height: 1;
+}
+
+.tool-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  min-width: clamp(72px, 9vmin, 116px);
+  padding: 7px 10px;
+  border: 1px solid rgba(104, 168, 255, 0.28);
+  border-radius: 5px;
+  background: rgba(4, 14, 32, 0.78);
+  color: rgba(234, 242, 255, 0.86);
+  text-align: center;
+  font-size: clamp(10px, 1.28vmin, 14px);
+  opacity: 0;
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(360deg / var(--total) * var(--i)))
+    translateY(calc(min(31vw, 365px) * -1))
+    rotate(calc(-360deg / var(--total) * var(--i)));
+}
+
+.tool-readout {
+  position: absolute;
+  left: 50%;
+  bottom: 2.5%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  color: rgba(234, 242, 255, 0.7);
+  text-transform: uppercase;
+}
+
+.tool-readout span {
+  padding: 7px 10px;
+  border: 1px solid rgba(107, 255, 149, 0.18);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.24);
+  opacity: 0;
+}
+
+@media (orientation: portrait) {
+  .tool-orbit {
+    width: 88vw;
+    top: 47%;
+  }
+
+  .tool-core {
+    width: 42vw;
+  }
+
+  .tool-node {
+    min-width: 64px;
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(360deg / var(--total) * var(--i)))
+      translateY(-39vw)
+      rotate(calc(-360deg / var(--total) * var(--i)));
+  }
+
+  .tool-readout {
+    width: 86vw;
+    justify-content: center;
+    flex-wrap: wrap;
+    bottom: 3%;
+  }
+}
