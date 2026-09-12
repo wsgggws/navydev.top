@@ -1,35 +1,7 @@
-# Scene 07
+# 继续创作
 
-## Title
+第七幕不是片尾。它把创作拆成四个连续动作：想清楚、做出来、放进真实世界、再把它改好。
 
-The Bug Forge
+场景内容完整播放并淡出之后，才出现独立片尾：
 
-## Story
-
-专业创造有 GIL/goroutine 气质的 Bug，然后优雅修复。
-
-Two runtimes face each other: Python waits under a glass lock, Go floods the
-right side with goroutines. Red incident cards fall into the center.
-
-The bug is not hidden. It is staged, observed, reproduced, named, and fixed.
-
-## Environment
-
-- compiler forge
-- split runtime chamber
-- red bug cards
-
-## Sound
-
-- tense score
-- impact hits
-- repaired chord
-
-## Camera
-
-- split close-up
-- center forge
-
-## Transition
-
-glitch
+> 未完待续

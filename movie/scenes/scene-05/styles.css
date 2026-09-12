@@ -2,250 +2,248 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #0d0c10;
-  color: #f3f0ea;
-  font-family: "Inter", system-ui, sans-serif;
+  background: #0b0b0a;
+  color: #f2eee4;
+  font-family: Georgia, "Times New Roman", serif;
 }
 
-.scene-root[data-scene-id="scene-05"]::before {
-  content: "";
+.life-light {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at center, rgba(122, 181, 167, 0.09), transparent 34%),
-    linear-gradient(135deg, rgba(205, 171, 105, 0.05), transparent 46%);
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent 36%, rgba(0, 0, 0, 0.28));
+  pointer-events: none;
 }
 
-.curiosity-orbit {
+.life-heading {
   position: absolute;
-  top: 51%;
-  left: 51%;
-  width: min(36vw, 460px);
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-}
-
-.curiosity-orbit::before,
-.curiosity-orbit::after {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.curiosity-orbit::before {
-  content: "";
-  width: 2px;
-  height: 118%;
-  background: linear-gradient(transparent, rgba(243, 240, 234, 0.2), transparent);
-  transform: translate(-50%, -50%) rotate(43deg);
-}
-
-.curiosity-orbit::after {
-  content: "?";
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 22%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #cdab69;
-  color: #15120c;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(34px, 5.4vmin, 72px);
-}
-
-.curiosity-orbit i {
-  position: absolute;
-  border: 1px solid rgba(122, 181, 167, 0.4);
-  border-radius: 50%;
-  opacity: 0;
-}
-
-.curiosity-orbit i:nth-child(1) {
-  inset: 34%;
-  border-color: rgba(205, 171, 105, 0.72);
-}
-
-.curiosity-orbit i:nth-child(2) {
-  inset: 18%;
-}
-
-.curiosity-orbit i:nth-child(3) {
-  inset: 2%;
-  border-color: rgba(119, 146, 178, 0.34);
-}
-
-.curiosity-heading {
-  position: absolute;
-  top: 9%;
+  top: 8%;
   left: 7%;
-  z-index: 2;
-  width: min(42vw, 570px);
+  z-index: 3;
   opacity: 0;
 }
 
-.curiosity-heading span,
-.curiosity-prompt strong,
-.curiosity-prompt p,
-.curiosity-coda {
+.life-heading span,
+.life-moment span,
+.life-moment strong,
+.life-moment p,
+.life-coda {
   font-family: "Courier New", monospace;
 }
 
-.curiosity-heading span {
-  color: #7ab5a7;
+.life-heading span {
+  color: rgba(242, 238, 228, 0.62);
   font-size: clamp(10px, 1.15vmin, 13px);
 }
 
-.curiosity-heading h2 {
-  margin: 10px 0 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(30px, 4.5vmin, 58px);
+.life-heading h2 {
+  margin: 9px 0 0;
+  font-size: clamp(28px, 4.5vmin, 58px);
   font-weight: 500;
-  line-height: 1.04;
+  line-height: 1.03;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.7);
 }
 
-.curiosity-prompts {
+.life-moments {
   position: absolute;
   inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.curiosity-prompt {
-  position: absolute;
-  width: min(24vw, 310px);
+.life-moment {
+  position: relative;
+  display: grid;
+  align-content: end;
   min-width: 0;
+  padding: 42% 4% 13%;
+  overflow: hidden;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
   opacity: 0;
 }
 
-.curiosity-prompt::before {
+.life-moment:first-child {
+  border-left: 0;
+}
+
+.life-moment::before,
+.life-moment::after {
   content: "";
   position: absolute;
-  top: 7px;
-  width: clamp(34px, 5vw, 76px);
-  height: 1px;
-  background: linear-gradient(90deg, rgba(205, 171, 105, 0.8), transparent);
+  pointer-events: none;
 }
 
-.curiosity-prompt:nth-child(1) {
-  top: 20%;
-  right: 7%;
+.life-moment::before {
+  inset: 0;
+  z-index: -1;
+  transition: transform 1s ease;
 }
 
-.curiosity-prompt:nth-child(1)::before,
-.curiosity-prompt:nth-child(2)::before {
-  right: calc(100% + 12px);
+.life-moment--read::before {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 15px, rgba(255, 241, 210, 0.07) 15px 16px),
+    radial-gradient(circle at 30% 34%, rgba(214, 183, 126, 0.28), transparent 42%),
+    #17130e;
 }
 
-.curiosity-prompt:nth-child(2) {
-  top: 52%;
-  right: 5%;
+.life-moment--read::after {
+  top: 23%;
+  left: 13%;
+  width: 56%;
+  height: 34%;
+  border: 1px solid rgba(242, 238, 228, 0.22);
+  border-width: 1px 0;
+  box-shadow: 14px 0 0 rgba(242, 238, 228, 0.04), 28px 0 0 rgba(242, 238, 228, 0.025);
+  transform: rotate(-7deg);
 }
 
-.curiosity-prompt:nth-child(3) {
-  bottom: 13%;
-  left: 8%;
-  text-align: right;
+.life-moment--run::before {
+  background:
+    radial-gradient(circle at 28% 34%, transparent 0 25%, rgba(118, 144, 171, 0.24) 25.5% 26%, transparent 26.5%),
+    radial-gradient(circle at 70% 52%, rgba(118, 144, 171, 0.2), transparent 42%),
+    #0d1319;
 }
 
-.curiosity-prompt:nth-child(3)::before {
-  left: calc(100% + 12px);
-  transform: scaleX(-1);
+.life-moment--run::after {
+  top: 18%;
+  left: 19%;
+  width: 56%;
+  height: 45%;
+  border: 2px solid transparent;
+  border-top-color: rgba(171, 202, 226, 0.46);
+  border-right-color: rgba(171, 202, 226, 0.28);
+  border-radius: 50%;
+  transform: rotate(21deg);
 }
 
-.curiosity-prompt strong {
-  color: #cdab69;
-  font-size: clamp(10px, 1.15vmin, 13px);
+.life-moment--notice::before {
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(220, 234, 224, 0.16) 50%, transparent 50.2%),
+    linear-gradient(transparent 49.8%, rgba(220, 234, 224, 0.16) 50%, transparent 50.2%),
+    radial-gradient(circle at 58% 35%, rgba(102, 145, 123, 0.3), transparent 40%),
+    #101713;
 }
 
-.curiosity-prompt h3 {
-  margin: 8px 0 0;
-  font-size: clamp(15px, 1.85vmin, 23px);
-  line-height: 1.22;
+.life-moment--notice::after {
+  top: 17%;
+  right: 14%;
+  width: 42%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(220, 234, 224, 0.32);
+  border-radius: 50%;
 }
 
-.curiosity-prompt p {
-  margin: 7px 0 0;
-  color: rgba(243, 240, 234, 0.46);
-  font-size: clamp(9px, 1.05vmin, 12px);
+.life-moment > span {
+  position: relative;
+  color: rgba(242, 238, 228, 0.38);
+  font-size: 10px;
 }
 
-.curiosity-coda {
+.life-moment strong {
+  position: relative;
+  margin-top: 8px;
+  color: #d6b77e;
+  font-size: clamp(20px, 3.4vmin, 44px);
+  font-weight: 400;
+}
+
+.life-moment--run strong {
+  color: #9bb7cf;
+}
+
+.life-moment--notice strong {
+  color: #8eb59b;
+}
+
+.life-moment h3 {
+  position: relative;
+  margin: 10px 0 0;
+  max-width: 320px;
+  font-size: clamp(17px, 2.15vmin, 28px);
+  font-weight: 500;
+  line-height: 1.18;
+}
+
+.life-moment p {
+  position: relative;
+  margin: 9px 0 0;
+  color: rgba(242, 238, 228, 0.54);
+  font-size: clamp(9px, 1.1vmin, 12px);
+}
+
+.life-moment i {
+  display: none;
+}
+
+.life-coda {
   position: absolute;
   right: 7%;
-  bottom: 8%;
+  bottom: 6%;
+  z-index: 3;
   margin: 0;
-  color: rgba(122, 181, 167, 0.7);
+  color: rgba(242, 238, 228, 0.62);
   font-size: clamp(10px, 1.2vmin, 14px);
+  text-shadow: 0 2px 16px #000;
   opacity: 0;
 }
 
 @media (orientation: portrait) {
-  .curiosity-heading {
+  .life-heading {
     top: 6%;
-    right: 7%;
-    width: auto;
   }
 
-  .curiosity-heading h2 {
-    font-size: clamp(28px, 8.6vmin, 47px);
+  .life-heading h2 {
+    font-size: clamp(27px, 8.2vmin, 44px);
   }
 
-  .curiosity-orbit {
-    top: 48%;
-    left: 52%;
-    width: min(72vw, 360px);
+  .life-moments {
+    top: 25%;
+    bottom: max(24%, 145px);
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
   }
 
-  .curiosity-prompt {
-    width: 45%;
+  .life-moment {
+    grid-template-columns: 27px 65px minmax(0, 1fr);
+    align-items: center;
+    align-content: center;
+    padding: 8px 7%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 0;
   }
 
-  .curiosity-prompt:nth-child(1) {
-    top: 31%;
-    right: 4%;
+  .life-moment strong,
+  .life-moment h3,
+  .life-moment p {
+    margin-top: 0;
   }
 
-  .curiosity-prompt:nth-child(2) {
-    top: 47%;
-    right: auto;
-    left: 4%;
-    width: 40%;
-    text-align: right;
+  .life-moment strong {
+    font-size: clamp(15px, 4.7vmin, 23px);
   }
 
-  .curiosity-prompt:nth-child(3) {
-    bottom: auto;
-    top: 62%;
-    right: 7%;
+  .life-moment h3 {
+    font-size: clamp(14px, 4vmin, 20px);
+  }
+
+  .life-moment p {
+    grid-column: 3;
+    margin-top: 3px;
+  }
+
+  .life-moment::after {
+    top: 18%;
+    right: 5%;
     left: auto;
-    width: 50%;
-    text-align: left;
+    width: 26%;
+    height: 54%;
+    opacity: 0.42;
   }
 
-  .curiosity-prompt::before {
-    width: 28px;
-  }
-
-  .curiosity-prompt:nth-child(1)::before,
-  .curiosity-prompt:nth-child(3)::before {
-    right: calc(100% + 6px);
-    left: auto;
-    transform: none;
-  }
-
-  .curiosity-prompt:nth-child(2)::before {
-    right: auto;
-    left: calc(100% + 6px);
-    transform: scaleX(-1);
-  }
-
-  .curiosity-prompt h3 {
-    font-size: clamp(14px, 4.1vmin, 20px);
-  }
-
-  .curiosity-coda {
+  .life-coda {
     right: 7%;
     bottom: max(15%, 124px);
     left: 7%;
+    line-height: 1.5;
   }
 }

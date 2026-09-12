@@ -1,138 +1,200 @@
-/* Scene 04 — The Garden. The scene-root holds two halves, each with
-   its own Three.js canvas laid down by CinematicStage. */
-
 .scene-root[data-scene-id="scene-04"] {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  color: #f8f8f8;
+  background: #090c10;
+  color: #edf1f4;
   font-family: "Inter", system-ui, sans-serif;
 }
 
-.scene-root[data-scene-id="scene-04"] .garden-left,
-.scene-root[data-scene-id="scene-04"] .garden-right {
-  position: relative;
-  overflow: hidden;
-}
-
-/* Left split gets a subtle red vignette to bias the mood. */
-.scene-root[data-scene-id="scene-04"] .garden-left::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 40%, rgba(80, 0, 0, 0.4) 100%);
-  pointer-events: none;
-  z-index: 4;
-}
-
-.scene-root[data-scene-id="scene-04"] .garden-right::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 50%, rgba(80, 180, 255, 0.18) 100%);
-  pointer-events: none;
-  z-index: 4;
-}
-
-/* Sharp split line down the middle for the cinematic feel. */
 .scene-root[data-scene-id="scene-04"]::before {
   content: "";
   position: absolute;
-  inset: 0 50%;
-  z-index: 5;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.4), transparent);
-  pointer-events: none;
-  width: 2px;
-  left: calc(50% - 1px);
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 11vw, rgba(255, 255, 255, 0.035) 11vw calc(11vw + 1px));
+  mask-image: linear-gradient(to bottom, #000, transparent 86%);
 }
 
-.garden-caption {
+.workflow-heading {
   position: absolute;
-  z-index: 6;
-  bottom: 9%;
-  width: min(36%, 460px);
-  color: #fff;
-  pointer-events: none;
+  top: 9%;
+  left: 7%;
+  z-index: 2;
   opacity: 0;
+}
+
+.workflow-heading span,
+.workflow-step span,
+.workflow-step small,
+.workflow-coda {
+  font-family: "Courier New", monospace;
+}
+
+.workflow-heading span {
+  color: #79b7a6;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.workflow-heading h2 {
+  margin: 10px 0 0;
+  font-size: clamp(26px, 4.1vmin, 52px);
+  line-height: 1.04;
+}
+
+.workflow-line {
+  position: absolute;
+  top: 55%;
+  right: 7%;
+  left: 7%;
+  height: 2px;
+  background: linear-gradient(90deg, #79b7a6, #d0ac68, #7f9fc8);
+  box-shadow: 0 0 18px rgba(121, 183, 166, 0.2);
+  transform: rotate(10deg);
+  transform-origin: left;
+}
+
+.workflow-steps {
+  position: absolute;
+  top: 36%;
+  right: 7%;
+  left: 7%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 2.4vw, 36px);
+}
+
+.workflow-step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(121, 183, 166, 0.56);
+  opacity: 0;
+}
+
+.workflow-step:nth-child(2) {
+  margin-top: 6vh;
+  border-color: rgba(208, 172, 104, 0.62);
+}
+
+.workflow-step:nth-child(3) {
+  margin-top: 12vh;
+  border-color: rgba(127, 159, 200, 0.62);
+}
+
+.workflow-step:nth-child(4) {
+  margin-top: 18vh;
+  border-color: rgba(237, 241, 244, 0.34);
+}
+
+.workflow-step span {
+  color: rgba(237, 241, 244, 0.34);
+  font-size: 10px;
+}
+
+.workflow-step strong {
+  margin-top: 5px;
+  color: #f4f6f7;
+  font-size: clamp(25px, 4vmin, 52px);
+  line-height: 0.95;
+}
+
+.workflow-step p {
+  margin: 9px 0 0;
+  color: rgba(237, 241, 244, 0.68);
+  font-size: clamp(11px, 1.25vmin, 15px);
+}
+
+.workflow-step small {
+  margin-top: 11px;
+  color: rgba(121, 183, 166, 0.66);
+  font-size: clamp(9px, 1vmin, 11px);
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
 
-.garden-caption--left {
-  left: 5%;
-  text-shadow: 0 0 20px rgba(255, 40, 48, 0.42);
-}
-
-.garden-caption--right {
-  right: 5%;
+.workflow-coda {
+  position: absolute;
+  right: 7%;
+  bottom: 8%;
+  width: min(48vw, 680px);
+  margin: 0;
+  color: rgba(237, 241, 244, 0.5);
   text-align: right;
-  text-shadow: 0 0 20px rgba(120, 200, 255, 0.42);
-}
-
-.garden-caption .kicker,
-.garden-meter {
-  display: block;
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
-  font-size: clamp(10px, 1.15vmin, 13px);
-  letter-spacing: 0;
-  opacity: 0.72;
-}
-
-.garden-caption strong {
-  display: block;
-  margin: 8px 0 10px;
-  font-size: clamp(16px, 2.2vmin, 28px);
-  line-height: 1.22;
-}
-
-.garden-caption--left .garden-meter {
-  color: #ffb0b0;
-}
-
-.garden-caption--right .garden-meter {
-  color: #def6ff;
+  font-size: clamp(10px, 1.2vmin, 14px);
+  line-height: 1.6;
+  opacity: 0;
 }
 
 @media (orientation: portrait) {
-  .scene-root[data-scene-id="scene-04"] {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+  .workflow-heading {
+    top: 7%;
+    right: 7%;
   }
 
-  .scene-root[data-scene-id="scene-04"]::before {
-    inset: 50% 0 auto;
-    left: 0;
+  .workflow-heading h2 {
+    font-size: clamp(26px, 8vmin, 44px);
+  }
+
+  .workflow-line {
+    top: 30%;
+    right: auto;
+    bottom: 24%;
+    left: 11%;
+    width: 2px;
+    height: auto;
+    transform: rotate(-7deg);
+  }
+
+  .workflow-steps {
+    top: 29%;
+    right: 7%;
+    bottom: 24%;
+    left: 14%;
+    display: block;
+  }
+
+  .workflow-step,
+  .workflow-step:nth-child(2),
+  .workflow-step:nth-child(3),
+  .workflow-step:nth-child(4) {
+    position: absolute;
+    right: 0;
+    display: grid;
+    grid-template-columns: 28px 80px minmax(0, 1fr);
+    align-items: baseline;
+    width: 100%;
+    margin-top: 0;
+    padding: 7px 0 0 9px;
+  }
+
+  .workflow-step:nth-child(1) { top: 0; }
+  .workflow-step:nth-child(2) { top: 24%; left: 4%; width: 96%; }
+  .workflow-step:nth-child(3) { top: 48%; left: 8%; width: 92%; }
+  .workflow-step:nth-child(4) { top: 72%; left: 12%; width: 88%; }
+
+  .workflow-step strong {
+    margin: 0;
+    font-size: clamp(18px, 5.5vmin, 28px);
+  }
+
+  .workflow-step p {
+    margin: 0;
+    font-size: clamp(10px, 2.9vmin, 13px);
+  }
+
+  .workflow-step small {
+    grid-column: 3;
+    margin-top: 3px;
+    font-size: clamp(8px, 2.25vmin, 10px);
+  }
+
+  .workflow-coda {
+    right: 7%;
+    bottom: max(15%, 124px);
+    left: 7%;
     width: auto;
-    height: 2px;
-    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.5), transparent);
-  }
-
-  .garden-caption {
-    width: auto;
-  }
-
-  .garden-caption--left {
-    left: 6%;
-    right: 6%;
-    top: 6%;
-    bottom: auto;
-  }
-
-  .garden-caption--right {
-    left: 6%;
-    right: 6%;
-    top: 56%;
-    bottom: auto;
     text-align: left;
-  }
-
-  .garden-caption strong {
-    font-size: clamp(14px, 3.8vmin, 22px);
-  }
-
-  .garden-caption .kicker,
-  .garden-meter {
-    font-size: clamp(9px, 2.2vmin, 12px);
   }
 }

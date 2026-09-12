@@ -1,8 +1,13 @@
 import type { SceneModule } from "@movie/types/scene";
-import { chordGlow } from "@movie/lib/audio/SoundDesign";
 import { scene } from "./config";
 import script from "./scene.md?raw";
 import "./styles.css";
+
+const PROMPTS = [
+  { word: "WHY", question: "真正重要的是什么？", tone: "先追问原因" },
+  { word: "WHAT IF", question: "如果换一个方向呢？", tone: "再打开可能" },
+  { word: "WHAT NEXT", question: "下一步能验证什么？", tone: "最后走向行动" },
+];
 
 function createScene(): SceneModule {
   let root: HTMLElement | null = null;
@@ -15,58 +20,56 @@ function createScene(): SceneModule {
     create(r) {
       root = r;
       r.innerHTML = `
-        <div class="finale-stars" aria-hidden="true"></div>
-        <div class="finale-track" aria-hidden="true">
-          <span></span><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        </div>
-        <section class="finale-copy">
-          <span>NOT THE END</span>
-          <h2>未完待续</h2>
-          <p>下一幕还在写，镜头先停在这里。</p>
-          <a href="https://github.com/wsgggws" target="_blank" rel="noreferrer">
-            <small>片尾之后</small>
-            <strong>github.com/wsgggws ↗</strong>
-          </a>
-        </section>
+        <div class="curiosity-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+        <header class="curiosity-heading">
+          <span>CURIOSITY</span>
+          <h2>答案会过期，<br />提问让人继续前进</h2>
+        </header>
+        <div class="curiosity-prompts"></div>
+        <p class="curiosity-coda">保持好奇，也保持行动。</p>
       `;
 
-      const stars = r.querySelector(".finale-stars") as HTMLElement;
-      for (let index = 0; index < 36; index++) {
-        const star = document.createElement("i");
-        star.style.left = `${8 + Math.random() * 84}%`;
-        star.style.top = `${8 + Math.random() * 84}%`;
-        star.style.opacity = String(0.12 + Math.random() * 0.48);
-        stars.appendChild(star);
-      }
+      const prompts = r.querySelector(".curiosity-prompts") as HTMLElement;
+      PROMPTS.forEach(({ word, question, tone }) => {
+        const item = document.createElement("section");
+        item.className = "curiosity-prompt";
+        item.innerHTML = `<strong>${word}</strong><h3>${question}</h3><p>${tone}</p>`;
+        prompts.appendChild(item);
+      });
     },
 
     async warmup() {
       if (typeof document.fonts?.ready !== "undefined") {
         try { await document.fonts.ready; } catch { /* ignore */ }
       }
-      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
     },
 
     play(timeline) {
       if (!root) return;
-      const track = root.querySelector(".finale-track span") as HTMLElement;
-      const markers = Array.from(root.querySelectorAll(".finale-track i")) as HTMLElement[];
-      const copy = root.querySelector(".finale-copy") as HTMLElement;
-      const link = root.querySelector(".finale-copy a") as HTMLElement;
+      const heading = root.querySelector(".curiosity-heading") as HTMLElement;
+      const rings = Array.from(root.querySelectorAll(".curiosity-orbit i")) as HTMLElement[];
+      const prompts = Array.from(root.querySelectorAll(".curiosity-prompt")) as HTMLElement[];
+      const coda = root.querySelector(".curiosity-coda") as HTMLElement;
 
-      timeline.fromTo(track, { scaleX: 0 }, { scaleX: 1, duration: 3.4, ease: "power2.inOut" }, 0.5);
-      markers.forEach((marker, index) => {
+      timeline.fromTo(heading, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.9 }, 0.35);
+      rings.forEach((ring, index) => {
         timeline.fromTo(
-          marker,
-          { opacity: 0, scale: 0.2 },
-          { opacity: 1, scale: 1, duration: 0.35 },
-          0.8 + index * 0.42,
+          ring,
+          { opacity: 0, scale: 0.72 },
+          { opacity: 1 - index * 0.22, scale: 1, duration: 1.5, ease: "power2.out" },
+          0.8 + index * 0.48,
         );
       });
-      timeline.fromTo(copy, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.1 }, 3.8);
-      timeline.call(() => chordGlow(), [], 4.2);
-      timeline.fromTo(link, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8 }, 5.4);
-      timeline.to({} as object, { duration: 5.2 }, 6.2);
+      prompts.forEach((prompt, index) => {
+        timeline.fromTo(
+          prompt,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.75, ease: "power2.out" },
+          2.0 + index * 1.35,
+        );
+      });
+      timeline.fromTo(coda, { opacity: 0 }, { opacity: 1, duration: 0.9 }, 6.5);
+      timeline.to({} as object, { duration: 3 }, 7.4);
     },
 
     pause() {},

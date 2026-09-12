@@ -1,237 +1,97 @@
 import type { SceneModule } from "@movie/types/scene";
-import { gsap } from "gsap";
-import { startAmbient, startScore, typingClick, bigImpact, chordGlow, whoosh } from "@movie/lib/audio/SoundDesign";
 import { scene } from "./config";
 import script from "./scene.md?raw";
 import "./styles.css";
 
-/**
- * Scene 03 — Sparks.
- *
- * Neovim editor. Each typed character fires a particle. A combo counter
- * ticks up. At the end, a "FULL COMBO 💥" flash burns the screen.
- */
-
-// spark.nvim is Lua-first, so the scene stays in Neovim plugin language.
-const SNIPPETS: { lang: string; tokens: { t: string; k?: string }[] }[] = [
-  {
-    lang: "lua",
-    tokens: [
-      { t: "local ", k: "key" }, { t: "spark", k: "id" },
-      { t: " = ", k: "pun" }, { t: "require", k: "fn" },
-      { t: "(", k: "pun" }, { t: '"spark"', k: "str" }, { t: ")", k: "pun" },
-    ],
-  },
-  {
-    lang: "lua",
-    tokens: [
-      { t: "spark.", k: "id" }, { t: "setup", k: "fn" },
-      { t: "({ ", k: "pun" }, { t: "combo", k: "id" },
-      { t: " = ", k: "pun" }, { t: "true", k: "key" }, { t: " })", k: "pun" },
-    ],
-  },
-  {
-    lang: "lua",
-    tokens: [
-      { t: "vim.api.", k: "id" }, { t: "nvim_create_autocmd", k: "fn" },
-      { t: "(", k: "pun" }, { t: '"TextChangedI"', k: "str" }, { t: ", {", k: "pun" },
-    ],
-  },
-  {
-    lang: "lua",
-    tokens: [
-      { t: "  ", k: "id" }, { t: "callback", k: "id" }, { t: " = ", k: "pun" },
-      { t: "function", k: "key" }, { t: "()", k: "pun" },
-      { t: " spark.", k: "id" }, { t: "burst", k: "fn" }, { t: "()", k: "pun" },
-    ],
-  },
-  {
-    lang: "lua",
-    tokens: [
-      { t: "end", k: "key" }, { t: ", ", k: "pun" },
-      { t: "desc", k: "id" }, { t: " = ", k: "pun" },
-      { t: '"spark.nvim combo"', k: "str" }, { t: " })", k: "pun" },
-    ],
-  },
+const SIGNALS = [
+  ["REQUEST", "需求进入系统"],
+  ["CONTRACT", "先把承诺写清楚"],
+  ["TRACE", "每次判断都留下线索"],
+  ["RECOVERY", "失败时降级，而不是失联"],
+  ["ENGINEER", "理解问题，再修改系统"],
+  ["RESPONSE", "信任被完整返回"],
 ];
-
-function el<K extends keyof HTMLElementTagNameMap>(
-  tag: K,
-  className?: string,
-  text?: string,
-): HTMLElementTagNameMap[K] {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
 
 function createScene(): SceneModule {
   let root: HTMLElement | null = null;
-  let particleLayer: HTMLElement | null = null;
-  let comboCounter: HTMLElement | null = null;
-  let comboNum: HTMLElement | null = null;
-  let fullCombo: HTMLElement | null = null;
-  const stops: (() => void)[] = [];
 
-  const module: SceneModule = {
+  return {
     config: scene,
     script,
-
     async preload() {},
 
     create(r) {
       root = r;
       r.innerHTML = `
-        <div class="spark-editor">
-          <div class="spark-titlebar">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span style="margin-left:10px">~/.config/nvim/lua/spark.lua — NVIM</span>
-          </div>
-          <div class="spark-code"></div>
+        <div class="api-grid" aria-hidden="true"></div>
+        <header class="api-heading">
+          <span>SYSTEMS</span>
+          <h2>接口不是边界，<br />是系统之间的承诺</h2>
+        </header>
+        <div class="api-route">
+          <div class="api-wire" aria-hidden="true"></div>
+          <div class="api-chat"></div>
         </div>
-        <div class="combo-counter">
-          <span class="x">x</span>
-          <span class="num">1</span>
-          <span>COMBO</span>
-        </div>
-        <div class="spark-diagnostics">
-          <span>lua require spark.nvim</span>
-          <span>streak 000</span>
-          <span>heat nominal</span>
-        </div>
-        <div class="full-combo">FULL COMBO 💥</div>
-        <div class="spark-layer"></div>
+        <aside class="api-status">
+          <div><i></i><span>READABLE</span><strong>清楚</strong></div>
+          <div><i></i><span>OBSERVABLE</span><strong>可见</strong></div>
+          <div><i></i><span>RECOVERABLE</span><strong>从容</strong></div>
+        </aside>
       `;
-      particleLayer = r.querySelector(".spark-layer");
-      comboCounter = r.querySelector(".combo-counter");
-      comboNum = r.querySelector(".combo-counter .num");
-      fullCombo = r.querySelector(".full-combo");
 
-      // Audio: digital ambient bed, low.
-      stops.push(startAmbient("digital", 0.06));
-      stops.push(startScore("rush", 0.036));
+      const chat = r.querySelector(".api-chat") as HTMLElement;
+      SIGNALS.forEach(([speaker, message], index) => {
+        const row = document.createElement("section");
+        row.className = `api-msg api-msg--${speaker.toLowerCase()}`;
+        row.innerHTML = `
+          <small>${String(index + 1).padStart(2, "0")}</small>
+          <span>${speaker}</span>
+          <p>${message}</p>
+        `;
+        chat.appendChild(row);
+      });
     },
 
     async warmup() {
-      if (typeof document.fonts?.ready !== "undefined") {
-        try { await document.fonts.ready; } catch { /* ignore */ }
-      }
-      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
       await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
     },
 
-    play(tl) {
+    play(timeline) {
       if (!root) return;
-      const code = root.querySelector(".spark-code") as HTMLElement;
-      const fireParticle = (from: { x: number; y: number }) => {
-        if (!particleLayer) return;
-        const p = el("div", "spark-particle");
-        p.style.left = from.x + "px";
-        p.style.top = from.y + "px";
-        particleLayer.appendChild(p);
-        const dx = (Math.random() - 0.5) * 80;
-        const dy = -120 - Math.random() * 80;
-        gsap.fromTo(
-          p,
-          { x: 0, y: 0, scale: 1, opacity: 1 },
-          {
-            x: dx,
-            y: dy,
-            scale: 0.2,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power2.out",
-            onComplete() {
-              p.remove();
-            },
-          },
+      const portrait = root.clientHeight > root.clientWidth;
+      const heading = root.querySelector(".api-heading") as HTMLElement;
+      const wire = root.querySelector(".api-wire") as HTMLElement;
+      const messages = Array.from(root.querySelectorAll(".api-msg")) as HTMLElement[];
+      const statusItems = Array.from(root.querySelectorAll(".api-status div")) as HTMLElement[];
+
+      timeline.fromTo(heading, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.75 }, 0.3);
+      timeline.fromTo(
+        wire,
+        portrait ? { scaleY: 0 } : { scaleX: 0 },
+        portrait
+          ? { scaleY: 1, duration: 6.2, ease: "power1.inOut" }
+          : { scaleX: 1, duration: 6.2, ease: "power1.inOut" },
+        0.9,
+      );
+      messages.forEach((message, index) => {
+        timeline.fromTo(
+          message,
+          { opacity: 0, scale: 0.86 },
+          { opacity: 1, scale: 1, duration: 0.48, ease: "back.out(1.4)" },
+          1.15 + index * 0.78,
         );
-        typingClick();
-        if (Math.random() < 0.08) whoosh();
-      };
-
-      // Lines fade in, characters animate in token by token.
-      SNIPPETS.forEach((snippet, lineIdx) => {
-        const lineEl = el("div", "spark-line");
-        lineEl.appendChild(
-          el("span", "ln", String(lineIdx + 1).padStart(2, " ") + " "),
-        );
-        code.appendChild(lineEl);
-
-        // Reveal the line.
-        const lineAppearAt = 0.55 + lineIdx * 2.1;
-        tl.fromTo(lineEl, { opacity: 0 }, { opacity: 1, duration: 0.2 }, lineAppearAt);
-
-        // Tokens appear one by one.
-        let charOffset = 0;
-        snippet.tokens.forEach((tok) => {
-          const tokenAppearAt = lineAppearAt + 0.2 + charOffset * 0.04;
-          const span = el("span", tok.k ? "tok-" + tok.k : "tok-id");
-          span.textContent = tok.t;
-          span.style.opacity = "0";
-          lineEl.appendChild(span);
-          tl.to(span, { opacity: 1, duration: 0.15 }, tokenAppearAt);
-
-          // Fire particles for every non-whitespace character.
-          for (let c = 0; c < tok.t.length; c++) {
-            if (/\s/.test(tok.t[c])) continue;
-            const charAppearAt = tokenAppearAt + c * 0.04;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (tl as any).call(
-              () => {
-                fireParticle({ x: 200 + charOffset * 12, y: 220 + lineIdx * 36 });
-              },
-              [],
-              charAppearAt,
-            );
-            charOffset++;
-          }
-          charOffset += tok.t.length;
-        });
       });
-
-      // Combo counter appears early, animates up on each "hit".
-      if (comboCounter) {
-        tl.fromTo(comboCounter, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4 }, 1);
-      }
-      const diagnostics = Array.from(root.querySelectorAll(".spark-diagnostics span")) as HTMLElement[];
-      diagnostics.forEach((item, i) => {
-        tl.fromTo(item, { opacity: 0.35 }, { opacity: 1, duration: 0.25, yoyo: true, repeat: 9 }, 2 + i * 0.4);
+      statusItems.forEach((item, index) => {
+        timeline.fromTo(item, { opacity: 0 }, { opacity: 1, duration: 0.55 }, 5.8 + index * 0.35);
       });
-      const comboTargets = [3, 9, 23, 47, 73];
-      comboTargets.forEach((target, i) => {
-        tl.call(() => {
-          if (comboNum) comboNum.textContent = String(target);
-          const streak = root?.querySelector(".spark-diagnostics span:nth-child(2)");
-          if (streak) streak.textContent = "streak " + String(target).padStart(3, "0");
-          if (comboCounter) {
-            comboCounter.style.transform = "scale(1.08)";
-          }
-          bigImpact();
-        }, [], 2 + i * 1.35);
-        tl.to(comboCounter ?? root!, { scale: 1, duration: 0.2 }, 2 + i * 1.35 + 0.05);
-      });
-
-      // FULL COMBO flash at the end.
-      tl.fromTo(fullCombo ?? root!, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" }, 12.8);
-      tl.to(fullCombo ?? root!, { opacity: 0, duration: 0.75 }, 14.05);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (tl as any).call(() => chordGlow(), [], 12.8);
+      timeline.to({} as object, { duration: 2.1 }, 7.2);
     },
 
     pause() {},
-
     destroy() {
-      while (stops.length) stops.pop()!();
       root = null;
-      particleLayer = null;
-      comboCounter = null;
-      comboNum = null;
-      fullCombo = null;
     },
   };
-  return module;
 }
 
 export default createScene();

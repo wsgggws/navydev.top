@@ -335,7 +335,7 @@ export class MovieDirector {
     kind: SceneConfig["transition"],
     duringBlack: () => Promise<void>,
   ): Promise<void> {
-    const transitionMs = this.reducedMotion ? 140 : 520;
+    const transitionMs = this.reducedMotion ? 110 : 400;
     const classKind = this.reducedMotion && kind !== "cut" ? "fade" : kind;
 
     if (!this.currentScene || kind === "cut") {
@@ -366,7 +366,7 @@ export class MovieDirector {
             overlay.remove();
             resolve();
           }, transitionMs);
-        }, 60);
+        }, 40);
       });
     }
   }

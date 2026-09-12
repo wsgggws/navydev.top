@@ -68,7 +68,7 @@ npm run preview
 - 左下角章节轨显示当前章节、标题和每章进度，点击任意章节可跳转。
 - 右下角图标控制条提供播放、重播、跳过和重新开始，播放 3 秒无操作后自动隐藏。
 - 场景加载失败时显示中断画面和重试按钮，不再停在无反馈的黑场。
-- 第七幕显示“未完待续”后停留在最终画面，不自动回到第一幕；仍可通过重新开始控件手动回放。
+- 第七幕“继续创作”完整播放后进入独立片尾“未完待续”，最终画面保持，不自动回到第一幕。
 - 系统开启 `prefers-reduced-motion: reduce` 时，转场和部分动效会降级。
 
 快捷键：
@@ -127,7 +127,7 @@ sudo mkdir -p /var/www/navydev.top /var/www/navydev.top/nghh
 │   └── styles.css               # 全局舞台、letterbox、title card、transition matte、控制层
 ├── movie/
 │   ├── movie.ts                 # reel 注册表：config 静态导入 + scene 动态导入
-│   ├── prewarm.ts               # ROLL 后预热 pipeline、场景实现和 preload()
+│   ├── prewarm.ts               # 序幕后预热 pipeline、场景实现和 preload()
 │   ├── types/scene.ts           # SceneConfig / SceneModule / SceneEntry
 │   ├── director/
 │   │   ├── MovieDirector.ts     # 播放、加载缓存、预热下一场、转场、章节控制、销毁
@@ -145,15 +145,11 @@ sudo mkdir -p /var/www/navydev.top /var/www/navydev.top/nghh
 │       ├── scene-04/
 │       ├── scene-05/
 │       ├── scene-06/
-│       ├── scene-07/
-│       ├── scene-08/
-│       ├── scene-09/
-│       ├── scene-10/
-│       └── scene-11/
+│       └── scene-07/
 └── index.html
 ```
 
-目录中保留了 11 个场景的源材料，当前 reel 只注册下面 7 幕。每个场景目录通常包含：
+场景目录按播放顺序连续编号，只保留当前 reel 使用的 7 幕。每个场景目录包含：
 
 ```text
 config.ts     # 轻量 metadata
@@ -166,13 +162,13 @@ styles.css    # 场景样式，使用 data-scene-id 作用域
 
 | 顺序 | ID         | 标题           | 表达                                   |
 | ---- | ---------- | -------------- | -------------------------------------- |
-| 1    | `scene-02` | 关于我         | 身份、原则与兴趣构成一张动态人物肖像   |
-| 2    | `scene-01` | 从问题出发     | 问题、证据和最小改动组成判断路径       |
-| 3    | `scene-08` | 让系统彼此听懂 | 需求经由契约、追踪和恢复完整返回       |
-| 4    | `scene-11` | 工具退到身后   | 从思考、构建、运行到交付的工作流       |
-| 5    | `scene-09` | 屏幕之外       | 阅读、跑步与观察共同构成生活留白       |
-| 6    | `scene-05` | 继续提问       | 为什么、如果与下一步把好奇带向行动     |
-| 7    | `scene-06` | 未完待续       | 七个节点汇聚成片尾，并停留在下一幕之前 |
+| 1    | `scene-01` | 关于我         | 身份、原则与兴趣构成一张动态人物肖像   |
+| 2    | `scene-02` | 从问题出发     | 问题、证据和最小改动组成判断路径       |
+| 3    | `scene-03` | 让系统彼此听懂 | 需求经由契约、追踪和恢复完整返回       |
+| 4    | `scene-04` | 工具退到身后   | 从思考、构建、运行到交付的工作流       |
+| 5    | `scene-05` | 屏幕之外       | 阅读、跑步与观察共同构成生活留白       |
+| 6    | `scene-06` | 继续提问       | 为什么、如果与下一步把好奇带向行动     |
+| 7    | `scene-07` | 继续创作       | 完成创作循环后进入独立片尾“未完待续”   |
 
 ## Lazy Scene Loader
 

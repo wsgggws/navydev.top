@@ -1,50 +1,5 @@
-# Scene 03
+# 第三幕：让系统彼此听懂
 
-## Title
+接口不再被表现成一段俏皮聊天，而是一条可读的承诺链：请求进入、契约明确、过程可追踪、失败可恢复、响应完整返回。
 
-Sparks
-
-## Story
-
-A Neovim buffer opens on screen.
-
-Text appears line by line. Each keystroke fires a spark of light.
-
-Particles drift up. A combo counter ticks.
-
-Three lines of code committed. The screen flashes: "FULL COMBO 💥".
-
-Freeze frame. Slow zoom. Fade.
-
----
-
-## Environment
-
-- night
-- close-up on monitor
-
-## Actors
-
-- typist (hands only)
-
-## Props
-
-- Vim buffer
-- particle emitter
-- combo counter
-
-## Sound
-
-- typing clicks
-- bass thump on each combo milestone
-- whoosh on FULL COMBO
-
-## Camera
-
-- close-up on buffer
-- subtle handheld shake
-- freeze zoom at the end
-
-## Transition
-
-zoom
+工程师的工作不是替系统掩盖情绪，而是让复杂系统在失败时仍然清楚、可见、从容。

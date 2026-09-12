@@ -1,220 +1,239 @@
-/* Scene 03 — Sparks */
-
 .scene-root[data-scene-id="scene-03"] {
   position: absolute;
   inset: 0;
-  background: #050510;
-  color: #e8eaff;
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
   overflow: hidden;
+  background: #05080c;
+  color: #edf5f2;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-.spark-editor {
+.api-grid {
   position: absolute;
-  inset: 12% 14%;
-  border-radius: 8px;
-  background: #0c0c1a;
-  border: 1px solid rgba(120, 130, 255, 0.2);
-  box-shadow:
-    0 0 60px rgba(120, 130, 255, 0.25),
-    inset 0 0 40px rgba(120, 130, 255, 0.08);
-  padding: 26px 32px;
-  overflow: hidden;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(94, 151, 208, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(94, 151, 208, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, #000, transparent 82%);
 }
 
-.spark-titlebar {
+.api-heading {
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 12px;
-  background: #15152a;
-  font-size: 12px;
-  color: #7d8aff;
-  border-bottom: 1px solid rgba(120, 130, 255, 0.1);
+  top: 9%;
+  left: 7%;
+  z-index: 2;
+  opacity: 0;
 }
-.spark-titlebar .dot {
-  flex: 0 0 auto;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #ff6b9c;
+
+.api-heading > span,
+.api-msg small,
+.api-msg span,
+.api-status span {
+  font-family: "Courier New", monospace;
 }
-.spark-titlebar .dot:nth-child(2) { background: #ffd56b; }
-.spark-titlebar .dot:nth-child(3) { background: #6bff95; }
-.spark-titlebar span:last-child {
+
+.api-heading > span {
+  color: #69bda7;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.api-heading h2 {
+  margin: 10px 0 0;
+  font-size: clamp(26px, 4.2vmin, 54px);
+  line-height: 1.04;
+}
+
+.api-route {
+  position: absolute;
+  top: 48%;
+  right: 7%;
+  left: 7%;
+  height: 128px;
+}
+
+.api-wire {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #69bda7, #d6b36a 50%, #7f9fc8);
+  box-shadow: 0 0 22px rgba(105, 189, 167, 0.34);
+  transform-origin: left;
+}
+
+.api-chat {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(8px, 1.5vw, 24px);
+}
+
+.api-msg {
+  position: relative;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.spark-code {
-  margin-top: 26px;
-  font-size: clamp(14px, 1.6vmin, 19px);
-  line-height: 1.65;
-  white-space: pre;
-  color: #d5dbff;
-  overflow: hidden;
-}
-
-.spark-line {
-  display: block;
   opacity: 0;
-  min-height: 1.65em;
 }
-.spark-line .ln { color: #444a72; margin-right: 14px; }
 
-.tok-key { color: #c792ea; }
-.tok-fn  { color: #82aaff; }
-.tok-str { color: #c3e88d; }
-.tok-num { color: #f78c6c; }
-.tok-com { color: #5c6a82; font-style: italic; }
-
-/* Particle emitter — a transparent overlay above the editor that we
-   inject tiny light dots into when each keystroke "fires". */
-.spark-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 5;
+.api-msg:nth-child(odd) {
+  align-self: start;
 }
-.spark-particle {
+
+.api-msg:nth-child(even) {
+  align-self: end;
+}
+
+.api-msg::before {
+  content: "";
   position: absolute;
-  width: 4px;
-  height: 4px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #05080c;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff, #ffd56b 40%, transparent 70%);
-  filter: blur(0.5px);
-  pointer-events: none;
-  will-change: transform, opacity;
+  background: #d6b36a;
+  box-shadow: 0 0 0 1px rgba(214, 179, 106, 0.45);
 }
 
-/* Hands silhouette */
-.spark-hands {
-  position: absolute;
-  bottom: -10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70%;
-  height: 50%;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.25;
+.api-msg:nth-child(odd)::before {
+  top: 60px;
 }
 
-/* Combo counter */
-.combo-counter {
+.api-msg:nth-child(even)::before {
+  bottom: 60px;
+}
+
+.api-msg small,
+.api-msg span {
+  display: block;
+  font-size: clamp(9px, 1vmin, 11px);
+}
+
+.api-msg small {
+  color: rgba(237, 245, 242, 0.3);
+}
+
+.api-msg span {
+  margin-top: 5px;
+  color: #69bda7;
+}
+
+.api-msg p {
+  margin: 5px 0 0;
+  font-size: clamp(11px, 1.3vmin, 15px);
+  line-height: 1.35;
+}
+
+.api-status {
   position: absolute;
-  top: 16%;
-  right: 8%;
-  font-family: "Arial Black", sans-serif;
-  font-size: clamp(36px, 7vmin, 88px);
-  color: #ffd56b;
-  text-shadow:
-    0 0 12px #ff6b9c,
-    0 0 24px #c792ea;
-  letter-spacing: 0;
-  z-index: 6;
-  opacity: 0;
+  right: 7%;
+  bottom: 8%;
   display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-.combo-counter .x { font-size: 0.55em; color: #ff6b9c; }
-
-.spark-diagnostics {
-  position: absolute;
-  left: 8%;
-  bottom: 11%;
-  z-index: 6;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  max-width: 56%;
-  font-size: clamp(10px, 1.2vmin, 14px);
-  color: rgba(213, 219, 255, 0.78);
-  pointer-events: none;
+  gap: clamp(18px, 3vw, 42px);
 }
 
-.spark-diagnostics span {
-  border: 1px solid rgba(130, 170, 255, 0.2);
-  background: rgba(12, 12, 26, 0.72);
-  padding: 8px 10px;
-  box-shadow: 0 0 18px rgba(130, 170, 255, 0.12);
-}
-
-/* FULL COMBO flash */
-.full-combo {
-  position: absolute;
-  inset: 0;
-  display: flex;
+.api-status div {
+  display: grid;
+  grid-template-columns: 8px auto;
   align-items: center;
-  justify-content: center;
-  font-family: "Arial Black", sans-serif;
-  font-size: clamp(48px, 11vmin, 160px);
-  background: linear-gradient(135deg, #ff6b9c, #ffd56b, #82aaff, #c792ea);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0;
-  z-index: 7;
+  column-gap: 7px;
   opacity: 0;
-  pointer-events: none;
-  filter: drop-shadow(0 0 30px rgba(255, 107, 156, 0.6));
+}
+
+.api-status i {
+  grid-row: 1 / 3;
+  width: 5px;
+  height: 100%;
+  min-height: 30px;
+  background: #69bda7;
+}
+
+.api-status div:nth-child(2) i {
+  background: #d6b36a;
+}
+
+.api-status div:nth-child(3) i {
+  background: #7f9fc8;
+}
+
+.api-status span {
+  color: rgba(237, 245, 242, 0.42);
+  font-size: 9px;
+}
+
+.api-status strong {
+  font-size: clamp(14px, 1.8vmin, 22px);
 }
 
 @media (orientation: portrait) {
-  .spark-editor {
-    inset: 15% 5% 24%;
-    border-radius: 8px;
-    padding: 22px 10px 14px;
+  .api-heading {
+    top: 7%;
+    right: 7%;
   }
 
-  .spark-code {
-    font-size: clamp(9px, 2.35vmin, 12px);
-    line-height: 1.58;
-    overflow: hidden;
+  .api-heading h2 {
+    font-size: clamp(25px, 7.8vmin, 42px);
   }
 
-  .spark-titlebar {
-    gap: 5px;
-    padding: 0 8px;
-    font-size: 10px;
+  .api-route {
+    top: 30%;
+    right: 7%;
+    bottom: 25%;
+    left: 9%;
+    height: auto;
   }
 
-  .spark-titlebar .dot {
-    width: 7px;
-    height: 7px;
+  .api-wire {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(#69bda7, #d6b36a 50%, #7f9fc8);
+    transform-origin: top;
   }
 
-  .spark-line .ln {
-    margin-right: 7px;
+  .api-chat {
+    left: 18px;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, minmax(0, 1fr));
+    gap: 3px;
   }
 
-  .combo-counter {
-    top: 6%;
-    right: 6%;
-    font-size: clamp(30px, 10vmin, 62px);
+  .api-msg,
+  .api-msg:nth-child(odd),
+  .api-msg:nth-child(even) {
+    display: grid;
+    grid-template-columns: 24px 76px minmax(0, 1fr);
+    align-items: center;
+    align-self: stretch;
   }
 
-  .spark-diagnostics {
-    left: 6%;
-    right: 6%;
-    bottom: 7%;
-    max-width: none;
-    gap: 6px;
-    font-size: clamp(9px, 2.4vmin, 12px);
+  .api-msg::before,
+  .api-msg:nth-child(odd)::before,
+  .api-msg:nth-child(even)::before {
+    top: 50%;
+    bottom: auto;
+    left: -22px;
+    transform: translateY(-50%);
   }
 
-  .spark-diagnostics span {
-    padding: 7px 8px;
+  .api-msg span,
+  .api-msg p {
+    margin: 0;
   }
 
-  .full-combo {
-    padding: 0 16px;
-    text-align: center;
-    font-size: clamp(44px, 17vmin, 96px);
-    line-height: 1;
+  .api-msg p {
+    font-size: clamp(10px, 3.1vmin, 13px);
+  }
+
+  .api-status {
+    right: 7%;
+    bottom: max(15%, 124px);
+    left: 7%;
+    justify-content: space-between;
+    gap: 8px;
   }
 }
