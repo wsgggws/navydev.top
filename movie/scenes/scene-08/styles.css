@@ -2,138 +2,238 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(94, 151, 208, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(94, 151, 208, 0.06) 1px, transparent 1px),
-    radial-gradient(circle at 74% 24%, rgba(103, 190, 166, 0.16), transparent 28%),
-    #05080c;
-  background-size: 48px 48px, 48px 48px, auto, auto;
+  background: #05080c;
   color: #edf5f2;
   font-family: "Inter", system-ui, sans-serif;
 }
 
-.api-wire {
+.api-grid {
   position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 58%;
-  height: 2px;
-  transform-origin: left center;
-  background: linear-gradient(90deg, transparent, #69bda7, #d6b36a, transparent);
-  box-shadow: 0 0 22px rgba(105, 189, 167, 0.32);
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(94, 151, 208, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(94, 151, 208, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, #000, transparent 82%);
 }
 
-.api-console {
+.api-heading {
   position: absolute;
+  top: 9%;
   left: 7%;
-  right: 7%;
-  top: 10%;
-  width: auto;
+  z-index: 2;
   opacity: 0;
 }
 
-.api-kicker,
+.api-heading > span,
+.api-msg small,
 .api-msg span,
 .api-status span {
   font-family: "Courier New", monospace;
-  color: rgba(105, 189, 167, 0.78);
-  font-size: clamp(10px, 1.25vmin, 14px);
-  text-transform: uppercase;
 }
 
-.api-console h2 {
-  margin: 12px 0 20px;
-  width: min(58vw, 760px);
-  font-size: clamp(24px, 4vmin, 52px);
-  line-height: 1.06;
+.api-heading > span {
+  color: #69bda7;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.api-heading h2 {
+  margin: 10px 0 0;
+  font-size: clamp(26px, 4.2vmin, 54px);
+  line-height: 1.04;
+}
+
+.api-route {
+  position: absolute;
+  top: 48%;
+  right: 7%;
+  left: 7%;
+  height: 128px;
+}
+
+.api-wire {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #69bda7, #d6b36a 50%, #7f9fc8);
+  box-shadow: 0 0 22px rgba(105, 189, 167, 0.34);
+  transform-origin: left;
 }
 
 .api-chat {
+  position: absolute;
+  inset: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  width: min(66vw, 900px);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(8px, 1.5vw, 24px);
 }
 
 .api-msg {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 7px;
-  align-content: start;
-  min-height: 76px;
-  padding: 11px 12px;
-  border: 1px solid rgba(105, 189, 167, 0.18);
-  border-radius: 5px;
-  background: rgba(5, 11, 15, 0.74);
+  position: relative;
+  min-width: 0;
   opacity: 0;
 }
 
-.api-msg p {
-  margin: 0;
-  font-family: "Courier New", monospace;
-  font-size: clamp(11px, 1.35vmin, 16px);
+.api-msg:nth-child(odd) {
+  align-self: start;
 }
 
-.api-msg:nth-child(3n + 2) {
-  border-color: rgba(214, 179, 106, 0.26);
+.api-msg:nth-child(even) {
+  align-self: end;
+}
+
+.api-msg::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #05080c;
+  border-radius: 50%;
+  background: #d6b36a;
+  box-shadow: 0 0 0 1px rgba(214, 179, 106, 0.45);
+}
+
+.api-msg:nth-child(odd)::before {
+  top: 60px;
+}
+
+.api-msg:nth-child(even)::before {
+  bottom: 60px;
+}
+
+.api-msg small,
+.api-msg span {
+  display: block;
+  font-size: clamp(9px, 1vmin, 11px);
+}
+
+.api-msg small {
+  color: rgba(237, 245, 242, 0.3);
+}
+
+.api-msg span {
+  margin-top: 5px;
+  color: #69bda7;
+}
+
+.api-msg p {
+  margin: 5px 0 0;
+  font-size: clamp(11px, 1.3vmin, 15px);
+  line-height: 1.35;
 }
 
 .api-status {
   position: absolute;
   right: 7%;
-  bottom: 11%;
-  width: min(25vw, 330px);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 14px;
-  border: 1px solid rgba(214, 179, 106, 0.2);
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.42);
+  bottom: 8%;
+  display: flex;
+  gap: clamp(18px, 3vw, 42px);
 }
 
 .api-status div {
   display: grid;
-  gap: 5px;
+  grid-template-columns: 8px auto;
+  align-items: center;
+  column-gap: 7px;
+  opacity: 0;
+}
+
+.api-status i {
+  grid-row: 1 / 3;
+  width: 5px;
+  height: 100%;
+  min-height: 30px;
+  background: #69bda7;
+}
+
+.api-status div:nth-child(2) i {
+  background: #d6b36a;
+}
+
+.api-status div:nth-child(3) i {
+  background: #7f9fc8;
+}
+
+.api-status span {
+  color: rgba(237, 245, 242, 0.42);
+  font-size: 9px;
 }
 
 .api-status strong {
-  margin-bottom: 0;
-  font-family: "Courier New", monospace;
-  font-size: clamp(14px, 2vmin, 25px);
-  color: #fff;
+  font-size: clamp(14px, 1.8vmin, 22px);
 }
 
 @media (orientation: portrait) {
-  .api-console {
-    left: 7%;
+  .api-heading {
+    top: 7%;
     right: 7%;
-    width: auto;
   }
 
-  .api-console h2,
-  .api-chat {
-    width: auto;
-  }
-
-  .api-console h2 {
+  .api-heading h2 {
     font-size: clamp(25px, 7.8vmin, 42px);
   }
 
-  .api-chat {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .api-route {
+    top: 30%;
+    right: 7%;
+    bottom: 25%;
+    left: 9%;
+    height: auto;
   }
 
-  .api-msg {
-    min-height: 72px;
-    padding: 8px;
+  .api-wire {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(#69bda7, #d6b36a 50%, #7f9fc8);
+    transform-origin: top;
+  }
+
+  .api-chat {
+    left: 18px;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .api-msg,
+  .api-msg:nth-child(odd),
+  .api-msg:nth-child(even) {
+    display: grid;
+    grid-template-columns: 24px 76px minmax(0, 1fr);
+    align-items: center;
+    align-self: stretch;
+  }
+
+  .api-msg::before,
+  .api-msg:nth-child(odd)::before,
+  .api-msg:nth-child(even)::before {
+    top: 50%;
+    bottom: auto;
+    left: -22px;
+    transform: translateY(-50%);
+  }
+
+  .api-msg span,
+  .api-msg p {
+    margin: 0;
+  }
+
+  .api-msg p {
+    font-size: clamp(10px, 3.1vmin, 13px);
   }
 
   .api-status {
-    left: 7%;
     right: 7%;
-    bottom: max(13%, 118px);
-    width: auto;
-    grid-template-columns: repeat(3, 1fr);
+    bottom: max(15%, 124px);
+    left: 7%;
+    justify-content: space-between;
+    gap: 8px;
   }
 }

@@ -2,17 +2,22 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    #090c10;
-  background-size: 11vw 100%;
+  background: #090c10;
   color: #edf1f4;
   font-family: "Inter", system-ui, sans-serif;
 }
 
+.scene-root[data-scene-id="scene-11"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 11vw, rgba(255, 255, 255, 0.035) 11vw calc(11vw + 1px));
+  mask-image: linear-gradient(to bottom, #000, transparent 86%);
+}
+
 .workflow-heading {
   position: absolute;
-  top: 10%;
+  top: 9%;
   left: 7%;
   z-index: 2;
   opacity: 0;
@@ -32,28 +37,30 @@
 
 .workflow-heading h2 {
   margin: 10px 0 0;
-  font-size: clamp(26px, 4.2vmin, 54px);
+  font-size: clamp(26px, 4.1vmin, 52px);
   line-height: 1.04;
 }
 
 .workflow-line {
   position: absolute;
-  top: 57%;
+  top: 55%;
   right: 7%;
   left: 7%;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg, #79b7a6, #d0ac68, #7f9fc8);
+  box-shadow: 0 0 18px rgba(121, 183, 166, 0.2);
+  transform: rotate(10deg);
   transform-origin: left;
 }
 
 .workflow-steps {
   position: absolute;
-  top: 43%;
+  top: 36%;
   right: 7%;
   left: 7%;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(10px, 2vw, 28px);
+  gap: clamp(14px, 2.4vw, 36px);
 }
 
 .workflow-step {
@@ -61,55 +68,61 @@
   display: grid;
   align-content: start;
   min-width: 0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(121, 183, 166, 0.56);
   opacity: 0;
 }
 
-.workflow-step::after {
-  content: "";
-  position: absolute;
-  top: calc(14vh - 4px);
-  left: 0;
-  width: 9px;
-  height: 9px;
-  border: 2px solid #090c10;
-  border-radius: 50%;
-  background: #d0ac68;
+.workflow-step:nth-child(2) {
+  margin-top: 6vh;
+  border-color: rgba(208, 172, 104, 0.62);
+}
+
+.workflow-step:nth-child(3) {
+  margin-top: 12vh;
+  border-color: rgba(127, 159, 200, 0.62);
+}
+
+.workflow-step:nth-child(4) {
+  margin-top: 18vh;
+  border-color: rgba(237, 241, 244, 0.34);
 }
 
 .workflow-step span {
-  color: rgba(237, 241, 244, 0.4);
+  color: rgba(237, 241, 244, 0.34);
   font-size: 10px;
 }
 
 .workflow-step strong {
-  margin-top: 8px;
+  margin-top: 5px;
   color: #f4f6f7;
-  font-size: clamp(22px, 3.2vmin, 42px);
+  font-size: clamp(25px, 4vmin, 52px);
+  line-height: 0.95;
 }
 
 .workflow-step p {
-  margin: 8px 0 0;
+  margin: 9px 0 0;
   color: rgba(237, 241, 244, 0.68);
-  font-size: clamp(12px, 1.35vmin, 16px);
+  font-size: clamp(11px, 1.25vmin, 15px);
 }
 
 .workflow-step small {
-  margin-top: 13px;
-  color: rgba(121, 183, 166, 0.68);
-  font-size: clamp(9px, 1.05vmin, 12px);
-  line-height: 1.45;
+  margin-top: 11px;
+  color: rgba(121, 183, 166, 0.66);
+  font-size: clamp(9px, 1vmin, 11px);
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
 
 .workflow-coda {
   position: absolute;
   right: 7%;
-  bottom: 10%;
-  width: min(56vw, 720px);
+  bottom: 8%;
+  width: min(48vw, 680px);
   margin: 0;
-  color: rgba(237, 241, 244, 0.58);
+  color: rgba(237, 241, 244, 0.5);
   text-align: right;
-  font-size: clamp(11px, 1.35vmin, 16px);
+  font-size: clamp(10px, 1.2vmin, 14px);
   line-height: 1.6;
   opacity: 0;
 }
@@ -117,33 +130,64 @@
 @media (orientation: portrait) {
   .workflow-heading {
     top: 7%;
+    right: 7%;
   }
 
   .workflow-heading h2 {
     font-size: clamp(26px, 8vmin, 44px);
   }
 
-  .workflow-steps {
-    top: 31%;
-    grid-template-columns: 1fr 1fr;
-    gap: 22px 14px;
-  }
-
   .workflow-line {
-    display: none;
+    top: 30%;
+    right: auto;
+    bottom: 24%;
+    left: 11%;
+    width: 2px;
+    height: auto;
+    transform: rotate(-7deg);
   }
 
-  .workflow-step {
-    padding-top: 8px;
-    border-top: 1px solid rgba(208, 172, 104, 0.28);
+  .workflow-steps {
+    top: 29%;
+    right: 7%;
+    bottom: 24%;
+    left: 14%;
+    display: block;
   }
 
-  .workflow-step::after {
-    display: none;
+  .workflow-step,
+  .workflow-step:nth-child(2),
+  .workflow-step:nth-child(3),
+  .workflow-step:nth-child(4) {
+    position: absolute;
+    right: 0;
+    display: grid;
+    grid-template-columns: 28px 80px minmax(0, 1fr);
+    align-items: baseline;
+    width: 100%;
+    margin-top: 0;
+    padding: 7px 0 0 9px;
   }
+
+  .workflow-step:nth-child(1) { top: 0; }
+  .workflow-step:nth-child(2) { top: 24%; left: 4%; width: 96%; }
+  .workflow-step:nth-child(3) { top: 48%; left: 8%; width: 92%; }
+  .workflow-step:nth-child(4) { top: 72%; left: 12%; width: 88%; }
 
   .workflow-step strong {
-    font-size: clamp(20px, 6.8vmin, 32px);
+    margin: 0;
+    font-size: clamp(18px, 5.5vmin, 28px);
+  }
+
+  .workflow-step p {
+    margin: 0;
+    font-size: clamp(10px, 2.9vmin, 13px);
+  }
+
+  .workflow-step small {
+    grid-column: 3;
+    margin-top: 3px;
+    font-size: clamp(8px, 2.25vmin, 10px);
   }
 
   .workflow-coda {

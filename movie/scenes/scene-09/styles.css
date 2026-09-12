@@ -10,18 +10,16 @@
 .life-light {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 16% 20%, rgba(214, 183, 126, 0.2), transparent 28%),
-    radial-gradient(circle at 52% 78%, rgba(102, 145, 123, 0.14), transparent 28%),
-    radial-gradient(circle at 88% 24%, rgba(118, 144, 171, 0.16), transparent 26%);
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent 36%, rgba(0, 0, 0, 0.28));
   pointer-events: none;
 }
 
 .life-heading {
   position: absolute;
-  top: 10%;
+  top: 8%;
   left: 7%;
-  z-index: 2;
+  z-index: 3;
   opacity: 0;
 }
 
@@ -34,25 +32,23 @@
 }
 
 .life-heading span {
-  color: rgba(214, 183, 126, 0.74);
+  color: rgba(242, 238, 228, 0.62);
   font-size: clamp(10px, 1.15vmin, 13px);
 }
 
 .life-heading h2 {
-  margin: 10px 0 0;
+  margin: 9px 0 0;
   font-size: clamp(28px, 4.5vmin, 58px);
   font-weight: 500;
   line-height: 1.03;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.7);
 }
 
 .life-moments {
   position: absolute;
-  right: 7%;
-  bottom: 14%;
-  left: 7%;
+  inset: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(18px, 4vw, 64px);
 }
 
 .life-moment {
@@ -60,83 +56,160 @@
   display: grid;
   align-content: end;
   min-width: 0;
-  min-height: min(27vh, 260px);
+  padding: 42% 4% 13%;
+  overflow: hidden;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
   opacity: 0;
 }
 
+.life-moment:first-child {
+  border-left: 0;
+}
+
+.life-moment::before,
+.life-moment::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.life-moment::before {
+  inset: 0;
+  z-index: -1;
+  transition: transform 1s ease;
+}
+
+.life-moment--read::before {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 15px, rgba(255, 241, 210, 0.07) 15px 16px),
+    radial-gradient(circle at 30% 34%, rgba(214, 183, 126, 0.28), transparent 42%),
+    #17130e;
+}
+
+.life-moment--read::after {
+  top: 23%;
+  left: 13%;
+  width: 56%;
+  height: 34%;
+  border: 1px solid rgba(242, 238, 228, 0.22);
+  border-width: 1px 0;
+  box-shadow: 14px 0 0 rgba(242, 238, 228, 0.04), 28px 0 0 rgba(242, 238, 228, 0.025);
+  transform: rotate(-7deg);
+}
+
+.life-moment--run::before {
+  background:
+    radial-gradient(circle at 28% 34%, transparent 0 25%, rgba(118, 144, 171, 0.24) 25.5% 26%, transparent 26.5%),
+    radial-gradient(circle at 70% 52%, rgba(118, 144, 171, 0.2), transparent 42%),
+    #0d1319;
+}
+
+.life-moment--run::after {
+  top: 18%;
+  left: 19%;
+  width: 56%;
+  height: 45%;
+  border: 2px solid transparent;
+  border-top-color: rgba(171, 202, 226, 0.46);
+  border-right-color: rgba(171, 202, 226, 0.28);
+  border-radius: 50%;
+  transform: rotate(21deg);
+}
+
+.life-moment--notice::before {
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(220, 234, 224, 0.16) 50%, transparent 50.2%),
+    linear-gradient(transparent 49.8%, rgba(220, 234, 224, 0.16) 50%, transparent 50.2%),
+    radial-gradient(circle at 58% 35%, rgba(102, 145, 123, 0.3), transparent 40%),
+    #101713;
+}
+
+.life-moment--notice::after {
+  top: 17%;
+  right: 14%;
+  width: 42%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(220, 234, 224, 0.32);
+  border-radius: 50%;
+}
+
 .life-moment > span {
-  color: rgba(242, 238, 228, 0.35);
+  position: relative;
+  color: rgba(242, 238, 228, 0.38);
   font-size: 10px;
 }
 
 .life-moment strong {
-  margin-top: auto;
-  color: rgba(214, 183, 126, 0.8);
-  font-size: clamp(18px, 3.2vmin, 42px);
+  position: relative;
+  margin-top: 8px;
+  color: #d6b77e;
+  font-size: clamp(20px, 3.4vmin, 44px);
   font-weight: 400;
 }
 
+.life-moment--run strong {
+  color: #9bb7cf;
+}
+
+.life-moment--notice strong {
+  color: #8eb59b;
+}
+
 .life-moment h3 {
+  position: relative;
   margin: 10px 0 0;
   max-width: 320px;
-  font-size: clamp(18px, 2.4vmin, 30px);
+  font-size: clamp(17px, 2.15vmin, 28px);
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.18;
 }
 
 .life-moment p {
-  margin: 10px 0 0;
-  color: rgba(242, 238, 228, 0.5);
-  font-size: clamp(10px, 1.15vmin, 13px);
+  position: relative;
+  margin: 9px 0 0;
+  color: rgba(242, 238, 228, 0.54);
+  font-size: clamp(9px, 1.1vmin, 12px);
 }
 
 .life-moment i {
-  width: 100%;
-  height: 2px;
-  margin-top: 16px;
-  background: #d6b77e;
-  transform-origin: left;
-}
-
-.life-moment--run i {
-  background: #7690ab;
-}
-
-.life-moment--notice i {
-  background: #668f7a;
+  display: none;
 }
 
 .life-coda {
   position: absolute;
   right: 7%;
   bottom: 6%;
+  z-index: 3;
   margin: 0;
-  color: rgba(242, 238, 228, 0.56);
-  font-size: clamp(11px, 1.3vmin, 15px);
+  color: rgba(242, 238, 228, 0.62);
+  font-size: clamp(10px, 1.2vmin, 14px);
+  text-shadow: 0 2px 16px #000;
   opacity: 0;
 }
 
 @media (orientation: portrait) {
   .life-heading {
-    top: 7%;
+    top: 6%;
   }
 
   .life-heading h2 {
-    font-size: clamp(28px, 8.5vmin, 46px);
+    font-size: clamp(27px, 8.2vmin, 44px);
   }
 
   .life-moments {
-    top: 30%;
-    bottom: auto;
+    top: 25%;
+    bottom: max(24%, 145px);
     grid-template-columns: 1fr;
-    gap: 14px;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
   }
 
   .life-moment {
-    grid-template-columns: 30px 64px 1fr;
-    align-items: baseline;
-    min-height: 0;
-    padding-bottom: 14px;
+    grid-template-columns: 27px 65px minmax(0, 1fr);
+    align-items: center;
+    align-content: center;
+    padding: 8px 7%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 0;
   }
 
   .life-moment strong,
@@ -146,21 +219,25 @@
   }
 
   .life-moment strong {
-    font-size: clamp(15px, 4.8vmin, 24px);
+    font-size: clamp(15px, 4.7vmin, 23px);
   }
 
   .life-moment h3 {
-    font-size: clamp(15px, 4.4vmin, 22px);
+    font-size: clamp(14px, 4vmin, 20px);
   }
 
   .life-moment p {
-    grid-column: 2 / -1;
-    margin-top: 6px;
+    grid-column: 3;
+    margin-top: 3px;
   }
 
-  .life-moment i {
-    grid-column: 2 / -1;
-    margin-top: 10px;
+  .life-moment::after {
+    top: 18%;
+    right: 5%;
+    left: auto;
+    width: 26%;
+    height: 54%;
+    opacity: 0.42;
   }
 
   .life-coda {

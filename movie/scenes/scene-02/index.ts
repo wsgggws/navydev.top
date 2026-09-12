@@ -22,11 +22,12 @@ const LINE_TIMINGS: { at: number; text: string; prompt?: string }[] = [
   { at: 0.25, prompt: "$", text: " whoami" },
   { at: 1.15, text: "software engineer / lifelong learner" },
   { at: 2.2, prompt: "$", text: " cat principles.md" },
-  { at: 3.25, text: "复杂留给系统，清楚留给人" },
-  { at: 4.55, prompt: "$", text: " ls interests/" },
-  { at: 5.55, text: "systems  tools  history  running  observation  curiosity" },
-  { at: 7.1, prompt: "$", text: " status --life" },
-  { at: 8.1, text: "still learning, still shipping _" },
+  { at: 3.15, text: "代码爱干净，码码要洗手" },
+  { at: 4.15, text: "复杂留给系统，清楚留给人" },
+  { at: 5.15, prompt: "$", text: " ls interests/" },
+  { at: 6.05, text: "systems  tools  history  running  observation  curiosity" },
+  { at: 7.35, prompt: "$", text: " status --life" },
+  { at: 8.25, text: "still learning, still shipping _" },
 ];
 
 const SCREEN_W = 1024;

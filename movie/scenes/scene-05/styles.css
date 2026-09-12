@@ -7,13 +7,52 @@
   font-family: "Inter", system-ui, sans-serif;
 }
 
+.scene-root[data-scene-id="scene-05"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(122, 181, 167, 0.09), transparent 34%),
+    linear-gradient(135deg, rgba(205, 171, 105, 0.05), transparent 46%);
+}
+
 .curiosity-orbit {
   position: absolute;
-  top: 50%;
-  left: 24%;
-  width: min(34vw, 460px);
+  top: 51%;
+  left: 51%;
+  width: min(36vw, 460px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
+}
+
+.curiosity-orbit::before,
+.curiosity-orbit::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.curiosity-orbit::before {
+  content: "";
+  width: 2px;
+  height: 118%;
+  background: linear-gradient(transparent, rgba(243, 240, 234, 0.2), transparent);
+  transform: translate(-50%, -50%) rotate(43deg);
+}
+
+.curiosity-orbit::after {
+  content: "?";
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #cdab69;
+  color: #15120c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 5.4vmin, 72px);
 }
 
 .curiosity-orbit i {
@@ -25,8 +64,7 @@
 
 .curiosity-orbit i:nth-child(1) {
   inset: 34%;
-  background: rgba(205, 171, 105, 0.16);
-  border-color: rgba(205, 171, 105, 0.62);
+  border-color: rgba(205, 171, 105, 0.72);
 }
 
 .curiosity-orbit i:nth-child(2) {
@@ -35,13 +73,15 @@
 
 .curiosity-orbit i:nth-child(3) {
   inset: 2%;
-  border-color: rgba(119, 146, 178, 0.3);
+  border-color: rgba(119, 146, 178, 0.34);
 }
 
 .curiosity-heading {
   position: absolute;
-  top: 11%;
-  left: 43%;
+  top: 9%;
+  left: 7%;
+  z-index: 2;
+  width: min(42vw, 570px);
   opacity: 0;
 }
 
@@ -58,28 +98,58 @@
 }
 
 .curiosity-heading h2 {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(30px, 4.6vmin, 60px);
+  font-size: clamp(30px, 4.5vmin, 58px);
   font-weight: 500;
   line-height: 1.04;
 }
 
 .curiosity-prompts {
   position: absolute;
-  top: 49%;
-  right: 7%;
-  left: 43%;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(14px, 2.2vw, 34px);
+  inset: 0;
 }
 
 .curiosity-prompt {
+  position: absolute;
+  width: min(24vw, 310px);
   min-width: 0;
-  padding-top: 11px;
-  border-top: 1px solid rgba(243, 240, 234, 0.18);
   opacity: 0;
+}
+
+.curiosity-prompt::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  width: clamp(34px, 5vw, 76px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(205, 171, 105, 0.8), transparent);
+}
+
+.curiosity-prompt:nth-child(1) {
+  top: 20%;
+  right: 7%;
+}
+
+.curiosity-prompt:nth-child(1)::before,
+.curiosity-prompt:nth-child(2)::before {
+  right: calc(100% + 12px);
+}
+
+.curiosity-prompt:nth-child(2) {
+  top: 52%;
+  right: 5%;
+}
+
+.curiosity-prompt:nth-child(3) {
+  bottom: 13%;
+  left: 8%;
+  text-align: right;
+}
+
+.curiosity-prompt:nth-child(3)::before {
+  left: calc(100% + 12px);
+  transform: scaleX(-1);
 }
 
 .curiosity-prompt strong {
@@ -88,76 +158,93 @@
 }
 
 .curiosity-prompt h3 {
-  margin: 12px 0 0;
-  font-size: clamp(15px, 1.8vmin, 23px);
-  line-height: 1.25;
+  margin: 8px 0 0;
+  font-size: clamp(15px, 1.85vmin, 23px);
+  line-height: 1.22;
 }
 
 .curiosity-prompt p {
-  margin: 10px 0 0;
-  color: rgba(243, 240, 234, 0.48);
+  margin: 7px 0 0;
+  color: rgba(243, 240, 234, 0.46);
   font-size: clamp(9px, 1.05vmin, 12px);
 }
 
 .curiosity-coda {
   position: absolute;
   right: 7%;
-  bottom: 9%;
+  bottom: 8%;
   margin: 0;
   color: rgba(122, 181, 167, 0.7);
-  font-size: clamp(11px, 1.25vmin, 14px);
+  font-size: clamp(10px, 1.2vmin, 14px);
   opacity: 0;
 }
 
 @media (orientation: portrait) {
-  .curiosity-orbit {
-    top: 28%;
-    left: 76%;
-    width: min(58vw, 330px);
-    opacity: 0.8;
-  }
-
   .curiosity-heading {
-    top: 7%;
+    top: 6%;
     right: 7%;
-    left: 7%;
-    z-index: 1;
+    width: auto;
   }
 
   .curiosity-heading h2 {
-    font-size: clamp(30px, 9vmin, 50px);
+    font-size: clamp(28px, 8.6vmin, 47px);
   }
 
-  .curiosity-prompts {
-    top: 42%;
-    right: 7%;
-    left: 7%;
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .curiosity-orbit {
+    top: 48%;
+    left: 52%;
+    width: min(72vw, 360px);
   }
 
   .curiosity-prompt {
-    display: grid;
-    grid-template-columns: 84px 1fr;
-    align-items: baseline;
-    padding-top: 9px;
+    width: 45%;
   }
 
-  .curiosity-prompt h3,
-  .curiosity-prompt p {
-    margin-top: 0;
+  .curiosity-prompt:nth-child(1) {
+    top: 31%;
+    right: 4%;
+  }
+
+  .curiosity-prompt:nth-child(2) {
+    top: 47%;
+    right: auto;
+    left: 4%;
+    width: 40%;
+    text-align: right;
+  }
+
+  .curiosity-prompt:nth-child(3) {
+    bottom: auto;
+    top: 62%;
+    right: 7%;
+    left: auto;
+    width: 50%;
+    text-align: left;
+  }
+
+  .curiosity-prompt::before {
+    width: 28px;
+  }
+
+  .curiosity-prompt:nth-child(1)::before,
+  .curiosity-prompt:nth-child(3)::before {
+    right: calc(100% + 6px);
+    left: auto;
+    transform: none;
+  }
+
+  .curiosity-prompt:nth-child(2)::before {
+    right: auto;
+    left: calc(100% + 6px);
+    transform: scaleX(-1);
   }
 
   .curiosity-prompt h3 {
-    font-size: clamp(15px, 4.4vmin, 22px);
-  }
-
-  .curiosity-prompt p {
-    grid-column: 2;
-    margin-top: 5px;
+    font-size: clamp(14px, 4.1vmin, 20px);
   }
 
   .curiosity-coda {
+    right: 7%;
     bottom: max(15%, 124px);
     left: 7%;
   }
