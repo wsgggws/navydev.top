@@ -2,106 +2,171 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 8%, rgba(255, 206, 126, 0.24), transparent 24%),
-    linear-gradient(180deg, #090806, #020202);
-  color: #fff5df;
+  background: #0b0b0a;
+  color: #f2eee4;
   font-family: Georgia, "Times New Roman", serif;
 }
 
-.reading-lamp {
+.life-light {
   position: absolute;
-  left: 50%;
-  top: -18%;
-  width: 44%;
-  height: 52%;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(255, 206, 126, 0.36), transparent 68%);
+  inset: 0;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(214, 183, 126, 0.2), transparent 28%),
+    radial-gradient(circle at 52% 78%, rgba(102, 145, 123, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 24%, rgba(118, 144, 171, 0.16), transparent 26%);
   pointer-events: none;
 }
 
-.reading-book {
+.life-heading {
   position: absolute;
-  left: 50%;
-  top: 52%;
-  width: min(76vw, 980px);
-  height: min(56vh, 520px);
-  transform: translate(-50%, -50%);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  perspective: 900px;
+  top: 10%;
+  left: 7%;
+  z-index: 2;
   opacity: 0;
 }
 
-.reading-page {
-  padding: clamp(22px, 4vw, 54px);
-  border-radius: 5px;
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.08), transparent 10%),
-    #ead8b2;
-  color: #20170c;
-  box-shadow: inset 0 0 48px rgba(70, 35, 0, 0.12);
-}
-
-.reading-page--right {
-  background:
-    linear-gradient(270deg, rgba(0, 0, 0, 0.08), transparent 10%),
-    #f0dfbb;
-}
-
-.reading-page span {
-  display: block;
+.life-heading span,
+.life-moment span,
+.life-moment strong,
+.life-moment p,
+.life-coda {
   font-family: "Courier New", monospace;
-  font-size: clamp(10px, 1.2vmin, 14px);
-  color: rgba(32, 23, 12, 0.58);
 }
 
-.reading-page h2 {
-  margin: 18px 0 20px;
-  font-size: clamp(42px, 8vmin, 96px);
-  line-height: 0.95;
+.life-heading span {
+  color: rgba(214, 183, 126, 0.74);
+  font-size: clamp(10px, 1.15vmin, 13px);
 }
 
-.reading-page p {
-  font-size: clamp(17px, 2.1vmin, 25px);
-  line-height: 1.45;
+.life-heading h2 {
+  margin: 10px 0 0;
+  font-size: clamp(28px, 4.5vmin, 58px);
+  font-weight: 500;
+  line-height: 1.03;
 }
 
-.reading-notes {
-  margin-top: 22px;
+.life-moments {
+  position: absolute;
+  right: 7%;
+  bottom: 14%;
+  left: 7%;
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 4vw, 64px);
 }
 
-.reading-notes p {
+.life-moment {
+  position: relative;
+  display: grid;
+  align-content: end;
+  min-width: 0;
+  min-height: min(27vh, 260px);
+  opacity: 0;
+}
+
+.life-moment > span {
+  color: rgba(242, 238, 228, 0.35);
+  font-size: 10px;
+}
+
+.life-moment strong {
+  margin-top: auto;
+  color: rgba(214, 183, 126, 0.8);
+  font-size: clamp(18px, 3.2vmin, 42px);
+  font-weight: 400;
+}
+
+.life-moment h3 {
+  margin: 10px 0 0;
+  max-width: 320px;
+  font-size: clamp(18px, 2.4vmin, 30px);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.life-moment p {
+  margin: 10px 0 0;
+  color: rgba(242, 238, 228, 0.5);
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.life-moment i {
+  width: 100%;
+  height: 2px;
+  margin-top: 16px;
+  background: #d6b77e;
+  transform-origin: left;
+}
+
+.life-moment--run i {
+  background: #7690ab;
+}
+
+.life-moment--notice i {
+  background: #668f7a;
+}
+
+.life-coda {
+  position: absolute;
+  right: 7%;
+  bottom: 6%;
   margin: 0;
-  opacity: 0;
-  font-size: clamp(14px, 1.65vmin, 20px);
-}
-
-.reading-question {
-  position: absolute;
-  left: 50%;
-  bottom: 8%;
-  transform: translateX(-50%);
-  width: min(76vw, 980px);
-  text-align: center;
-  font-family: "Courier New", monospace;
-  color: rgba(255, 245, 223, 0.78);
-  font-size: clamp(13px, 1.7vmin, 20px);
+  color: rgba(242, 238, 228, 0.56);
+  font-size: clamp(11px, 1.3vmin, 15px);
   opacity: 0;
 }
 
 @media (orientation: portrait) {
-  .reading-book {
-    width: 82vw;
-    height: 68vh;
-    grid-template-columns: 1fr;
-    top: 49%;
+  .life-heading {
+    top: 7%;
   }
 
-  .reading-page--left {
-    display: none;
+  .life-heading h2 {
+    font-size: clamp(28px, 8.5vmin, 46px);
+  }
+
+  .life-moments {
+    top: 30%;
+    bottom: auto;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .life-moment {
+    grid-template-columns: 30px 64px 1fr;
+    align-items: baseline;
+    min-height: 0;
+    padding-bottom: 14px;
+  }
+
+  .life-moment strong,
+  .life-moment h3,
+  .life-moment p {
+    margin-top: 0;
+  }
+
+  .life-moment strong {
+    font-size: clamp(15px, 4.8vmin, 24px);
+  }
+
+  .life-moment h3 {
+    font-size: clamp(15px, 4.4vmin, 22px);
+  }
+
+  .life-moment p {
+    grid-column: 2 / -1;
+    margin-top: 6px;
+  }
+
+  .life-moment i {
+    grid-column: 2 / -1;
+    margin-top: 10px;
+  }
+
+  .life-coda {
+    right: 7%;
+    bottom: max(15%, 124px);
+    left: 7%;
+    line-height: 1.5;
   }
 }

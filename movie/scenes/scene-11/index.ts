@@ -1,61 +1,48 @@
 import type { SceneModule } from "@movie/types/scene";
-import { startAmbient, startScore, typingClick, chordGlow } from "@movie/lib/audio/SoundDesign";
+import { typingClick, chordGlow } from "@movie/lib/audio/SoundDesign";
 import { scene } from "./config";
 import script from "./scene.md?raw";
 import "./styles.css";
 
-const TOOLS = [
-  "Tmux",
-  "Neovim",
-  "Python",
-  "Go",
-  "Linux",
-  "Docker",
-  "Git",
-  "PostgreSQL",
-  "Redis",
-  "Nginx",
-  "Kubernetes",
+const WORKFLOW = [
+  { step: "01", verb: "THINK", idea: "先理解，再动手", tools: "Tmux · Neovim" },
+  { step: "02", verb: "BUILD", idea: "选择合适的表达", tools: "Python · Go" },
+  { step: "03", verb: "RUN", idea: "让环境可以复现", tools: "Linux · Docker" },
+  { step: "04", verb: "SHIP", idea: "让变化稳稳落地", tools: "Git · PostgreSQL · Redis · Nginx · Kubernetes" },
 ];
 
 function createScene(): SceneModule {
   let root: HTMLElement | null = null;
-  const stops: (() => void)[] = [];
 
-  const module: SceneModule = {
+  return {
     config: scene,
     script,
-
     async preload() {},
 
     create(r) {
       root = r;
       r.innerHTML = `
-        <div class="tool-orbit">
-          <div class="tool-core">
-            <span>TECHNOLOGIES & TOOLS</span>
-            <strong>quiet instruments</strong>
-          </div>
-        </div>
-        <div class="tool-readout">
-          <span>maintainability</span>
-          <span>observability</span>
-          <span>deployability</span>
-        </div>
+        <header class="workflow-heading">
+          <span>WORKFLOW</span>
+          <h2>工具退到身后，<br />工作流留在手上</h2>
+        </header>
+        <div class="workflow-line" aria-hidden="true"></div>
+        <div class="workflow-steps"></div>
+        <p class="workflow-coda">工具不是收藏品。它们只负责让思考更专注，让交付更从容。</p>
       `;
 
-      const orbit = r.querySelector(".tool-orbit") as HTMLElement;
-      TOOLS.forEach((tool, i) => {
-        const node = document.createElement("div");
-        node.className = "tool-node";
-        node.textContent = tool;
-        node.style.setProperty("--i", String(i));
-        node.style.setProperty("--total", String(TOOLS.length));
-        orbit.appendChild(node);
+      const steps = r.querySelector(".workflow-steps") as HTMLElement;
+      WORKFLOW.forEach(({ step, verb, idea, tools }) => {
+        const item = document.createElement("section");
+        item.className = "workflow-step";
+        item.innerHTML = `
+          <span>${step}</span>
+          <strong>${verb}</strong>
+          <p>${idea}</p>
+          <small>${tools}</small>
+        `;
+        steps.appendChild(item);
       });
-
-      stops.push(startAmbient("digital", 0.045));
-      stops.push(startScore("noir", 0.038));
     },
 
     async warmup() {
@@ -63,35 +50,30 @@ function createScene(): SceneModule {
       await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
     },
 
-    play(tl) {
+    play(timeline) {
       if (!root) return;
-      const core = root.querySelector(".tool-core") as HTMLElement;
-      const nodes = Array.from(root.querySelectorAll(".tool-node")) as HTMLElement[];
-      const readout = Array.from(root.querySelectorAll(".tool-readout span")) as HTMLElement[];
+      const heading = root.querySelector(".workflow-heading") as HTMLElement;
+      const line = root.querySelector(".workflow-line") as HTMLElement;
+      const steps = Array.from(root.querySelectorAll(".workflow-step")) as HTMLElement[];
+      const coda = root.querySelector(".workflow-coda") as HTMLElement;
 
-      tl.fromTo(core, { opacity: 0, scale: 0.82 }, { opacity: 1, scale: 1, duration: 0.55 }, 0.4);
-      nodes.forEach((node, i) => {
-        const at = 0.9 + i * 0.34;
-        tl.fromTo(node, { opacity: 0, scale: 0.76 }, { opacity: 1, scale: 1, duration: 0.28 }, at);
-        tl.call(() => typingClick(), [], at + 0.08);
+      timeline.fromTo(heading, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 }, 0.25);
+      timeline.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 5.2, ease: "power2.inOut" }, 0.8);
+      steps.forEach((step, index) => {
+        const at = 1.0 + index * 1.15;
+        timeline.fromTo(step, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.55 }, at);
+        timeline.call(() => typingClick(), [], at + 0.12);
       });
-      readout.forEach((item, i) => {
-        tl.fromTo(item, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.34 }, 4.6 + i * 0.48);
-      });
-      tl.call(() => chordGlow(), [], 6.6);
-      tl.to(core, { filter: "brightness(1.4)", duration: 0.35, yoyo: true, repeat: 2 }, 6.6);
-      tl.to({} as object, { duration: 2.2 }, 7.8);
+      timeline.fromTo(coda, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 6.0);
+      timeline.call(() => chordGlow(), [], 6.3);
+      timeline.to({} as object, { duration: 2.4 }, 7.2);
     },
 
     pause() {},
-
     destroy() {
-      while (stops.length) stops.pop()!();
       root = null;
     },
   };
-
-  return module;
 }
 
 export default createScene();

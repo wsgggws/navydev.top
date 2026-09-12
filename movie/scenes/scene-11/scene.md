@@ -1,28 +1,10 @@
-# Scene 11
+# 第四幕：工具退到身后
 
-## Title
+技术清单被重新组织成一条工作流：
 
-The Toolchain Orbit
+1. THINK：Tmux、Neovim 帮助集中注意力。
+2. BUILD：Python、Go 选择合适的表达。
+3. RUN：Linux、Docker 让环境可以复现。
+4. SHIP：Git、PostgreSQL、Redis、Nginx、Kubernetes 让变化稳定落地。
 
-## Story
-
-Technologies & Tools:
-
-Tmux Neovim Python Go Linux Docker Git PostgreSQL Redis Nginx Kubernetes.
-
-The tools form an orbit. Not badges, but working instruments. Quiet, sharp,
-repeatable.
-
-## Sound
-
-- orbit score
-- tool pings
-- final chord
-
-## Camera
-
-- overhead system map
-
-## Transition
-
-fade
+工具不是收藏品。熟练之后，它们应该从画面里消失。

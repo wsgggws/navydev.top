@@ -1,5 +1,4 @@
-/* Scene 02 — The Terminal. Now rendered in 3D via Three.js. CSS only
-   resets the scene-root and adds a vignette overlay above the canvas. */
+/* 第一幕以 Three.js 渲染 CRT；CSS 只负责画布外的信息层和暗角。 */
 
 .scene-root[data-scene-id="scene-02"] {
   position: absolute;
@@ -115,7 +114,7 @@
   .terminal-story {
     left: 7%;
     right: 7%;
-    bottom: 7%;
+    bottom: max(20%, 132px);
     width: auto;
   }
 

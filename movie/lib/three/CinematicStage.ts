@@ -8,10 +8,16 @@
  */
 
 import { gsap } from "gsap";
-import type * as THREE_NS from "three";
+import type * as THREE_NS from "./runtime";
+import {
+  getRenderingProfile,
+  subscribeRenderingQuality,
+  type RenderingProfile,
+} from "./quality";
 
 // Cached handles, populated on first `ensureThree()`.
 let THREE: typeof THREE_NS | undefined;
+let threeLoading: Promise<void> | null = null;
 let EffectComposer: any;
 let RenderPass: any;
 let UnrealBloomPass: any;
@@ -21,17 +27,27 @@ const TICKER_FRAMES = new WeakSet<CinematicStage>();
 /** Called by 3D scenes in their `preload()` step. Idempotent. */
 export async function ensureThree(): Promise<void> {
   if (THREE) return;
-  // Parallel dynamic imports — Vite will dedupe.
-  const [three, composer, renderPass, bloom] = await Promise.all([
-    import("three"),
-    import("three/examples/jsm/postprocessing/EffectComposer.js"),
-    import("three/examples/jsm/postprocessing/RenderPass.js"),
-    import("three/examples/jsm/postprocessing/UnrealBloomPass.js"),
-  ]);
-  THREE = three;
-  EffectComposer = composer.EffectComposer;
-  RenderPass = renderPass.RenderPass;
-  UnrealBloomPass = bloom.UnrealBloomPass;
+  if (!threeLoading) {
+    threeLoading = Promise.all([
+      // The adapter exposes only APIs used by this stage. Importing the full
+      // namespace here would make Rollup retain every Three.js export.
+      import("./runtime"),
+      import("three/examples/jsm/postprocessing/EffectComposer.js"),
+      import("three/examples/jsm/postprocessing/RenderPass.js"),
+      import("three/examples/jsm/postprocessing/UnrealBloomPass.js"),
+    ])
+      .then(([three, composer, renderPass, bloom]) => {
+        THREE = three;
+        EffectComposer = composer.EffectComposer;
+        RenderPass = renderPass.RenderPass;
+        UnrealBloomPass = bloom.UnrealBloomPass;
+      })
+      .catch((error) => {
+        threeLoading = null;
+        throw error;
+      });
+  }
+  await threeLoading;
 }
 
 export interface CinematicStageOptions {
@@ -56,6 +72,8 @@ export class CinematicStage {
 
   private host: HTMLElement;
   private bloom: any | null = null;
+  private configuredBloom = 0;
+  private qualityUnsubscribe: (() => void) | null = null;
   private resize: ResizeObserver;
   private started = false;
 
@@ -87,7 +105,10 @@ export class CinematicStage {
       powerPreference: "high-performance",
       stencil: false,
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, opts.pixelRatio ?? 1.5));
+    const profile = getRenderingProfile();
+    this.renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, opts.pixelRatio ?? profile.pixelRatioCap),
+    );
     this.renderer.setSize(width, height);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -116,10 +137,11 @@ export class CinematicStage {
     this.composer.setPixelRatio(this.renderer.getPixelRatio());
     this.composer.addPass(new RenderPass(this.scene, this.camera));
 
-    if (opts.bloom && opts.bloom > 0) {
+    this.configuredBloom = opts.bloom ?? 0;
+    if (this.configuredBloom > 0 && profile.bloomScale > 0) {
       this.bloom = new UnrealBloomPass(
         new (THREE as any).Vector2(width, height),
-        opts.bloom,
+        this.configuredBloom * profile.bloomScale,
         0.85,
         0.3,
       );
@@ -128,6 +150,9 @@ export class CinematicStage {
 
     this.resize = new ResizeObserver(() => this.applySize());
     this.resize.observe(host);
+    this.qualityUnsubscribe = subscribeRenderingQuality((_quality, nextProfile) => {
+      this.applyQuality(nextProfile);
+    });
   }
 
   start(): void {
@@ -173,6 +198,8 @@ export class CinematicStage {
 
   dispose(): void {
     this.stop();
+    this.qualityUnsubscribe?.();
+    this.qualityUnsubscribe = null;
     this.resize.disconnect();
     this.scene.traverse((obj: any) => {
       const mesh = obj;
@@ -187,10 +214,37 @@ export class CinematicStage {
   }
 
   private renderTick = () => {
-    if (!this.started) return;
+    if (!this.started || document.hidden) return;
     this.camera.updateMatrixWorld();
     this.composer.render();
   };
+
+  private applyQuality(profile: RenderingProfile): void {
+    if (!THREE) return;
+    const pixelRatio = Math.min(window.devicePixelRatio, profile.pixelRatioCap);
+    this.renderer.setPixelRatio(pixelRatio);
+    this.composer.setPixelRatio(pixelRatio);
+
+    if (this.configuredBloom > 0 && profile.bloomScale > 0) {
+      if (!this.bloom) {
+        this.bloom = new UnrealBloomPass(
+          new (THREE as any).Vector2(this.host.clientWidth, this.host.clientHeight),
+          this.configuredBloom * profile.bloomScale,
+          0.85,
+          0.3,
+        );
+        this.composer.addPass(this.bloom);
+      } else {
+        this.bloom.strength = this.configuredBloom * profile.bloomScale;
+      }
+    } else if (this.bloom) {
+      this.composer.removePass(this.bloom);
+      this.bloom.dispose?.();
+      this.bloom = null;
+    }
+
+    this.applySize();
+  }
 
   private applySize(): void {
     const w = this.host.clientWidth || window.innerWidth;

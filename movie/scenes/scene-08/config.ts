@@ -2,16 +2,16 @@ import type { SceneConfig } from "@movie/types/scene";
 
 export const scene: SceneConfig = {
   id: "scene-08",
-  title: "The API Affair",
-  caption: "I calm the interface",
+  title: "让系统彼此听懂",
+  caption: "接口不是边界，是承诺",
   mood: "signal",
   pacing: "pulse",
   shot: "closeup",
   colorGrade: "noir-green",
   soundMotif: "rhythm",
   titleCard: "terminal-caption",
-  duration: 12,
-  playbackRate: 1.5,
+  duration: 10,
+  playbackRate: 1.08,
   transition: "wipe",
   preload: [],
 };

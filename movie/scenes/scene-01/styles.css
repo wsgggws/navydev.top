@@ -1,24 +1,170 @@
-/* Scene 01 — The Hacker. Now rendered in 3D via Three.js; styles
-   only handle the scene-root reset and a subtle CSS film-grain overlay
-   that sits above the WebGL canvas. */
-
 .scene-root[data-scene-id="scene-01"] {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #000;
+  background: #0a0c0f;
+  color: #eef1f3;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Film grain overlay above the WebGL canvas. Pure CSS, deterministic. */
-.scene-root[data-scene-id="scene-01"]::after {
-  content: "";
+.method-grid {
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0 0.1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: 4;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(90deg, transparent, #000 34%, #000);
 }
 
-/* The Three.js canvas is appended by CinematicStage; nothing else needed. */
+.method-heading {
+  position: absolute;
+  top: 14%;
+  left: 7%;
+  width: min(38vw, 520px);
+  opacity: 0;
+}
+
+.method-heading > span,
+.method-heading p,
+.method-question span,
+.method-question strong,
+.method-coda {
+  font-family: "Courier New", monospace;
+}
+
+.method-heading > span {
+  color: #79b7a6;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.method-heading h2 {
+  margin: 12px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 5.2vmin, 68px);
+  font-weight: 500;
+  line-height: 1.02;
+}
+
+.method-heading p {
+  max-width: 420px;
+  margin: 18px 0 0;
+  color: rgba(238, 241, 243, 0.58);
+  font-size: clamp(11px, 1.3vmin, 15px);
+  line-height: 1.65;
+}
+
+.method-route {
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  left: 52%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.method-route i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#79b7a6, #d0ac68, #7f9fc8);
+  transform-origin: top;
+}
+
+.method-questions {
+  position: absolute;
+  top: 16%;
+  right: 7%;
+  bottom: 16%;
+  left: 56%;
+  display: grid;
+  align-content: space-between;
+}
+
+.method-question {
+  display: grid;
+  grid-template-columns: 30px 88px minmax(0, 1fr);
+  align-items: baseline;
+  min-width: 0;
+  opacity: 0;
+}
+
+.method-question span {
+  color: rgba(238, 241, 243, 0.34);
+  font-size: 10px;
+}
+
+.method-question strong {
+  color: #d0ac68;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.method-question h3 {
+  margin: 0;
+  font-size: clamp(17px, 2.1vmin, 27px);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.method-question p {
+  grid-column: 3;
+  margin: 8px 0 0;
+  color: rgba(238, 241, 243, 0.52);
+  font-size: clamp(11px, 1.2vmin, 14px);
+  line-height: 1.5;
+}
+
+.method-coda {
+  position: absolute;
+  bottom: 9%;
+  left: 7%;
+  margin: 0;
+  color: rgba(121, 183, 166, 0.64);
+  font-size: clamp(10px, 1.1vmin, 13px);
+  opacity: 0;
+}
+
+@media (orientation: portrait) {
+  .method-heading {
+    top: 7%;
+    right: 7%;
+    width: auto;
+  }
+
+  .method-heading h2 {
+    font-size: clamp(32px, 10vmin, 54px);
+  }
+
+  .method-heading p {
+    max-width: 92%;
+  }
+
+  .method-route {
+    top: 34%;
+    bottom: 20%;
+    left: 9%;
+  }
+
+  .method-questions {
+    top: 34%;
+    right: 7%;
+    bottom: 20%;
+    left: 14%;
+  }
+
+  .method-question {
+    grid-template-columns: 26px 76px minmax(0, 1fr);
+  }
+
+  .method-question h3 {
+    font-size: clamp(15px, 4.4vmin, 22px);
+  }
+
+  .method-question p {
+    font-size: clamp(10px, 2.8vmin, 13px);
+  }
+
+  .method-coda {
+    bottom: max(15%, 124px);
+  }
+}

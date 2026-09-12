@@ -1,27 +1,5 @@
-# Scene 08
+# 第三幕：让系统彼此听懂
 
-## Title
+接口不再被表现成一段俏皮聊天，而是一条可读的承诺链：请求进入、契约明确、过程可追踪、失败可恢复、响应完整返回。
 
-The API Affair
-
-## Story
-
-和 WebAPI 谈恋爱，闹脾气，我哄；崩溃，我陪；宕机，我背锅。
-
-An interface becomes a relationship. Requests cross the wire. Responses
-arrive with mood swings. The engineer keeps the contract readable and the
-service alive.
-
-## Sound
-
-- heartbeat pings
-- soft retry pulses
-- repaired chord
-
-## Camera
-
-- close-up service console
-
-## Transition
-
-wipe
+工程师的工作不是替系统掩盖情绪，而是让复杂系统在失败时仍然清楚、可见、从容。

@@ -8,12 +8,12 @@
 
 这是一个电影化交互作品集，不是传统网页。
 
-访客点击开始后连续观看一卷 reel。每个故事都是独立的 `Scene`，没有路由跳转，没有页面式导航。`MovieDirector` 是唯一播放控制者，负责加载、预热、挂载、播放、转场、章节跳转和销毁。
+访客进入后从一句序幕直接观看连续 reel。每个故事都是独立的 `Scene`，没有路由跳转，没有页面式导航。`MovieDirector` 是唯一播放控制者，负责加载、预热、挂载、播放、转场、章节跳转和销毁。
 
 设计判断优先级：
 
 1. 电影表达：镜头、剪辑、黑场、声音、节奏优先于普通网页布局。
-2. 流畅播放：首屏轻、首个用户手势后可整卷预热、当前场景播放时仍只依赖下一场预热保证转场。
+2. 流畅播放：首屏轻、用户点击后只预热前两章，当前场景播放时依赖下一场预热保证转场。
 3. 场景隔离：一个场景只讲一个故事，不能引用其他场景。
 4. 可扩展：新增场景主要改 `movie/movie.ts` 注册表，不碰 Director 主逻辑。
 
@@ -21,7 +21,7 @@
 
 ```text
 src/
-  App.tsx                  # React 壳：挂载 stage，处理音频手势、倒计时、控制条和 MovieDirector
+  App.tsx                  # React 壳：挂载 stage，处理音频手势、序幕、控制条和 MovieDirector
   styles.css               # 全局舞台、letterbox、title card、transition matte、控制层
 
 movie/
@@ -29,7 +29,7 @@ movie/
   prewarm.ts               # 开场前预热 Three.js pipeline、场景实现和 preload()
   types/scene.ts           # SceneConfig / SceneModule / SceneEntry 契约
   director/
-    MovieDirector.ts       # 播放、加载缓存、预热下一场、转场、章节控制、自动重启、销毁
+    MovieDirector.ts       # 播放、加载缓存、预热下一场、转场、章节控制、销毁
     Timeline.ts            # 每场唯一 GSAP 时间线
     Camera.ts              # CSS camera 抽象
   lib/
@@ -196,7 +196,9 @@ Director 在黑场完全覆盖后销毁旧场景并挂载新场景。不要在�
 性能约束：
 
 - 首屏主包不能静态包含场景实现、Three.js 重模块或场景级资源。
-- ROLL 后 `prewarmReel()` 可以整卷预热；播放中仍保持当前场景只等待下一场的模型。
+- ROLL 后 `prewarmReel()` 只预热前两章；播放中保持当前场景只等待下一场的模型。
+- `vite.config.ts` 只固定 React/GSAP vendor；不要强制 Three.js 手动分包，否则可能把它提升回首屏依赖。
+- `npm run check:performance` 必须保证入口小于 80 KB 且首屏 HTML 不加载 Three.js/postprocessing。
 - Canvas texture 只在内容变化时更新，不要每帧重画静态画面。
 - bloom、shader、阴影、粒子数量要有明确画面收益。
 - DOM 粒子用完必须移除。
@@ -204,34 +206,30 @@ Director 在黑场完全覆盖后销毁旧场景并挂载新场景。不要在�
 
 ## 音频
 
-浏览器需要用户手势才能播放音频。`App.tsx` 的 ROLL 流程会调用 `primeAudio()`；自动触发时浏览器可能仍保持 AudioContext suspended，手动点击 ROLL 或解除静音才是可靠的音频手势。场景内的 ambient/loop 音效必须返回 stop handle，并在 `destroy()` 中全部停止。
-
-静音状态由 `SoundDesign.ts` 管理。UI 和键盘 `M` 都应该走 `toggleMuted()`，解除静音后调用 `primeAudio()`。
+当前 reel 不启动背景音乐，也不显示声音控制。`SoundDesign.ts` 仍保留为场景声音能力，但启用声音前必须重新设计可靠的用户手势入口；场景内的 loop 必须返回 stop handle，并在 `destroy()` 中停止。
 
 ## 用户控制
 
 开场：
 
-- 页面加载后会自动触发一次 ROLL 流程；用户也可以手动点击 `ROLL`。
-- ROLL 后显示 3 秒倒计时，同时调用 `primeAudio()` 和 `prewarmReel(reel)`。
-- 倒计时至少 3 秒；预热最多等待约 5.2 秒，不让开场无限卡住。
+- 页面加载后立即显示“生活就是自导自演的一场戏”，没有“开始”按钮。
+- 序幕出现时同时调用 `prewarmReel(reel)`，随后自动进入第一幕。
+- 序幕至少 1.2 秒；预热最多参与约 1.8 秒，不让开场无限卡住。
 
 播放中：
 
 - 章节轨显示当前章节、标题和每章进度，点击任意章节调用 `goToScene(index)`。
-- 控制条提供 `PLAY/PAUSE`、`SOUND/MUTE`、`REPLAY`、`SKIP`、`RESTART`。
-- Reel 播完后会在最终黑场停留约 3.2 秒，然后自动回到第一章。
+- 控制条使用图标提供播放、重播、跳过和重新开始，依靠 `aria-label` 与 `title` 保持可访问性。
+- 播放无操作 3 秒后隐藏控制层；场景加载失败必须显示可重试的错误层。
+- Reel 播完后停留在“未完待续”的最终画面，不自动回到第一章。
 
 快捷键：
 
 - `Space`：播放 / 暂停
-- `M`：静音 / 解除静音
 - `R`：重播当前场景
 - `S` 或 `ArrowRight`：跳过当前场景
 - `Home`：从第一章重启
-- `1` 到 `9`：跳到第 1 到第 9 章
-- `0`：跳到第 10 章
-- `-`：跳到第 11 章
+- `1` 到 `7`：跳到对应章节
 
 ## 新增场景流程
 
@@ -251,6 +249,7 @@ Director 在黑场完全覆盖后销毁旧场景并挂载新场景。不要在�
 ```bash
 npm run typecheck
 npm run build
+npm run check:performance
 ```
 
 运行体验检查：
@@ -261,7 +260,7 @@ npm run dev
 
 重点手动检查：
 
-- ROLL 后音频没有报错，倒计时期间预热状态正常。
+- 页面载入后没有控制台错误，序幕结束后能及时进入第一幕。
 - 每个 title card 可见且没有被场景清空。
 - 每个场景结束后能自然进入下一场。
 - 控制条和章节轨可点击，快捷键可用。
@@ -271,19 +270,15 @@ npm run dev
 
 ## 当前 Reel
 
-| 顺序 | ID         | 标题                | 叙事角色                                   |
-| ---- | ---------- | ------------------- | ------------------------------------------ |
-| 1    | `scene-02` | The Terminal        | 自我介绍，身份、motto、终端人格先出场      |
-| 2    | `scene-09` | The Reading Room    | 阅读、历史、没有 Claude Code 的古代 Coding |
-| 3    | `scene-10` | The Runner's Loop   | 跑步路线、配速、系统提升                   |
-| 4    | `scene-01` | The Hacker          | 暗室、显示器、代码纹理、进入工作状态       |
-| 5    | `scene-08` | The API Affair      | WebAPI 关系日志、崩溃陪跑和背锅            |
-| 6    | `scene-07` | The Bug Forge       | GIL/goroutine 气质的 Bug 与优雅修复        |
-| 7    | `scene-04` | The Garden          | 左右分屏：算法噪音 vs 花园秩序             |
-| 8    | `scene-11` | The Toolchain Orbit | Tmux/Neovim/Python/Go/Linux 工具链星图     |
-| 9    | `scene-03` | Sparks              | Neovim、粒子火花、combo 节拍               |
-| 10   | `scene-05` | Crabtris            | 3D 方块棋盘、游戏化节奏                    |
-| 11   | `scene-06` | The Launch Deck     | 发射控制台、路线图、收束结尾               |
+| 顺序 | ID         | 标题           | 叙事角色                               |
+| ---- | ---------- | -------------- | -------------------------------------- |
+| 1    | `scene-02` | 关于我         | 身份、原则与兴趣构成动态人物肖像       |
+| 2    | `scene-01` | 从问题出发     | 问题、证据和最小改动组成判断路径       |
+| 3    | `scene-08` | 让系统彼此听懂 | 需求经过契约、追踪和恢复完整返回       |
+| 4    | `scene-11` | 工具退到身后   | 思考、构建、运行与交付组成工作流       |
+| 5    | `scene-09` | 屏幕之外       | 阅读、跑步和观察组成生活留白           |
+| 6    | `scene-05` | 继续提问       | 为什么、如果与下一步把好奇带向行动     |
+| 7    | `scene-06` | 未完待续       | 七幕汇聚成片尾，镜头停在下一幕之前     |
 
 ## 编码风格
 

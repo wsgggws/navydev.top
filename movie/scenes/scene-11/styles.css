@@ -3,136 +3,154 @@
   inset: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at center, rgba(104, 168, 255, 0.18), transparent 34%),
-    radial-gradient(circle at 15% 20%, rgba(107, 255, 149, 0.1), transparent 20%),
-    #020714;
-  color: #eaf2ff;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    #090c10;
+  background-size: 11vw 100%;
+  color: #edf1f4;
   font-family: "Inter", system-ui, sans-serif;
 }
 
-.tool-orbit {
+.workflow-heading {
   position: absolute;
-  left: 50%;
-  top: 49%;
-  width: min(68vw, 820px);
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(104, 168, 255, 0.18);
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 80px rgba(104, 168, 255, 0.08),
-    0 0 56px rgba(104, 168, 255, 0.08);
-}
-
-.tool-orbit::before,
-.tool-orbit::after {
-  content: "";
-  position: absolute;
-  inset: 16%;
-  border: 1px solid rgba(104, 168, 255, 0.13);
-  border-radius: 50%;
-}
-
-.tool-orbit::after {
-  inset: 32%;
-  border-color: rgba(107, 255, 149, 0.13);
-}
-
-.tool-core {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: min(28vw, 320px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  display: grid;
-  place-content: center;
-  gap: 10px;
-  text-align: center;
-  background: rgba(4, 14, 32, 0.82);
-  border: 1px solid rgba(104, 168, 255, 0.28);
+  top: 10%;
+  left: 7%;
+  z-index: 2;
   opacity: 0;
 }
 
-.tool-core span,
-.tool-readout,
-.tool-node {
+.workflow-heading span,
+.workflow-step span,
+.workflow-step small,
+.workflow-coda {
   font-family: "Courier New", monospace;
 }
 
-.tool-core span {
-  font-size: clamp(10px, 1.25vmin, 14px);
-  color: rgba(104, 168, 255, 0.76);
+.workflow-heading span {
+  color: #79b7a6;
+  font-size: clamp(10px, 1.15vmin, 13px);
 }
 
-.tool-core strong {
-  font-size: clamp(22px, 3.8vmin, 48px);
-  line-height: 1;
+.workflow-heading h2 {
+  margin: 10px 0 0;
+  font-size: clamp(26px, 4.2vmin, 54px);
+  line-height: 1.04;
 }
 
-.tool-node {
+.workflow-line {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  min-width: clamp(72px, 9vmin, 116px);
-  padding: 7px 10px;
-  border: 1px solid rgba(104, 168, 255, 0.28);
-  border-radius: 5px;
-  background: rgba(4, 14, 32, 0.78);
-  color: rgba(234, 242, 255, 0.86);
-  text-align: center;
-  font-size: clamp(10px, 1.28vmin, 14px);
+  top: 57%;
+  right: 7%;
+  left: 7%;
+  height: 1px;
+  background: linear-gradient(90deg, #79b7a6, #d0ac68, #7f9fc8);
+  transform-origin: left;
+}
+
+.workflow-steps {
+  position: absolute;
+  top: 43%;
+  right: 7%;
+  left: 7%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(10px, 2vw, 28px);
+}
+
+.workflow-step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-width: 0;
   opacity: 0;
-  transform:
-    translate(-50%, -50%)
-    rotate(calc(360deg / var(--total) * var(--i)))
-    translateY(calc(min(31vw, 365px) * -1))
-    rotate(calc(-360deg / var(--total) * var(--i)));
 }
 
-.tool-readout {
+.workflow-step::after {
+  content: "";
   position: absolute;
-  left: 50%;
-  bottom: 2.5%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  color: rgba(234, 242, 255, 0.7);
-  text-transform: uppercase;
+  top: calc(14vh - 4px);
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border: 2px solid #090c10;
+  border-radius: 50%;
+  background: #d0ac68;
 }
 
-.tool-readout span {
-  padding: 7px 10px;
-  border: 1px solid rgba(107, 255, 149, 0.18);
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.24);
+.workflow-step span {
+  color: rgba(237, 241, 244, 0.4);
+  font-size: 10px;
+}
+
+.workflow-step strong {
+  margin-top: 8px;
+  color: #f4f6f7;
+  font-size: clamp(22px, 3.2vmin, 42px);
+}
+
+.workflow-step p {
+  margin: 8px 0 0;
+  color: rgba(237, 241, 244, 0.68);
+  font-size: clamp(12px, 1.35vmin, 16px);
+}
+
+.workflow-step small {
+  margin-top: 13px;
+  color: rgba(121, 183, 166, 0.68);
+  font-size: clamp(9px, 1.05vmin, 12px);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.workflow-coda {
+  position: absolute;
+  right: 7%;
+  bottom: 10%;
+  width: min(56vw, 720px);
+  margin: 0;
+  color: rgba(237, 241, 244, 0.58);
+  text-align: right;
+  font-size: clamp(11px, 1.35vmin, 16px);
+  line-height: 1.6;
   opacity: 0;
 }
 
 @media (orientation: portrait) {
-  .tool-orbit {
-    width: 88vw;
-    top: 47%;
+  .workflow-heading {
+    top: 7%;
   }
 
-  .tool-core {
-    width: 42vw;
+  .workflow-heading h2 {
+    font-size: clamp(26px, 8vmin, 44px);
   }
 
-  .tool-node {
-    min-width: 64px;
-    transform:
-      translate(-50%, -50%)
-      rotate(calc(360deg / var(--total) * var(--i)))
-      translateY(-39vw)
-      rotate(calc(-360deg / var(--total) * var(--i)));
+  .workflow-steps {
+    top: 31%;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 14px;
   }
 
-  .tool-readout {
-    width: 86vw;
-    justify-content: center;
-    flex-wrap: wrap;
-    bottom: 3%;
+  .workflow-line {
+    display: none;
+  }
+
+  .workflow-step {
+    padding-top: 8px;
+    border-top: 1px solid rgba(208, 172, 104, 0.28);
+  }
+
+  .workflow-step::after {
+    display: none;
+  }
+
+  .workflow-step strong {
+    font-size: clamp(20px, 6.8vmin, 32px);
+  }
+
+  .workflow-coda {
+    right: 7%;
+    bottom: max(15%, 124px);
+    left: 7%;
+    width: auto;
+    text-align: left;
   }
 }

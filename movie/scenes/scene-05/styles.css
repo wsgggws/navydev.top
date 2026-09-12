@@ -1,125 +1,164 @@
-/* Scene 05 — Crabtris. Now rendered in 3D via Three.js; styles only
-   scope the scene-root and remove the 2D grid scaffolding. */
-
 .scene-root[data-scene-id="scene-05"] {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #140416;
+  background: #0d0c10;
+  color: #f3f0ea;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Faint scanline above the WebGL canvas for arcade feel. */
-.scene-root[data-scene-id="scene-05"]::after {
-  content: "";
+.curiosity-orbit {
   position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,0) 0,
-    rgba(0,0,0,0) 2px,
-    rgba(0,0,0,0.18) 3px,
-    rgba(0,0,0,0.18) 3px
-  );
-  pointer-events: none;
-  z-index: 4;
-  mix-blend-mode: multiply;
+  top: 50%;
+  left: 24%;
+  width: min(34vw, 460px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
 }
 
-.crabtris-hud {
+.curiosity-orbit i {
   position: absolute;
-  top: 9%;
-  left: 7%;
-  z-index: 6;
+  border: 1px solid rgba(122, 181, 167, 0.4);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.curiosity-orbit i:nth-child(1) {
+  inset: 34%;
+  background: rgba(205, 171, 105, 0.16);
+  border-color: rgba(205, 171, 105, 0.62);
+}
+
+.curiosity-orbit i:nth-child(2) {
+  inset: 18%;
+}
+
+.curiosity-orbit i:nth-child(3) {
+  inset: 2%;
+  border-color: rgba(119, 146, 178, 0.3);
+}
+
+.curiosity-heading {
+  position: absolute;
+  top: 11%;
+  left: 43%;
+  opacity: 0;
+}
+
+.curiosity-heading span,
+.curiosity-prompt strong,
+.curiosity-prompt p,
+.curiosity-coda {
+  font-family: "Courier New", monospace;
+}
+
+.curiosity-heading span {
+  color: #7ab5a7;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.curiosity-heading h2 {
+  margin: 12px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 4.6vmin, 60px);
+  font-weight: 500;
+  line-height: 1.04;
+}
+
+.curiosity-prompts {
+  position: absolute;
+  top: 49%;
+  right: 7%;
+  left: 43%;
   display: grid;
-  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2.2vw, 34px);
+}
+
+.curiosity-prompt {
+  min-width: 0;
+  padding-top: 11px;
+  border-top: 1px solid rgba(243, 240, 234, 0.18);
   opacity: 0;
-  color: #ffe8f4;
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
-  pointer-events: none;
-  text-shadow: 0 0 18px rgba(255, 143, 182, 0.5);
-  max-width: min(48vw, 430px);
-  overflow-wrap: anywhere;
 }
 
-.crabtris-mode,
-.crabtris-objective {
-  font-size: clamp(10px, 1.2vmin, 14px);
-  letter-spacing: 0;
-  color: rgba(255, 232, 244, 0.72);
-  line-height: 1.35;
+.curiosity-prompt strong {
+  color: #cdab69;
+  font-size: clamp(10px, 1.15vmin, 13px);
 }
 
-.crabtris-hud strong {
-  font-family: "Arial Black", "Inter", sans-serif;
-  font-size: clamp(28px, 5.6vmin, 74px);
-  line-height: 0.95;
-  color: #ffd56b;
+.curiosity-prompt h3 {
+  margin: 12px 0 0;
+  font-size: clamp(15px, 1.8vmin, 23px);
+  line-height: 1.25;
 }
 
-.crabtris-line-clear {
+.curiosity-prompt p {
+  margin: 10px 0 0;
+  color: rgba(243, 240, 234, 0.48);
+  font-size: clamp(9px, 1.05vmin, 12px);
+}
+
+.curiosity-coda {
   position: absolute;
-  inset: 0;
-  z-index: 7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  right: 7%;
+  bottom: 9%;
+  margin: 0;
+  color: rgba(122, 181, 167, 0.7);
+  font-size: clamp(11px, 1.25vmin, 14px);
   opacity: 0;
-  pointer-events: none;
-  font-family: "Arial Black", "Inter", sans-serif;
-  font-size: clamp(44px, 10vmin, 142px);
-  letter-spacing: 0;
-  color: #6bff95;
-  text-shadow:
-    0 0 18px rgba(107, 255, 149, 0.75),
-    0 0 42px rgba(255, 143, 182, 0.55);
-}
-
-.crabtris-lane-label {
-  position: absolute;
-  left: 7%;
-  bottom: 12%;
-  z-index: 6;
-  opacity: 0;
-  pointer-events: none;
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, Menlo, monospace;
-  font-size: clamp(12px, 1.5vmin, 18px);
-  letter-spacing: 0;
-  color: #6bff95;
-  text-shadow: 0 0 18px rgba(107, 255, 149, 0.65);
 }
 
 @media (orientation: portrait) {
-  .crabtris-hud {
-    top: 6%;
-    left: 7%;
+  .curiosity-orbit {
+    top: 28%;
+    left: 76%;
+    width: min(58vw, 330px);
+    opacity: 0.8;
+  }
+
+  .curiosity-heading {
+    top: 7%;
     right: 7%;
-    gap: 5px;
-    max-width: none;
-  }
-
-  .crabtris-mode,
-  .crabtris-objective {
-    font-size: clamp(9px, 2.7vmin, 12px);
-    letter-spacing: 0;
-  }
-
-  .crabtris-hud strong {
-    font-size: clamp(38px, 13vmin, 70px);
-  }
-
-  .crabtris-lane-label {
     left: 7%;
-    right: 7%;
-    bottom: 7%;
-    font-size: clamp(11px, 3.2vmin, 16px);
-    letter-spacing: 0;
-    line-height: 1.35;
+    z-index: 1;
   }
 
-  .crabtris-line-clear {
-    padding: 0 18px;
-    text-align: center;
-    font-size: clamp(40px, 14vmin, 92px);
-    line-height: 1;
+  .curiosity-heading h2 {
+    font-size: clamp(30px, 9vmin, 50px);
+  }
+
+  .curiosity-prompts {
+    top: 42%;
+    right: 7%;
+    left: 7%;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .curiosity-prompt {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    align-items: baseline;
+    padding-top: 9px;
+  }
+
+  .curiosity-prompt h3,
+  .curiosity-prompt p {
+    margin-top: 0;
+  }
+
+  .curiosity-prompt h3 {
+    font-size: clamp(15px, 4.4vmin, 22px);
+  }
+
+  .curiosity-prompt p {
+    grid-column: 2;
+    margin-top: 5px;
+  }
+
+  .curiosity-coda {
+    bottom: max(15%, 124px);
+    left: 7%;
   }
 }

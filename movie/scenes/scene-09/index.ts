@@ -1,53 +1,63 @@
 import type { SceneModule } from "@movie/types/scene";
-import { startAmbient, startScore, typingClick, chordGlow } from "@movie/lib/audio/SoundDesign";
+import { chordGlow } from "@movie/lib/audio/SoundDesign";
 import { scene } from "./config";
 import script from "./scene.md?raw";
 import "./styles.css";
 
-const NOTES = [
-  "竹简像磁带，换页就是 seek",
-  "活字印刷：第一代 reusable component",
-  "史官写日志，运维看事故",
-  "没有 Claude Code，也要靠耐心 review",
+const MOMENTS = [
+  {
+    number: "01",
+    verb: "READ",
+    title: "向过去借一双眼睛",
+    detail: "历史 · 长文 · 纸页",
+  },
+  {
+    number: "02",
+    verb: "RUN",
+    title: "把复杂的问题交给脚步",
+    detail: "配速 · 呼吸 · 路线",
+  },
+  {
+    number: "03",
+    verb: "NOTICE",
+    title: "看见日常里正在发生的事",
+    detail: "街道 · 光线 · 人群",
+  },
 ];
 
 function createScene(): SceneModule {
   let root: HTMLElement | null = null;
-  const stops: (() => void)[] = [];
 
-  const module: SceneModule = {
+  return {
     config: scene,
     script,
-
     async preload() {},
 
     create(r) {
       root = r;
       r.innerHTML = `
-        <div class="reading-lamp"></div>
-        <article class="reading-book">
-          <div class="reading-page reading-page--left">
-            <span>FAVORITE PROJECT</span>
-            <h2>Reading</h2>
-            <p>历史是一种低速调试器。</p>
-          </div>
-          <div class="reading-page reading-page--right">
-            <span>MARGIN NOTES</span>
-            <div class="reading-notes"></div>
-          </div>
-        </article>
-        <div class="reading-question">古人在没有 Claude Code 的时候如何 Coding 呢？</div>
+        <div class="life-light" aria-hidden="true"></div>
+        <header class="life-heading">
+          <span>OFF SCREEN</span>
+          <h2>屏幕之外，<br />生活继续编译</h2>
+        </header>
+        <div class="life-moments"></div>
+        <p class="life-coda">离开屏幕，才能带着新的东西回来。</p>
       `;
 
-      const notes = r.querySelector(".reading-notes") as HTMLElement;
-      NOTES.forEach((note) => {
-        const item = document.createElement("p");
-        item.textContent = note;
-        notes.appendChild(item);
+      const moments = r.querySelector(".life-moments") as HTMLElement;
+      MOMENTS.forEach(({ number, verb, title, detail }) => {
+        const item = document.createElement("section");
+        item.className = `life-moment life-moment--${verb.toLowerCase()}`;
+        item.innerHTML = `
+          <span>${number}</span>
+          <strong>${verb}</strong>
+          <h3>${title}</h3>
+          <p>${detail}</p>
+          <i aria-hidden="true"></i>
+        `;
+        moments.appendChild(item);
       });
-
-      stops.push(startAmbient("warm", 0.055));
-      stops.push(startScore("garden", 0.032));
     },
 
     async warmup() {
@@ -55,39 +65,35 @@ function createScene(): SceneModule {
         try { await document.fonts.ready; } catch { /* ignore */ }
       }
       await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
-      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
     },
 
-    play(tl) {
+    play(timeline) {
       if (!root) return;
-      const book = root.querySelector(".reading-book") as HTMLElement;
-      const pages = Array.from(root.querySelectorAll(".reading-page")) as HTMLElement[];
-      const notes = Array.from(root.querySelectorAll(".reading-notes p")) as HTMLElement[];
-      const question = root.querySelector(".reading-question") as HTMLElement;
+      const heading = root.querySelector(".life-heading") as HTMLElement;
+      const moments = Array.from(root.querySelectorAll(".life-moment")) as HTMLElement[];
+      const coda = root.querySelector(".life-coda") as HTMLElement;
 
-      tl.fromTo(book, { opacity: 0, y: 24, rotateX: 8 }, { opacity: 1, y: 0, rotateX: 0, duration: 0.8 }, 0.4);
-      pages.forEach((page, i) => {
-        tl.fromTo(page, { filter: "brightness(0.72)" }, { filter: "brightness(1)", duration: 0.5 }, 0.9 + i * 0.25);
+      timeline.fromTo(heading, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8 }, 0.3);
+      moments.forEach((moment, index) => {
+        const at = 1.1 + index * 1.35;
+        timeline.fromTo(moment, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.75 }, at);
+        timeline.fromTo(
+          moment.querySelector("i"),
+          { scaleX: 0 },
+          { scaleX: 1, duration: 1.5, ease: "power2.out" },
+          at + 0.25,
+        );
       });
-      notes.forEach((note, i) => {
-        const at = 1.6 + i * 0.72;
-        tl.fromTo(note, { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.36 }, at);
-        tl.call(() => typingClick(), [], at + 0.1);
-      });
-      tl.fromTo(question, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.65 }, 5.1);
-      tl.call(() => chordGlow(), [], 5.6);
-      tl.to({} as object, { duration: 2.2 }, 7.0);
+      timeline.fromTo(coda, { opacity: 0 }, { opacity: 1, duration: 0.9 }, 5.8);
+      timeline.call(() => chordGlow(), [], 6.2);
+      timeline.to({} as object, { duration: 3 }, 7.2);
     },
 
     pause() {},
-
     destroy() {
-      while (stops.length) stops.pop()!();
       root = null;
     },
   };
-
-  return module;
 }
 
 export default createScene();

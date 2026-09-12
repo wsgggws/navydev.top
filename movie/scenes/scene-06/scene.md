@@ -1,59 +1,9 @@
-# Scene 06
+# 未完待续
 
-## Title
+七个节点沿一条线依次亮起，代表已经走过的七幕。镜头停下，不再发射、不再倒计时，也不再自动回到开头。
 
-The Launch Deck
+画面最后只留下：
 
-## Story
+> 未完待续
 
-A compact mission-control deck. The film closes on a route map, build
-checklist, telemetry readout, and one clean launch.
-
-The checklist lights up:
-
-- repo synced
-- tests green
-- bundle sealed
-- assets warm
-- crew ready
-
-The route draws across the map. A small craft moves from staging orbit to
-the target. Final words flash:
-
-> SHIP IT
-
-Fade to black. After a short pause, the reel begins again.
-
-## Environment
-
-- dark control room
-- orbital map
-- green and amber telemetry
-
-## Actors
-
-- no human actor; the interface is the actor
-
-## Props
-
-- launch route
-- checklist
-- progress bar
-- craft marker
-
-## Sound
-
-- warm low bed
-- checklist impacts
-- launch whoosh
-- final chord
-
-## Camera
-
-- interface reveal
-- route trace
-- launch flash
-
-## Transition
-
-fade
+下一幕还在写，镜头先停在这里。

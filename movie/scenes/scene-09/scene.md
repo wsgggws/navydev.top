@@ -1,28 +1,9 @@
-# Scene 09
+# 屏幕之外
 
-## Title
+阅读、跑步和观察被合并成一组三联画：
 
-The Reading Room
+- 阅读，向过去借一双眼睛
+- 跑步，把复杂的问题交给脚步
+- 观察，看见日常里正在发生的事
 
-## Story
-
-Favorite projects: Reading.
-
-业余研究历史，古人在没有 Claude Code 的时候如何 Coding 呢。
-
-The room is quiet. Pages open like old terminals. Marginalia becomes a
-timeline. History is not nostalgia; it is debugging with slower tools.
-
-## Sound
-
-- warm reading bed
-- soft page turns
-
-## Camera
-
-- medium table shot
-- page close-up
-
-## Transition
-
-fade
+离开屏幕，才能带着新的东西回来。

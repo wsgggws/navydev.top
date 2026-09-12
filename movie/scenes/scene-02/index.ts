@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import type { SceneModule } from "@movie/types/scene";
 import { CinematicStage, ensureThree } from "@movie/lib/three/CinematicStage";
-import { startCrtHum, startScore, typingClick } from "@movie/lib/audio/SoundDesign";
+import { typingClick } from "@movie/lib/audio/SoundDesign";
 import { scene } from "./config";
 import script from "./scene.md?raw";
 import "./styles.css";
 
 /**
- * Scene 02 — The Terminal. 3D edition.
+ * 第一幕：用一台真实的 CRT 完成人物开场。
  *
  * A real CRT in a dark room. The screen face is a CanvasTexture that we
  * repaint as the typewriter runs. A custom shader pass laid over the
@@ -16,20 +16,17 @@ import "./styles.css";
  * close-up on the screen.
  */
 
-const TYPE_SPEED = 0.052;
+const TYPE_SPEED = 0.038;
 
 const LINE_TIMINGS: { at: number; text: string; prompt?: string }[] = [
-  { at: 0.4, prompt: "$", text: " whoami" },
-  { at: 1.8, text: "尚未秃头，头发上撸的攻城狮" },
-  { at: 3.2, prompt: "$", text: " ls ./release-notes" },
-  { at: 4.8, text: "auth.ts   trace.log   patch.diff   ship.yml" },
-  { at: 6.7, prompt: "$", text: " ./bootstrap --coffee --ship" },
-  { at: 8.7, text: "lint: clean  tests: green  deploy: warming" },
-  { at: 10.7, prompt: "$", text: ' echo "motto"' },
-  { at: 12.0, text: "代码爱干净，码码要洗手" },
-  { at: 13.7, prompt: "$", text: " tail -f ./ideas.log" },
-  { at: 15.4, text: "凌晨三点：把 bug 改成文档，再改回 bug" },
-  { at: 17.0, prompt: "$", text: " _" },
+  { at: 0.25, prompt: "$", text: " whoami" },
+  { at: 1.15, text: "software engineer / lifelong learner" },
+  { at: 2.2, prompt: "$", text: " cat principles.md" },
+  { at: 3.25, text: "复杂留给系统，清楚留给人" },
+  { at: 4.55, prompt: "$", text: " ls interests/" },
+  { at: 5.55, text: "systems  tools  history  running  observation  curiosity" },
+  { at: 7.1, prompt: "$", text: " status --life" },
+  { at: 8.1, text: "still learning, still shipping _" },
 ];
 
 const SCREEN_W = 1024;
@@ -205,19 +202,19 @@ function createScene(): SceneModule {
         "beforeend",
         `
           <div class="terminal-story">
-            <div class="terminal-story__label">LIVE SESSION</div>
-            <div class="terminal-story__headline">从黑屏到上线，只差一次回车</div>
+            <div class="terminal-story__label">PORTRAIT</div>
+            <div class="terminal-story__headline">写代码，也写自己的生活</div>
             <div class="terminal-story__grid">
-              <span>CPU 18%</span>
-              <span>BUILD 42</span>
-              <span>LATENCY 12ms</span>
+              <span>系统</span>
+              <span>工具</span>
+              <span>故事</span>
             </div>
           </div>
           <div class="terminal-ledger">
-            <span><b>auth.ts</b><em>permissions checked</em></span>
-            <span><b>trace.log</b><em>latency stable</em></span>
-            <span><b>patch.diff</b><em>review pending</em></span>
-            <span><b>ship.yml</b><em>deploy queued</em></span>
+            <span><b>BUILD SYSTEMS</b><em>让复杂有秩序</em></span>
+            <span><b>SHAPE TOOLS</b><em>让重复变简单</em></span>
+            <span><b>TRACE PROBLEMS</b><em>让错误有答案</em></span>
+            <span><b>TELL STORIES</b><em>让技术有人味</em></span>
           </div>
         `,
       );
@@ -259,8 +256,6 @@ function createScene(): SceneModule {
 
       stage.start();
 
-      stops.push(startCrtHum(0.08));
-      stops.push(startScore("signal", 0.034));
     },
 
     async warmup() {
@@ -290,11 +285,11 @@ function createScene(): SceneModule {
       // Slight breathing on camera Y.
       tl.fromTo(camera, { fov: portrait ? 68 : 30 }, { fov: portrait ? 64 : 32, duration: scene.duration }, 0);
       if (story) {
-        tl.fromTo(story, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8 }, 2.0);
-        tl.to(story, { opacity: 0.92, duration: 0.8 }, 6.4);
+        tl.fromTo(story, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8 }, 2.2);
+        tl.to(story, { opacity: 0.92, duration: 0.8 }, 5.4);
       }
       ledgerItems.forEach((item, i) => {
-        const at = 4.2 + i * 1.05;
+        const at = 3.3 + i * 1.1;
         tl.fromTo(
           item,
           { opacity: 0, x: 18 },
@@ -349,7 +344,7 @@ function createScene(): SceneModule {
       });
 
       // Hold on the last typed line.
-      tl.to({} as object, { duration: Math.max(0.3, scene.duration - 13) }, 13);
+      tl.to({} as object, { duration: Math.max(0.3, scene.duration - 8.8) }, 8.8);
     },
 
     pause() {},

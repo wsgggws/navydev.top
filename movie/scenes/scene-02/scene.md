@@ -1,62 +1,10 @@
-# Scene 02
+# 关于我
 
-## Title
+一台旧终端在黑暗里亮起。访客不是先看到技术清单，而是看到一个人的自我描述：
 
-The Terminal
+- 软件工程师
+- 把复杂留给系统，把清楚留给人
+- 关心系统、工具，也关心历史、跑步、观察和好奇心
+- 仍在学习，也仍在交付
 
-## Story
-
-Black screen. Static.
-
-A CRT terminal flickers on. Phosphor green text.
-
-Cursor blinks. We type:
-
-```
-$ whoami
-尚未秃头，头发上撸的攻城狮🦁
-```
-
-Then:
-
-```
-$ echo "motto"
-代码爱干净，码码要洗手
-```
-
-Then the screen scrolls, scanlines drift.
-
-Fade out.
-
----
-
-## Environment
-
-- night
-- dark room
-- CRT monitor (off-white glow, scanlines)
-
-## Actors
-
-- none — only the terminal speaks
-
-## Props
-
-- CRT monitor
-- phosphor trace
-- scanlines
-- blinking cursor
-
-## Sound
-
-- CRT hum
-- keystroke clicks (synth)
-
-## Camera
-
-- static medium shot
-- subtle drift (signal interference)
-
-## Transition
-
-fade
+终端是入口，不是全部身份。

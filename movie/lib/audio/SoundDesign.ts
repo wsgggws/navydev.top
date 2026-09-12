@@ -11,7 +11,7 @@ let _master: GainNode | null = null;
 let _noiseBuf: AudioBuffer | null = null;
 let _muted = false;
 
-const MASTER_GAIN = 0.55;
+const MASTER_GAIN = 0.42;
 
 function ctx(): AudioContext {
   if (_ctx) return _ctx;
@@ -167,6 +167,86 @@ export function startAmbient(
   };
 }
 
+/** A single, continuous score for the whole reel: slow harmony, no hard beat. */
+export function startCalmBackground(volume = 0.075): () => void {
+  const c = ctx();
+  const out = c.createGain();
+  out.gain.value = 0;
+
+  const lowpass = c.createBiquadFilter();
+  lowpass.type = "lowpass";
+  lowpass.frequency.value = 1150;
+  lowpass.Q.value = 0.25;
+  lowpass.connect(out).connect(master());
+
+  const delay = c.createDelay(1.2);
+  delay.delayTime.value = 0.48;
+  const feedback = c.createGain();
+  feedback.gain.value = 0.16;
+  delay.connect(feedback).connect(delay);
+  delay.connect(out);
+
+  const chords = [
+    [65.41, 98, 130.81, 164.81, 246.94],
+    [55, 82.41, 110, 130.81, 164.81],
+    [43.65, 65.41, 87.31, 110, 164.81],
+    [49, 73.42, 98, 130.81, 196],
+  ];
+  const oscillators = chords[0].map((frequency, index) => {
+    const oscillator = c.createOscillator();
+    oscillator.type = index < 2 ? "sine" : "triangle";
+    oscillator.frequency.value = frequency;
+    oscillator.detune.value = index % 2 === 0 ? -3 : 3;
+    const gain = c.createGain();
+    gain.gain.value = index < 2 ? 0.18 : 0.07;
+    oscillator.connect(gain).connect(lowpass);
+    if (index > 2) gain.connect(delay);
+    oscillator.start();
+    return oscillator;
+  });
+
+  let chordIndex = 0;
+  const changeChord = () => {
+    chordIndex = (chordIndex + 1) % chords.length;
+    const now = c.currentTime;
+    oscillators.forEach((oscillator, index) => {
+      oscillator.frequency.setTargetAtTime(chords[chordIndex][index], now, 1.6);
+    });
+  };
+  const chordTimer = window.setInterval(changeChord, 8000);
+
+  let noteIndex = 0;
+  const notes = [261.63, 329.63, 392, 329.63, 293.66, 261.63, 220, 246.94];
+  const playNote = () => {
+    if (!audioReady()) return;
+    const now = c.currentTime + 0.04;
+    const oscillator = c.createOscillator();
+    oscillator.type = "sine";
+    oscillator.frequency.value = notes[noteIndex % notes.length];
+    const gain = c.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.026, now + 0.45);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.4);
+    oscillator.connect(gain).connect(delay);
+    oscillator.start(now);
+    oscillator.stop(now + 3.5);
+    noteIndex += 1;
+  };
+  const noteTimer = window.setInterval(playNote, 4200);
+  out.gain.linearRampToValueAtTime(volume, c.currentTime + 2.8);
+
+  return () => {
+    window.clearInterval(chordTimer);
+    window.clearInterval(noteTimer);
+    out.gain.cancelScheduledValues(c.currentTime);
+    out.gain.linearRampToValueAtTime(0, c.currentTime + 1.2);
+    window.setTimeout(() => {
+      oscillators.forEach((oscillator) => oscillator.stop());
+      out.disconnect();
+    }, 1400);
+  };
+}
+
 export function startScore(
   mood: "noir" | "signal" | "rush" | "garden" | "arcade" | "launch",
   volume = 0.045,
@@ -292,7 +372,7 @@ export function typingClick(): void {
   const g = c.createGain();
   const pan = c.createStereoPanner();
   pan.pan.value = Math.random() * 0.26 - 0.13;
-  g.gain.setValueAtTime(0.1, c.currentTime);
+  g.gain.setValueAtTime(0.035, c.currentTime);
   g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.045);
   src.connect(bp).connect(g).connect(pan).connect(master());
   src.start();
@@ -307,7 +387,7 @@ export function bigImpact(): void {
   o.frequency.setValueAtTime(80, c.currentTime);
   o.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.4);
   const g = c.createGain();
-  g.gain.setValueAtTime(0.5, c.currentTime);
+  g.gain.setValueAtTime(0.12, c.currentTime);
   g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.6);
   o.connect(g).connect(master());
   o.start();
@@ -323,7 +403,7 @@ export function chordGlow(): void {
     o.frequency.value = f;
     const g = c.createGain();
     g.gain.setValueAtTime(0, c.currentTime + i * 0.05);
-    g.gain.linearRampToValueAtTime(0.12, c.currentTime + i * 0.05 + 0.05);
+    g.gain.linearRampToValueAtTime(0.045, c.currentTime + i * 0.05 + 0.05);
     g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 1.4);
     o.connect(g).connect(master());
     o.start();
@@ -341,7 +421,7 @@ export function whoosh(): void {
   bp.frequency.setValueAtTime(800, c.currentTime);
   bp.frequency.exponentialRampToValueAtTime(80, c.currentTime + 0.6);
   const g = c.createGain();
-  g.gain.setValueAtTime(0.2, c.currentTime);
+  g.gain.setValueAtTime(0.07, c.currentTime);
   g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.7);
   src.connect(bp).connect(g).connect(master());
   src.start();

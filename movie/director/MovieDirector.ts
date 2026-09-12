@@ -4,7 +4,7 @@ import { Camera } from "./Camera";
 import type { SceneEntry, SceneConfig, SceneModule } from "../types/scene";
 
 const SCENE_PLAYBACK_RATE = 1;
-const REEL_RESTART_DELAY_MS = 3200;
+const REEL_TEMPO_MULTIPLIER = 1;
 
 export interface MovieDirectorOptions {
   reducedMotion?: boolean;
@@ -18,6 +18,18 @@ export interface MovieDirectorState {
 
 export interface MovieDirectorProgress extends MovieDirectorState {
   progress: number;
+}
+
+export interface MovieDirectorError {
+  index: number;
+  config: SceneConfig | null;
+  error: unknown;
+  requiresReload: boolean;
+}
+
+function isModuleLoadError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /dynamically imported module|module script|module fetch/i.test(message);
 }
 
 /**
@@ -43,11 +55,11 @@ export class MovieDirector {
   private index = 0;
   private currentScene: SceneModule | null = null;
   private loadingScenes = new Map<number, Promise<SceneModule>>();
+  private preloadingScenes = new Map<number, Promise<void>>();
   private preloadedScenes = new Set<number>();
-  private nextScenePromise: Promise<void> | null = null;
   private onState: ((state: MovieDirectorState) => void) | null = null;
   private onProgress: ((progress: MovieDirectorProgress) => void) | null = null;
-  private restartTimer: number | null = null;
+  private onError: ((failure: MovieDirectorError) => void) | null = null;
   private transitioning = false;
   private disposed = false;
   private reducedMotion: boolean;
@@ -86,15 +98,23 @@ export class MovieDirector {
     this.onProgress = cb;
   }
 
+  setOnError(cb: (failure: MovieDirectorError) => void): void {
+    this.onError = cb;
+  }
+
   /**
    * Begin playback from the first scene. Preloads scene 0 and 1 in parallel.
    */
   async start(): Promise<void> {
     if (this.scenes.length === 0) return;
     this.disposed = false;
-    await this.preloadScene(0);
-    if (this.scenes[1]) void this.preloadScene(1).catch(() => undefined);
-    await this.enterScene(0);
+    try {
+      await this.preloadScene(0);
+      if (this.scenes[1]) void this.preloadScene(1).catch(() => undefined);
+      await this.enterScene(0);
+    } catch (error) {
+      this.emitError(0, error);
+    }
   }
 
   play(): void {
@@ -107,7 +127,7 @@ export class MovieDirector {
   }
 
   skip(): void {
-    if (this.transitioning || !this.currentScene) return;
+    if (this.transitioning || !this.currentScene || this.index >= this.scenes.length - 1) return;
     this.timeline.pause();
     void this.advance();
   }
@@ -130,12 +150,14 @@ export class MovieDirector {
     void this.transitionTo(index, "fade");
   }
 
+  retry(index: number): void {
+    if (this.transitioning || this.disposed || index < 0 || index >= this.scenes.length) return;
+    this.timeline.pause();
+    void this.transitionTo(index, "fade");
+  }
+
   async dispose(): Promise<void> {
     this.disposed = true;
-    if (this.restartTimer !== null) {
-      window.clearTimeout(this.restartTimer);
-      this.restartTimer = null;
-    }
     this.currentScene?.destroy();
     this.currentScene = null;
     this.timeline.kill();
@@ -145,18 +167,24 @@ export class MovieDirector {
   // ---- internals ----
 
   private async preloadScene(i: number): Promise<void> {
-    const scene = await this.loadScene(i);
-    if (!scene || this.preloadedScenes.has(i)) return;
-    await scene.preload();
-    this.preloadedScenes.add(i);
+    if (this.preloadedScenes.has(i)) return;
+    const pending = this.preloadingScenes.get(i);
+    if (pending) return pending;
+
+    const preload = (async () => {
+      const scene = await this.loadScene(i);
+      if (!scene) return;
+      await scene.preload();
+      this.preloadedScenes.add(i);
+    })().finally(() => {
+      this.preloadingScenes.delete(i);
+    });
+    this.preloadingScenes.set(i, preload);
+    return preload;
   }
 
   private async enterScene(i: number): Promise<void> {
     if (this.disposed) return;
-    if (this.restartTimer !== null) {
-      window.clearTimeout(this.restartTimer);
-      this.restartTimer = null;
-    }
     await this.preloadScene(i);
     const next = await this.loadScene(i);
     if (!next) {
@@ -185,7 +213,9 @@ export class MovieDirector {
     // Reset timeline. Each scene declares its own motion.
     this.timeline.clear();
     const gt = this.timeline.gsapTimeline;
-    gt.timeScale(next.config.playbackRate ?? SCENE_PLAYBACK_RATE);
+    gt.timeScale(
+      (next.config.playbackRate ?? SCENE_PLAYBACK_RATE) * REEL_TEMPO_MULTIPLIER,
+    );
     next.play(gt);
 
     // Pin to scene's declared duration so the timeline never outruns the story.
@@ -199,20 +229,20 @@ export class MovieDirector {
       this.emitProgress(next.config, declared);
     });
 
-    // Kick the loop: at end of scene, transition, then advance.
-    gt.call(() => {
-      void this.advance();
-    });
+    // The final scene holds on its last frame. There is no automatic loop.
+    if (i < this.scenes.length - 1) {
+      gt.call(() => {
+        void this.advance();
+      });
+    }
 
     // Kick playback now that everything is on stage.
     this.timeline.play();
 
     // Preload the next scene while this one plays.
     const after = this.scenes[i + 1];
-    if (after && !this.nextScenePromise) {
-      this.nextScenePromise = this.preloadScene(i + 1).finally(() => {
-        this.nextScenePromise = null;
-      });
+    if (after) {
+      void this.preloadScene(i + 1).catch(() => undefined);
     }
   }
 
@@ -243,6 +273,15 @@ export class MovieDirector {
     this.onProgress?.({ index: this.index, total: this.scenes.length, config, progress });
   }
 
+  private emitError(index: number, error: unknown): void {
+    this.onError?.({
+      index,
+      config: this.scenes[index]?.config ?? null,
+      error,
+      requiresReload: isModuleLoadError(error),
+    });
+  }
+
   private async waitForWarmFrames(): Promise<void> {
     await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
     await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
@@ -250,17 +289,29 @@ export class MovieDirector {
 
   private async advance(): Promise<void> {
     const cur = this.currentScene;
-    if (!cur) return;
+    if (!cur || this.index >= this.scenes.length - 1) return;
 
     await this.transitionTo(this.index + 1, cur.config.transition);
   }
 
   private async transitionTo(targetIndex: number, kind: SceneConfig["transition"]): Promise<void> {
-    if (this.transitioning || this.disposed) return;
+    if (
+      this.transitioning ||
+      this.disposed ||
+      targetIndex < 0 ||
+      targetIndex >= this.scenes.length
+    ) return;
     this.transitioning = true;
     const cur = this.currentScene;
 
     try {
+      // Keep the current frame visible while a jumped-to scene downloads.
+      // Closing the matte first turns ordinary network latency into a black
+      // screen, especially when the visitor skips several chapters ahead.
+      if (targetIndex >= 0 && targetIndex < this.scenes.length) {
+        await this.preloadScene(targetIndex);
+      }
+
       await this.runTransition(kind, async () => {
         if (!cur) {
           await this.enterScene(targetIndex);
@@ -270,15 +321,11 @@ export class MovieDirector {
         // Tear down and mount while the matte is closed, like a real scene splice.
         cur.destroy();
 
-        if (targetIndex >= this.scenes.length) {
-          this.currentScene = null;
-          this.sceneLayer.innerHTML = "";
-          this.scheduleRestart();
-          return;
-        }
-
         await this.enterScene(targetIndex);
       });
+    } catch (error) {
+      console.error(`Unable to enter scene ${targetIndex + 1}`, error);
+      this.emitError(targetIndex, error);
     } finally {
       this.transitioning = false;
     }
@@ -288,7 +335,7 @@ export class MovieDirector {
     kind: SceneConfig["transition"],
     duringBlack: () => Promise<void>,
   ): Promise<void> {
-    const transitionMs = this.reducedMotion ? 180 : 760;
+    const transitionMs = this.reducedMotion ? 140 : 520;
     const classKind = this.reducedMotion && kind !== "cut" ? "fade" : kind;
 
     if (!this.currentScene || kind === "cut") {
@@ -296,8 +343,8 @@ export class MovieDirector {
       return;
     }
 
+    const overlay = document.createElement("div");
     await new Promise<void>((resolve) => {
-      const overlay = document.createElement("div");
       overlay.className = "scene-transition scene-transition--" + classKind;
       overlay.style.setProperty("--transition-duration", `${transitionMs}ms`);
       this.transitionLayer.appendChild(overlay);
@@ -309,33 +356,21 @@ export class MovieDirector {
       }, transitionMs);
     });
 
-    await duringBlack();
-
-    await new Promise<void>((resolve) => {
-      const overlay = this.transitionLayer.querySelector(".scene-transition");
-      if (!(overlay instanceof HTMLElement)) {
-        resolve();
-        return;
-      }
-      window.setTimeout(() => {
-        overlay.classList.remove("scene-transition--active");
+    try {
+      await duringBlack();
+    } finally {
+      await new Promise<void>((resolve) => {
         window.setTimeout(() => {
-          overlay.remove();
-          resolve();
-        }, transitionMs);
-      }, 80);
-    });
+          overlay.classList.remove("scene-transition--active");
+          window.setTimeout(() => {
+            overlay.remove();
+            resolve();
+          }, transitionMs);
+        }, 60);
+      });
+    }
   }
 
-  private scheduleRestart(): void {
-    if (this.disposed || this.scenes.length === 0) return;
-    if (this.restartTimer !== null) window.clearTimeout(this.restartTimer);
-    this.restartTimer = window.setTimeout(() => {
-      this.restartTimer = null;
-      if (this.disposed) return;
-      void this.enterScene(0);
-    }, REEL_RESTART_DELAY_MS);
-  }
 }
 
 // Re-export the gsap type so scenes can `import type { gsap } from "@movie/director"` if desired.
