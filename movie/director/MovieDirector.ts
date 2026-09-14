@@ -62,6 +62,7 @@ export class MovieDirector {
   private onComplete: ((state: MovieDirectorState) => void) | null = null;
   private onError: ((failure: MovieDirectorError) => void) | null = null;
   private transitioning = false;
+  private pendingIndex: number | null = null;
   private disposed = false;
   private reducedMotion: boolean;
 
@@ -150,7 +151,15 @@ export class MovieDirector {
   }
 
   goToScene(index: number): void {
-    if (this.transitioning || index < 0 || index >= this.scenes.length || index === this.index) return;
+    if (index < 0 || index >= this.scenes.length) return;
+    if (this.transitioning) {
+      this.pendingIndex = index;
+      return;
+    }
+    if (index === this.index) {
+      this.replay();
+      return;
+    }
     this.timeline.pause();
     void this.transitionTo(index, "fade");
   }
@@ -163,6 +172,7 @@ export class MovieDirector {
 
   async dispose(): Promise<void> {
     this.disposed = true;
+    this.pendingIndex = null;
     this.currentScene?.destroy();
     this.currentScene = null;
     this.timeline.kill();
@@ -338,6 +348,11 @@ export class MovieDirector {
       this.emitError(targetIndex, error);
     } finally {
       this.transitioning = false;
+      const pendingIndex = this.pendingIndex;
+      this.pendingIndex = null;
+      if (pendingIndex !== null && pendingIndex !== this.index) {
+        this.goToScene(pendingIndex);
+      }
     }
   }
 

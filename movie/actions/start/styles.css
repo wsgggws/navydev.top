@@ -1,0 +1,50 @@
+.scene-root[data-scene-id="start"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #020304;
+  color: #f6f6f6;
+}
+
+.start-action {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: 0 7% 3%;
+  text-align: center;
+}
+
+.start-action span {
+  color: rgba(255, 255, 255, 0.44);
+  font-family: "Courier New", monospace;
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.start-action h1 {
+  margin: 18px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(28px, 5.4vmin, 68px);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.start-action i {
+  width: min(112px, 18vw);
+  height: 1px;
+  margin-top: 25px;
+  background: rgba(255, 255, 255, 0.38);
+  transform-origin: center;
+}
+
+@media (orientation: portrait) {
+  .start-action {
+    padding-bottom: max(16%, 120px);
+  }
+
+  .start-action h1 {
+    max-width: 11em;
+    font-size: clamp(28px, 8.8vmin, 48px);
+  }
+}

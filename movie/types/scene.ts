@@ -25,6 +25,8 @@ export type TitleCardStyle = "chapter-card" | "cold-open" | "burn-in" | "termina
 export interface SceneConfig {
   /** Stable identifier. Must match folder name. */
   id: string;
+  /** Optional non-numeric rail label for short boundary actions. */
+  navLabel?: string;
   /** Human-readable title shown briefly during transition. */
   title: string;
   /** A short subtitle or line of intent shown by cinematic overlays. */

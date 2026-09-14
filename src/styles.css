@@ -306,48 +306,6 @@ html, body, #root {
   box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.6);
 }
 
-/* ────────────────────────────────────────────────────────────────
-   Start overlay.
-   ──────────────────────────────────────────────────────────────── */
-.start-overlay {
-  position: absolute;
-  inset: 0;
-  background: #020304;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #f6f6f6;
-  font-family: "Courier New", monospace;
-  z-index: 100;
-  animation: start-fade 360ms ease-out forwards;
-}
-@keyframes start-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-.start-prologue {
-  display: grid;
-  justify-items: center;
-  width: min(86vw, 880px);
-  text-align: center;
-  animation: prologue-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.start-prologue strong {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(28px, 5.4vmin, 68px);
-  font-weight: 500;
-  line-height: 1.25;
-}
-.start-sub {
-  margin-top: 22px;
-  font-size: clamp(12px, 1.6vmin, 18px);
-  letter-spacing: 0;
-  color: rgba(255, 255, 255, 0.6);
-  animation: start-blink 1.8s steps(2) infinite;
-}
-
 .error-overlay {
   position: absolute;
   inset: 0;
@@ -471,11 +429,7 @@ html, body, #root {
   cursor: pointer;
 }
 .chapter-rail__chapter--edge {
-  cursor: default;
   white-space: nowrap;
-}
-.chapter-rail__chapter:disabled {
-  cursor: default;
 }
 .chapter-rail__chapter[aria-current="step"] {
   border-color: rgba(255, 255, 255, 0.52);
@@ -542,11 +496,6 @@ html, body, #root {
   background: rgba(14, 16, 20, 0.72);
   outline: none;
 }
-@keyframes prologue-in {
-  0% { opacity: 0; transform: translateY(12px); }
-  32%, 76% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0.18; transform: translateY(-5px); }
-}
 @media (orientation: portrait) {
   .stage-frame {
     aspect-ratio: 9 / 16;
@@ -578,13 +527,6 @@ html, body, #root {
     font-size: clamp(28px, 8.5vmin, 48px);
     letter-spacing: 0;
     line-height: 1.08;
-  }
-
-  .start-sub {
-    max-width: 84%;
-    letter-spacing: 0;
-    text-align: center;
-    line-height: 1.5;
   }
 
   .reel-controls {
@@ -634,9 +576,6 @@ html, body, #root {
   .title-card,
   .title-card__title,
   .title-card__caption,
-  .start-overlay,
-  .start-prologue,
-  .start-sub,
   .reel-controls,
   .chapter-rail,
   .chapter-rail__chapter,
@@ -645,7 +584,4 @@ html, body, #root {
     transition-duration: 1ms;
   }
 
-  .start-sub {
-    opacity: 0.7;
-  }
 }

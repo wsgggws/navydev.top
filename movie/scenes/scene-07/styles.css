@@ -32,10 +32,7 @@
 .creation-heading p,
 .creation-frame span,
 .creation-frame p,
-.creation-coda,
-.end-slate > span,
-.end-slate p,
-.end-slate a {
+.creation-coda {
   font-family: "Courier New", monospace;
 }
 
@@ -136,70 +133,6 @@
   opacity: 0;
 }
 
-.end-slate {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  padding-bottom: 4%;
-  background:
-    radial-gradient(circle at 50% 48%, rgba(125, 177, 165, 0.12), transparent 28%),
-    #060807;
-  text-align: center;
-  opacity: 0;
-}
-
-.end-slate > span {
-  color: rgba(125, 177, 165, 0.72);
-  font-size: clamp(10px, 1.15vmin, 13px);
-}
-
-.end-slate h2 {
-  margin: 13px 0 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(54px, 11vmin, 146px);
-  font-weight: 500;
-  line-height: 0.95;
-}
-
-.end-slate p {
-  margin: 18px 0 0;
-  color: rgba(242, 240, 234, 0.56);
-  font-size: clamp(10px, 1.25vmin, 14px);
-}
-
-.end-slate a {
-  display: grid;
-  gap: 5px;
-  margin-top: 25px;
-  color: inherit;
-  text-decoration: none;
-  opacity: 0;
-}
-
-.end-slate a small {
-  color: rgba(211, 181, 116, 0.68);
-  font-size: 10px;
-}
-
-.end-slate a strong {
-  padding-bottom: 5px;
-  border-bottom: 1px solid rgba(211, 181, 116, 0.38);
-  font-size: clamp(11px, 1.2vmin, 14px);
-}
-
-.end-slate a:hover strong,
-.end-slate a:focus-visible strong {
-  border-color: #d3b574;
-  color: #d3b574;
-}
-
-.end-slate a:focus-visible {
-  outline: none;
-}
-
 @media (orientation: portrait) {
   .creation-heading {
     top: 6%;
@@ -247,15 +180,4 @@
     left: 7%;
   }
 
-  .end-slate {
-    padding: 0 7% max(13%, 112px);
-  }
-
-  .end-slate h2 {
-    font-size: clamp(50px, 18vmin, 92px);
-  }
-
-  .end-slate p {
-    line-height: 1.55;
-  }
 }

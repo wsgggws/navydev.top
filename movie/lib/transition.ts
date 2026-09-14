@@ -7,12 +7,14 @@ import type { SceneConfig } from "../types/scene";
  */
 export interface TitleCardHandle {
   show(config: SceneConfig, chapterLabel?: string): void;
+  hide(): void;
   dispose(): void;
 }
 
 export function mountTitleCard(host: HTMLElement): TitleCardHandle {
   const card = document.createElement("div");
   card.className = "title-card";
+  card.setAttribute("aria-hidden", "true");
   card.innerHTML = `
     <div class="title-card__chapter"></div>
     <div class="title-card__title"></div>
@@ -28,6 +30,7 @@ export function mountTitleCard(host: HTMLElement): TitleCardHandle {
   return {
     show(config: SceneConfig, chapterLabel?: string) {
       gsap.killTweensOf([card, chapterEl, titleEl, captionEl]);
+      card.removeAttribute("aria-hidden");
       card.className = [
         "title-card",
         `title-card--${config.titleCard ?? "chapter-card"}`,
@@ -61,7 +64,18 @@ export function mountTitleCard(host: HTMLElement): TitleCardHandle {
         "<",
       );
       g.fromTo(captionEl, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.48, delay: 0.1 }, "<");
-      g.to(card, { opacity: 0, duration: 0.3, delay: hold, ease: "power2.in" });
+      g.to(card, {
+        opacity: 0,
+        duration: 0.3,
+        delay: hold,
+        ease: "power2.in",
+        onComplete: () => card.setAttribute("aria-hidden", "true"),
+      });
+    },
+    hide() {
+      gsap.killTweensOf([card, chapterEl, titleEl, captionEl]);
+      gsap.set(card, { opacity: 0 });
+      card.setAttribute("aria-hidden", "true");
     },
     dispose() {
       gsap.killTweensOf(card);

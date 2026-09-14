@@ -32,15 +32,6 @@ function createScene(): SceneModule {
           <div class="creation-frames"></div>
           <p class="creation-coda">作品不是句号，是下一次行动的起点。</p>
         </section>
-        <section class="end-slate">
-          <span>TO BE CONTINUED</span>
-          <h2>未完待续</h2>
-          <p>下一幕还在写，镜头先停在这里。</p>
-          <a href="https://github.com/wsgggws" target="_blank" rel="noreferrer">
-            <small>片尾之后</small>
-            <strong>github.com/wsgggws ↗</strong>
-          </a>
-        </section>
       `;
 
       const frames = r.querySelector(".creation-frames") as HTMLElement;
@@ -63,13 +54,10 @@ function createScene(): SceneModule {
 
     play(timeline) {
       if (!root) return;
-      const story = root.querySelector(".creation-story") as HTMLElement;
       const heading = root.querySelector(".creation-heading") as HTMLElement;
       const track = root.querySelector(".creation-track") as HTMLElement;
       const frames = Array.from(root.querySelectorAll(".creation-frame")) as HTMLElement[];
       const coda = root.querySelector(".creation-coda") as HTMLElement;
-      const slate = root.querySelector(".end-slate") as HTMLElement;
-      const link = root.querySelector(".end-slate a") as HTMLElement;
 
       timeline.fromTo(heading, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8 }, 0.3);
       timeline.fromTo(track, { scaleX: 0 }, { scaleX: 1, duration: 4.4, ease: "power2.inOut" }, 0.9);
@@ -82,15 +70,7 @@ function createScene(): SceneModule {
         );
       });
       timeline.fromTo(coda, { opacity: 0 }, { opacity: 1, duration: 0.75 }, 5.2);
-      timeline.to(story, { opacity: 0, scale: 0.985, duration: 0.85, ease: "power2.in" }, 7.0);
-      timeline.fromTo(
-        slate,
-        { opacity: 0, scale: 0.97 },
-        { opacity: 1, scale: 1, duration: 1.1, ease: "power2.out" },
-        7.75,
-      );
-      timeline.fromTo(link, { opacity: 0, y: 9 }, { opacity: 1, y: 0, duration: 0.7 }, 8.9);
-      timeline.to({} as object, { duration: 0.6 }, 9.6);
+      timeline.to({}, { duration: 0.85 }, 5.95);
     },
 
     pause() {},

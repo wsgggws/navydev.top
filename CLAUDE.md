@@ -37,6 +37,9 @@ movie/
     transition.ts          # title card / iris 等共享过场能力
     audio/SoundDesign.ts   # 共享声音设计
     three/CinematicStage.ts# Three.js 舞台，动态加载 three + postprocessing
+  actions/
+    start/                 # 短开场 action：START
+    continue/              # 短片尾 action：CONTINUE
   scenes/
     scene-01/
       config.ts            # 轻量 metadata，可静态导入
@@ -212,16 +215,15 @@ Director 在黑场完全覆盖后销毁旧场景并挂载新场景。不要在�
 
 开场：
 
-- 页面加载后立即显示“生活就是自导自演的一场戏”，没有“开始”按钮。
-- 序幕出现时同时调用 `prewarmReel(reel)`，随后自动进入第一幕。
-- 序幕至少 1.2 秒；预热最多参与约 1.8 秒，不让开场无限卡住。
+- `START` 是 reel 中可点击、可重播的独立 action，内容为“生活就是自导自演的一场戏”，没有额外的“开始”按钮。
+- 页面加载时同时调用 `prewarmReel(reel)`；最多等待约 180ms 就挂载 Director，随后由 `START` 自动进入第一幕。
 
 播放中：
 
-- 章节轨按 `START → 01…07 → CONTINUE...` 展示完整叙事进度；数字章节可点击并调用 `goToScene(index)`。
+- 章节轨按 `START → 01…07 → CONTINUE` 展示完整叙事进度；九个 action 都可点击并调用 `goToScene(index)`，点击当前 action 则重播。
 - 控制条使用图标提供播放、重播、跳过和重新开始，依靠 `aria-label` 与 `title` 保持可访问性。
 - 播放无操作 3 秒后隐藏控制层；场景加载失败必须显示可重试的错误层。
-- 第七幕“继续创作”播放完成后显示独立片尾“未完待续”，不自动回到第一章。
+- 第七幕“继续创作”完成后进入独立的 `CONTINUE` action，显示“未完待续”，不自动回到第一章。
 
 快捷键：
 

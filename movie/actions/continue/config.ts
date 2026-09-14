@@ -1,17 +1,17 @@
 import type { SceneConfig } from "@movie/types/scene";
 
 export const scene: SceneConfig = {
-  id: "scene-07",
-  title: "继续创作",
-  caption: "把想法带进现实",
+  id: "continue",
+  navLabel: "CONTINUE",
+  title: "未完待续",
+  caption: "下一幕还在写",
   mood: "release",
-  pacing: "hold",
+  pacing: "staccato",
   shot: "establishing",
   colorGrade: "launch-amber",
   soundMotif: "silence",
-  titleCard: "chapter-card",
-  duration: 6.8,
-  playbackRate: 1.08,
+  titleCard: "silent-card",
+  duration: 2.6,
   transition: "fade",
   preload: [],
 };

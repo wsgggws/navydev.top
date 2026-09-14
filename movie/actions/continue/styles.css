@@ -1,0 +1,88 @@
+.scene-root[data-scene-id="continue"] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #060807;
+  color: #f2f0ea;
+}
+
+.continue-action {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: 0 7% 4%;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(125, 177, 165, 0.12), transparent 28%),
+    #060807;
+  text-align: center;
+}
+
+.continue-action > span,
+.continue-action p,
+.continue-action a {
+  font-family: "Courier New", monospace;
+}
+
+.continue-action > span {
+  color: rgba(125, 177, 165, 0.72);
+  font-size: clamp(10px, 1.15vmin, 13px);
+}
+
+.continue-action h2 {
+  margin: 13px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(54px, 11vmin, 146px);
+  font-weight: 500;
+  line-height: 0.95;
+}
+
+.continue-action p {
+  margin: 18px 0 0;
+  color: rgba(242, 240, 234, 0.56);
+  font-size: clamp(10px, 1.25vmin, 14px);
+}
+
+.continue-action a {
+  display: grid;
+  gap: 5px;
+  margin-top: 25px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.continue-action a small {
+  color: rgba(211, 181, 116, 0.68);
+  font-size: 10px;
+}
+
+.continue-action a strong {
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(211, 181, 116, 0.38);
+  font-size: clamp(11px, 1.2vmin, 14px);
+}
+
+.continue-action a:hover strong,
+.continue-action a:focus-visible strong {
+  border-color: #d3b574;
+  color: #d3b574;
+}
+
+.continue-action a:focus-visible {
+  outline: none;
+}
+
+@media (orientation: portrait) {
+  .continue-action {
+    padding-bottom: max(13%, 112px);
+  }
+
+  .continue-action h2 {
+    font-size: clamp(50px, 18vmin, 92px);
+  }
+
+  .continue-action p {
+    line-height: 1.55;
+  }
+}

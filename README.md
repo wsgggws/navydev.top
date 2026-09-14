@@ -2,7 +2,7 @@
 
 不是网站，是一部电影。
 
-`Director` 把作品集组织成一卷连续播放的 reel。每个故事都是独立的 `Scene`：有环境、演员、道具、镜头运动和结束转场。访客进入后先看到一句序幕，随后连续观看；也可以通过章节轨、控制条或快捷键在 reel 内跳转。
+`Director` 把作品集组织成一卷连续播放的 reel。当前 reel 由 `START`、7 个编号场景和 `CONTINUE` 组成；每个 action 都有独立时间线，可以通过章节轨直接跳转或重播。
 
 架构和开发约束见 [CLAUDE.md](./CLAUDE.md)。
 
@@ -12,11 +12,11 @@
 - `MovieDirector` 统一控制播放、转场、挂载、销毁和跳章；片尾停留，不自动循环
 - 场景插件化：每个 `scene-*` 都是独立模块
 - Lazy scene loader：首屏只加载轻量配置，场景实现按需加载
-- 点击 ROLL 后只预热 Three.js pipeline 和前两章，避免慢网下的请求竞争
+- 启动时只预热 Three.js pipeline、`START` 和第一章，避免慢网下的请求竞争
 - 当前场景播放时继续预热下一场，减少转场等待
 - GSAP timeline 作为每个场景的叙事时间源
 - Three.js 场景按需加载，并依据设备与实时 FPS 自动调整 DPR 和 bloom
-- 当前版本不播放背景音乐，序幕可以在页面载入后直接开始
+- 当前版本不播放背景音乐，`START` 可以在页面载入后直接开始
 - 章节进度轨、自动隐藏图标控制条、错误重试和 `prefers-reduced-motion` 支持
 - 匿名采集 LCP、INP、长任务、FPS 与渲染质量，用于线上性能诊断
 
@@ -58,17 +58,16 @@ npm run preview
 
 开场行为：
 
-- 页面载入后直接显示序幕，不再提供“开始”按钮。
-- 序幕出现时同步预热场景，不依赖音频手势。
-- 开场显示“生活就是自导自演的一场戏”，至少停留 1.2 秒；预热最多参与约 1.8 秒，随后立即进入第一幕。
-- 开场只预热 Three.js pipeline 和前两幕；后续由 Director 每次只预热下一幕，避免慢网下争抢请求。
+- 页面载入后直接播放可点击、可重播的 `START` action，不提供额外的“开始”按钮。
+- `START` 显示“生活就是自导自演的一场戏”，约 1.8 秒后进入第一幕。
+- 启动最多等待预热约 180ms；首轮只预热 Three.js pipeline、`START` 和第一幕，后续由 Director 每次预热下一个 action。
 
 播放中控制：
 
-- 左下角章节轨显示当前章节、标题和每章进度，点击任意章节可跳转。
+- 左下角章节轨显示 `START → 01…07 → CONTINUE`，9 个 action 都可以直接点击；点击当前 action 会重播。
 - 右下角图标控制条提供播放、重播、跳过和重新开始，播放 3 秒无操作后自动隐藏。
 - 场景加载失败时显示中断画面和重试按钮，不再停在无反馈的黑场。
-- 第七幕“继续创作”完整播放后进入独立片尾“未完待续”，最终画面保持，不自动回到第一幕。
+- 第七幕“继续创作”完成后进入约 2.6 秒的 `CONTINUE` action，显示“未完待续”；最终画面保持，不自动回到 `START`。
 - 系统开启 `prefers-reduced-motion: reduce` 时，转场和部分动效会降级。
 
 快捷键：
@@ -78,7 +77,7 @@ npm run preview
 | `Space`             | 播放 / 暂停        |
 | `R`                 | 重播当前场景       |
 | `S` 或 `ArrowRight` | 跳过当前场景       |
-| `Home`              | 从第一章重启       |
+| `Home`              | 从 `START` 重启    |
 | `1` 到 `7`          | 跳到对应章节       |
 
 ## 部署
@@ -138,6 +137,9 @@ sudo mkdir -p /var/www/navydev.top /var/www/navydev.top/nghh
 │   │   ├── transition.ts
 │   │   ├── audio/SoundDesign.ts
 │   │   └── three/CinematicStage.ts
+│   ├── actions/
+│   │   ├── start/
+│   │   └── continue/
 │   └── scenes/
 │       ├── scene-01/
 │       ├── scene-02/
@@ -149,7 +151,7 @@ sudo mkdir -p /var/www/navydev.top /var/www/navydev.top/nghh
 └── index.html
 ```
 
-场景目录按播放顺序连续编号，只保留当前 reel 使用的 7 幕。每个场景目录包含：
+场景目录按播放顺序连续编号，只保留当前 reel 使用的 7 幕；两个首尾 action 放在 `movie/actions/`。每个 action 与场景目录都包含：
 
 ```text
 config.ts     # 轻量 metadata
@@ -160,15 +162,17 @@ styles.css    # 场景样式，使用 data-scene-id 作用域
 
 ## 当前 Reel
 
-| 顺序 | ID         | 标题           | 表达                                   |
-| ---- | ---------- | -------------- | -------------------------------------- |
-| 1    | `scene-01` | 关于我         | 身份、原则与兴趣构成一张动态人物肖像   |
-| 2    | `scene-02` | 从问题出发     | 问题、证据和最小改动组成判断路径       |
-| 3    | `scene-03` | 让系统彼此听懂 | 需求经由契约、追踪和恢复完整返回       |
-| 4    | `scene-04` | 工具退到身后   | 从思考、构建、运行到交付的工作流       |
-| 5    | `scene-05` | 屏幕之外       | 阅读、跑步与观察共同构成生活留白       |
-| 6    | `scene-06` | 继续提问       | 为什么、如果与下一步把好奇带向行动     |
-| 7    | `scene-07` | 继续创作       | 完成创作循环后进入独立片尾“未完待续”   |
+| 标记       | ID         | 标题                     | 表达                                 |
+| ---------- | ---------- | ------------------------ | ------------------------------------ |
+| `START`    | `start`    | 生活就是自导自演的一场戏 | 短开场 action                        |
+| `01`       | `scene-01` | 关于我                   | 身份、原则与兴趣构成一张动态人物肖像 |
+| `02`       | `scene-02` | 从问题出发               | 问题、证据和最小改动组成判断路径     |
+| `03`       | `scene-03` | 让系统彼此听懂           | 需求经由契约、追踪和恢复完整返回     |
+| `04`       | `scene-04` | 工具退到身后             | 从思考、构建、运行到交付的工作流     |
+| `05`       | `scene-05` | 屏幕之外                 | 阅读、跑步与观察共同构成生活留白     |
+| `06`       | `scene-06` | 继续提问                 | 为什么、如果与下一步把好奇带向行动   |
+| `07`       | `scene-07` | 继续创作                 | 完成想清楚、做出来、发布和迭代       |
+| `CONTINUE` | `continue` | 未完待续                 | 短片尾 action，停留在最终画面         |
 
 ## Lazy Scene Loader
 
@@ -214,6 +218,7 @@ export interface SceneEntry {
 ```ts
 export interface SceneConfig {
   id: string;
+  navLabel?: string;
   title: string;
   caption?: string;
   mood: SceneMood;
@@ -229,7 +234,7 @@ export interface SceneConfig {
 }
 ```
 
-`SceneConfig` 是场景 metadata。`id` 必须等于文件夹名；`duration` 是 Director 调度时间；`transition` 只声明交接方式，具体转场由 Director 执行。
+`SceneConfig` 是 action metadata。`id` 必须等于文件夹名；首尾 action 通过 `navLabel` 提供非数字标记；`duration` 是 Director 调度时间；`transition` 只声明交接方式，具体转场由 Director 执行。
 
 ```ts
 export interface SceneModule {
