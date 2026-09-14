@@ -10,7 +10,7 @@ export const scene: SceneConfig = {
   colorGrade: "warm-garden",
   soundMotif: "silence",
   titleCard: "silent-card",
-  duration: 11,
+  duration: 8.2,
   playbackRate: 1.08,
   transition: "wipe",
   preload: [],

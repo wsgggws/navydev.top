@@ -59,6 +59,7 @@ export class MovieDirector {
   private preloadedScenes = new Set<number>();
   private onState: ((state: MovieDirectorState) => void) | null = null;
   private onProgress: ((progress: MovieDirectorProgress) => void) | null = null;
+  private onComplete: ((state: MovieDirectorState) => void) | null = null;
   private onError: ((failure: MovieDirectorError) => void) | null = null;
   private transitioning = false;
   private disposed = false;
@@ -96,6 +97,10 @@ export class MovieDirector {
 
   setOnProgress(cb: (progress: MovieDirectorProgress) => void): void {
     this.onProgress = cb;
+  }
+
+  setOnComplete(cb: (state: MovieDirectorState) => void): void {
+    this.onComplete = cb;
   }
 
   setOnError(cb: (failure: MovieDirectorError) => void): void {
@@ -229,10 +234,15 @@ export class MovieDirector {
       this.emitProgress(next.config, declared);
     });
 
-    // The final scene holds on its last frame. There is no automatic loop.
+    // The final scene holds on its last frame and exposes a distinct coda state.
     if (i < this.scenes.length - 1) {
       gt.call(() => {
         void this.advance();
+      });
+    } else {
+      gt.eventCallback("onComplete", () => {
+        this.emitProgress(next.config, declared);
+        this.onComplete?.({ index: this.index, total: this.scenes.length, config: next.config });
       });
     }
 
@@ -335,7 +345,7 @@ export class MovieDirector {
     kind: SceneConfig["transition"],
     duringBlack: () => Promise<void>,
   ): Promise<void> {
-    const transitionMs = this.reducedMotion ? 110 : 400;
+    const transitionMs = this.reducedMotion ? 80 : 240;
     const classKind = this.reducedMotion && kind !== "cut" ? "fade" : kind;
 
     if (!this.currentScene || kind === "cut") {
@@ -366,7 +376,7 @@ export class MovieDirector {
             overlay.remove();
             resolve();
           }, transitionMs);
-        }, 40);
+        }, 20);
       });
     }
   }

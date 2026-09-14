@@ -13,12 +13,16 @@ import { mountTitleCard } from "@movie/lib/transition";
 import { prefersReducedMotion, watchReducedMotion } from "@movie/lib/motion";
 import { prewarmReel } from "@movie/prewarm";
 
+type ReelPhase = "start" | "scenes" | "continue";
+
 export default function App() {
   const stageRef = useRef<HTMLDivElement>(null);
   const directorRef = useRef<MovieDirector | null>(null);
   const reducedMotionRef = useRef(prefersReducedMotion());
   const controlsTimerRef = useRef<number | null>(null);
   const [armed, setArmed] = useState(false);
+  const [reelRun, setReelRun] = useState(0);
+  const [reelPhase, setReelPhase] = useState<ReelPhase>("start");
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sceneProgress, setSceneProgress] = useState(0);
@@ -58,6 +62,7 @@ export default function App() {
     const titleCard = mountTitleCard(stageRef.current);
     director.setOnState((state) => {
       setPlaybackError(null);
+      setReelPhase("scenes");
       setCurrentIndex(state.index);
       setSceneProgress(0);
       setPlaying(true);
@@ -70,6 +75,12 @@ export default function App() {
       setCurrentIndex(state.index);
       setSceneProgress(state.progress);
     });
+    director.setOnComplete(() => {
+      setReelPhase("continue");
+      setSceneProgress(1);
+      setPlaying(false);
+      setControlsVisible(true);
+    });
     director.setOnError((failure) => {
       setPlaybackError(failure);
       setPlaying(false);
@@ -81,7 +92,7 @@ export default function App() {
       void director.dispose();
       directorRef.current = null;
     };
-  }, [armed]);
+  }, [armed, reelRun]);
 
   useEffect(() => watchReducedMotion(setReducedMotion), []);
 
@@ -120,6 +131,10 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
 
+    setReelPhase("start");
+    setCurrentIndex(0);
+    setSceneProgress(0);
+
     const wait = (ms: number) =>
       new Promise<void>((resolve) => window.setTimeout(resolve, ms));
     const warmup = prewarmReel(reel);
@@ -133,11 +148,26 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reelRun]);
+
+  const restartFromStart = () => {
+    directorRef.current?.pause();
+    setArmed(false);
+    setPlaying(true);
+    setControlsVisible(true);
+    setReelRun((run) => run + 1);
+  };
 
   const togglePlayback = () => {
     const director = directorRef.current;
     if (!director) return;
+    if (reelPhase === "continue") {
+      setReelPhase("scenes");
+      setSceneProgress(0);
+      setPlaying(true);
+      director.replay();
+      return;
+    }
     if (director.isPlaying) {
       director.pause();
       setPlaying(false);
@@ -168,7 +198,7 @@ export default function App() {
       if (event.key.toLowerCase() === "r") directorRef.current?.replay();
       if (event.key.toLowerCase() === "s" || event.key === "ArrowRight")
         directorRef.current?.skip();
-      if (event.key === "Home") directorRef.current?.restart();
+      if (event.key === "Home") restartFromStart();
       const chapter = Number(event.key);
       if (Number.isInteger(chapter) && chapter >= 1 && chapter <= reel.length) {
         directorRef.current?.goToScene(chapter - 1);
@@ -177,7 +207,20 @@ export default function App() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [armed]);
+  }, [armed, reelPhase]);
+
+  const railLabel =
+    reelPhase === "start"
+      ? "START"
+      : reelPhase === "continue"
+        ? "CONTINUE..."
+        : `${String(currentIndex + 1).padStart(2, "0")} / ${String(reel.length).padStart(2, "0")}`;
+  const railTitle =
+    reelPhase === "start"
+      ? "生活就是自导自演的一场戏"
+      : reelPhase === "continue"
+        ? "未完待续"
+        : reel[currentIndex]?.config.title;
 
   return (
     <main
@@ -221,45 +264,73 @@ export default function App() {
           </button>
         </section>
       )}
+      {!playbackError && (
+        <div className="chapter-rail" aria-label="Chapter progress">
+          <div className="chapter-rail__meta">
+            <span>{railLabel}</span>
+            <strong>{railTitle}</strong>
+          </div>
+          <div className="chapter-rail__track">
+            <span
+              className="chapter-rail__chapter chapter-rail__chapter--edge"
+              aria-current={reelPhase === "start" ? "step" : undefined}
+              style={
+                {
+                  "--chapter-progress": reelPhase === "start" ? 0.55 : 1,
+                } as React.CSSProperties
+              }
+            >
+              <span>START</span>
+            </span>
+            {reel.map((entry, index) => {
+              const progress =
+                reelPhase === "continue" ||
+                (reelPhase === "scenes" && index < currentIndex)
+                  ? 1
+                  : reelPhase === "scenes" && index === currentIndex
+                    ? sceneProgress
+                    : 0;
+              return (
+                <button
+                  key={entry.config.id}
+                  className="chapter-rail__chapter"
+                  type="button"
+                  disabled={!armed}
+                  aria-label={`Go to ${entry.config.title}`}
+                  aria-current={
+                    reelPhase === "scenes" && index === currentIndex
+                      ? "step"
+                      : undefined
+                  }
+                  title={entry.config.title}
+                  style={
+                    { "--chapter-progress": progress } as React.CSSProperties
+                  }
+                  onClick={() => {
+                    directorRef.current?.goToScene(index);
+                    setControlsVisible(false);
+                  }}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                </button>
+              );
+            })}
+            <span
+              className="chapter-rail__chapter chapter-rail__chapter--edge"
+              aria-current={reelPhase === "continue" ? "step" : undefined}
+              style={
+                {
+                  "--chapter-progress": reelPhase === "continue" ? 1 : 0,
+                } as React.CSSProperties
+              }
+            >
+              <span>CONTINUE...</span>
+            </span>
+          </div>
+        </div>
+      )}
       {armed && (
         <>
-          <div className="chapter-rail" aria-label="Chapter progress">
-            <div className="chapter-rail__meta">
-              <span>
-                {String(currentIndex + 1).padStart(2, "0")} / {String(reel.length).padStart(2, "0")}
-              </span>
-              <strong>{reel[currentIndex]?.config.title}</strong>
-            </div>
-            <div className="chapter-rail__track">
-              {reel.map((entry, index) => {
-                const progress =
-                  index < currentIndex
-                    ? 1
-                    : index === currentIndex
-                      ? sceneProgress
-                      : 0;
-                return (
-                  <button
-                    key={entry.config.id}
-                    className="chapter-rail__chapter"
-                    type="button"
-                    aria-label={`Go to ${entry.config.title}`}
-                    aria-current={index === currentIndex ? "step" : undefined}
-                    title={entry.config.title}
-                    style={
-                      { "--chapter-progress": progress } as React.CSSProperties
-                    }
-                    onClick={() => {
-                      directorRef.current?.goToScene(index);
-                      setControlsVisible(false);
-                    }}
-                  >
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
           <div
             className="reel-controls"
             aria-label="Reel controls"
@@ -307,10 +378,7 @@ export default function App() {
               type="button"
               aria-label="Restart reel"
               title="Restart reel"
-              onClick={() => {
-                directorRef.current?.restart();
-                setControlsVisible(false);
-              }}
+              onClick={restartFromStart}
             >
               <RefreshCw aria-hidden="true" size={16} strokeWidth={1.8} />
             </button>

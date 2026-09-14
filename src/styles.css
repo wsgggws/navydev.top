@@ -113,7 +113,7 @@ html, body, #root {
 .scene-transition {
   position: absolute;
   inset: 0;
-  --transition-duration: 400ms;
+  --transition-duration: 240ms;
   background: #000;
   opacity: 0;
   pointer-events: none;
@@ -407,7 +407,7 @@ html, body, #root {
   left: max(14px, 2.2vw);
   bottom: max(14px, 2.2vw);
   z-index: 110;
-  width: min(420px, 42vw);
+  width: min(520px, 56vw);
   color: rgba(255, 255, 255, 0.82);
   opacity: 0.68;
   transition:
@@ -442,12 +442,18 @@ html, body, #root {
 }
 .chapter-rail__track {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
-  gap: 6px;
+  grid-template-columns:
+    minmax(48px, 0.9fr)
+    repeat(7, minmax(22px, 0.52fr))
+    minmax(76px, 1.35fr);
+  gap: 4px;
 }
 .chapter-rail__chapter {
   --chapter-progress: 0;
   position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
   height: 26px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 4px;
@@ -463,6 +469,13 @@ html, body, #root {
   font-size: 10px;
   letter-spacing: 0;
   cursor: pointer;
+}
+.chapter-rail__chapter--edge {
+  cursor: default;
+  white-space: nowrap;
+}
+.chapter-rail__chapter:disabled {
+  cursor: default;
 }
 .chapter-rail__chapter[aria-current="step"] {
   border-color: rgba(255, 255, 255, 0.52);
@@ -602,7 +615,10 @@ html, body, #root {
   }
 
   .chapter-rail__track {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns:
+      minmax(42px, 0.9fr)
+      repeat(7, minmax(0, 0.5fr))
+      minmax(68px, 1.35fr);
     gap: 3px;
   }
 

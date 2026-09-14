@@ -69,7 +69,7 @@ function createScene(): SceneModule {
         );
       });
       timeline.fromTo(coda, { opacity: 0 }, { opacity: 1, duration: 0.9 }, 6.5);
-      timeline.to({} as object, { duration: 3 }, 7.4);
+      timeline.to({} as object, { duration: 0.8 }, 7.4);
     },
 
     pause() {},

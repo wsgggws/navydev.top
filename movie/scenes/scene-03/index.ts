@@ -84,7 +84,7 @@ function createScene(): SceneModule {
       statusItems.forEach((item, index) => {
         timeline.fromTo(item, { opacity: 0 }, { opacity: 1, duration: 0.55 }, 5.8 + index * 0.35);
       });
-      timeline.to({} as object, { duration: 2.1 }, 7.2);
+      timeline.to({} as object, { duration: 0.8 }, 7.2);
     },
 
     pause() {},

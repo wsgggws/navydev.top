@@ -66,7 +66,7 @@ function createScene(): SceneModule {
       });
       timeline.fromTo(coda, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 6.0);
       timeline.call(() => chordGlow(), [], 6.3);
-      timeline.to({} as object, { duration: 2.4 }, 7.2);
+      timeline.to({} as object, { duration: 0.8 }, 7.2);
     },
 
     pause() {},

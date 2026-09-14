@@ -90,7 +90,7 @@ function createScene(): SceneModule {
         7.75,
       );
       timeline.fromTo(link, { opacity: 0, y: 9 }, { opacity: 1, y: 0, duration: 0.7 }, 8.9);
-      timeline.to({} as object, { duration: 2.4 }, 9.6);
+      timeline.to({} as object, { duration: 0.6 }, 9.6);
     },
 
     pause() {},

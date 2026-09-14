@@ -42,10 +42,10 @@ export function mountTitleCard(host: HTMLElement): TitleCardHandle {
 
       const hold =
         config.pacing === "hold" || config.titleCard === "silent-card"
-          ? 1.28
+          ? 0.8
           : config.pacing === "staccato"
-            ? 0.48
-            : 0.72;
+            ? 0.32
+            : 0.48;
       const enterY = config.titleCard === "terminal-caption" ? 0 : 16;
       const enterScale = config.titleCard === "burn-in" ? 1.06 : 1;
 
@@ -61,7 +61,7 @@ export function mountTitleCard(host: HTMLElement): TitleCardHandle {
         "<",
       );
       g.fromTo(captionEl, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.48, delay: 0.1 }, "<");
-      g.to(card, { opacity: 0, duration: 0.42, delay: hold, ease: "power2.in" });
+      g.to(card, { opacity: 0, duration: 0.3, delay: hold, ease: "power2.in" });
     },
     dispose() {
       gsap.killTweensOf(card);

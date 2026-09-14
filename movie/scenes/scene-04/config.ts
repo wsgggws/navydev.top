@@ -10,7 +10,7 @@ export const scene: SceneConfig = {
   colorGrade: "monitor-blue",
   soundMotif: "accent",
   titleCard: "chapter-card",
-  duration: 10,
+  duration: 8,
   playbackRate: 1.08,
   transition: "fade",
   preload: [],
